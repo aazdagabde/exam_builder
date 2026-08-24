@@ -1,0 +1,665 @@
+{
+  "app": {
+    "name": "منشئ الفروض",
+    "tagline": "أنشئ فروضًا واضحة وجاهزة للطباعة."
+  },
+  "nav": {
+    "exams": "فروضي",
+    "templates": "النماذج",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "title": "فروضي",
+    "description": "اعثر على فروضك ونظمها من مساحة واحدة.",
+    "newExam": "فرض جديد",
+    "loading": "جارٍ تحميل فروضك",
+    "retry": "إعادة المحاولة",
+    "empty": {
+      "title": "لا توجد فروض حاليًا",
+      "description": "ليس لديك أي فرض بعد. أنشئ فرضك الأول أو استورد نسخة احتياطية."
+    },
+    "loadError": {
+      "title": "تعذر تحميل فروضك",
+      "description": "حدث خطأ أثناء قراءة البيانات المخزنة على هذا الجهاز.",
+      "futureVersionDescription": "أُنشئ أحد الفروض باستعمال إصدار أحدث من Exam Builder. حدّث التطبيق لفتحه."
+    }
+  },
+  "exam": {
+    "untitled": "فرض بدون عنوان",
+    "unknownLevel": "المستوى غير محدد",
+    "unknownSubject": "المادة غير محددة",
+    "number": "الفرض رقم {{number}}",
+    "level": "المستوى",
+    "subject": "المادة",
+    "lastModified": "آخر تعديل:",
+    "actions": {
+      "edit": "تعديل",
+      "more": "إجراءات الفرض {{title}}",
+      "duplicate": "تكرار",
+      "duplicating": "جارٍ التكرار…",
+      "delete": "حذف"
+    },
+    "delete": {
+      "title": "حذف هذا الفرض؟",
+      "description": "سيؤدي هذا الإجراء إلى حذف الفرض المخزن على هذا الجهاز نهائيًا.",
+      "cancel": "إلغاء",
+      "confirm": "حذف",
+      "deleting": "جارٍ الحذف…"
+    },
+    "feedback": {
+      "duplicated": "تم تكرار الفرض.",
+      "deleted": "تم حذف الفرض.",
+      "duplicateError": "تعذر تكرار الفرض. حاول مرة أخرى.",
+      "deleteError": "تعذر حذف الفرض. لا يزال محفوظًا."
+    }
+  },
+  "newExam": {
+    "title": "فرض جديد",
+    "description": "أدخل المعلومات الأساسية وحدد البنية، ثم ابدأ التحرير.",
+    "steps": {
+      "label": "مراحل إنشاء الفرض",
+      "information": "المعلومات",
+      "structure": "البنية"
+    },
+    "information": {
+      "title": "المعلومات العامة",
+      "description": "الحقول المشار إليها بنجمة إلزامية."
+    },
+    "fields": {
+      "title": "عنوان الفرض",
+      "level": "المستوى",
+      "subject": "المادة",
+      "academicYear": "السنة الدراسية",
+      "examNumber": "رقم الفرض",
+      "duration": "المدة",
+      "teacher": "الأستاذ(ة)",
+      "institution": "المؤسسة",
+      "documentLanguage": "لغة الفرض",
+      "template": "النموذج"
+    },
+    "placeholders": {
+      "title": "مثال: فرض محروس رقم 1",
+      "level": "اختر المستوى"
+    },
+    "hints": {
+      "duration": "المدة بالدقائق، مثل 60."
+    },
+    "templates": {
+      "moroccanCollegeClassic": "النموذج الكلاسيكي للإعدادي المغربي"
+    },
+    "sections": {
+      "title": "البنية الأولية",
+      "description": "عدّل الأقسام المقترحة. ستُضاف الأسئلة والعناصر في المحرر.",
+      "itemLabel": "القسم {{number}}",
+      "add": "إضافة قسم",
+      "removeNamed": "حذف {{name}}"
+    },
+    "actions": {
+      "cancel": "إلغاء",
+      "back": "رجوع",
+      "continue": "متابعة",
+      "create": "إنشاء الفرض",
+      "creating": "جارٍ الإنشاء…"
+    },
+    "validation": {
+      "required": "هذا الحقل إلزامي.",
+      "durationPositive": "يجب أن تكون المدة عددًا صحيحًا من الدقائق وأكبر من صفر.",
+      "sectionRequired": "أضف قسمًا واحدًا على الأقل.",
+      "sectionTitleRequired": "عنوان هذا القسم إلزامي."
+    },
+    "error": {
+      "save": "تعذر إنشاء الفرض. تم الاحتفاظ بمدخلاتك؛ حاول مرة أخرى."
+    }
+  },
+  "examBuilder": {
+    "title": "محرر الفرض",
+    "back": "الرجوع إلى الفروض",
+    "examSettings": {
+      "open": "إعدادات الفرض",
+      "title": "إعدادات الفرض",
+      "description": "اضبط لغة الوثيقة والنقطة المنتظرة والحقول المطبوعة للتلميذ.",
+      "fields": {
+        "title": "عنوان الفرض",
+        "documentLanguage": "لغة الفرض",
+        "totalPoints": "النقطة المنتظرة",
+        "showTotalPoints": "إظهار مجموع النقط في الوثيقة"
+      },
+      "studentFields": {
+        "title": "حقول التلميذ",
+        "fullName": "الاسم الكامل",
+        "studentNumber": "الرقم",
+        "className": "القسم",
+        "grade": "النقطة"
+      }
+    },
+    "questionNumbering": {
+      "title": "ترقيم الأسئلة",
+      "enabled": "ترقيم الأسئلة الجديدة تلقائيا",
+      "restartPerSection": "إعادة الترقيم من 1 في كل قسم"
+    },
+    "layout": {
+      "viewLabel": "مساحة العمل على الفرض",
+      "structure": "البنية",
+      "editor": "التحرير",
+      "preview": "المعاينة"
+    },
+    "loading": "جارٍ تحميل الفرض",
+    "notFound": {
+      "title": "الفرض غير موجود",
+      "description": "هذا الفرض غير موجود أو لم يعد متاحًا على هذا الجهاز."
+    },
+    "error": {
+      "title": "تعذر تحميل الفرض",
+      "description": "حدث خطأ أثناء قراءة البيانات المحلية.",
+      "futureVersionDescription": "أُنشئ هذا الفرض باستعمال إصدار أحدث من Exam Builder. حدّث التطبيق لفتحه.",
+      "retry": "إعادة المحاولة"
+    },
+    "sections": {
+      "title": "البنية",
+      "count": "الأقسام: {{count}}",
+      "blockCount_zero": "بدون عناصر",
+      "blockCount_one": "عنصر واحد",
+      "blockCount_two": "عنصران",
+      "blockCount_few": "{{count}} عناصر",
+      "blockCount_many": "{{count}} عنصراً",
+      "blockCount_other": "{{count}} عنصر",
+      "list": "أقسام الفرض",
+      "add": "إضافة قسم",
+      "untitled": "قسم بدون عنوان"
+    },
+    "section": {
+      "description": "عدّل معلومات القسم المحدد.",
+      "fields": {
+        "title": "العنوان",
+        "subject": "المادة",
+        "points": "نقط القسم"
+      },
+      "actions": {
+        "drag": "نقل {{name}} بالسحب والإفلات",
+        "duplicate": "تكرار {{name}}",
+        "delete": "حذف {{name}}",
+        "moveUp": "نقل {{name}} إلى الأعلى",
+        "moveDown": "نقل {{name}} إلى الأسفل"
+      }
+    },
+    "deleteSection": {
+      "title": "حذف هذا القسم؟",
+      "description": "سيُحذف القسم وكل عناصره من الفرض. يمكنك التراجع عن هذا الإجراء باستعمال زر التراجع.",
+      "cancel": "إلغاء",
+      "confirm": "حذف"
+    },
+    "empty": {
+      "title": "لا توجد أقسام",
+      "description": "أضف قسمًا للبدء في تنظيم هذا الفرض.",
+      "selectSection": "حدد قسمًا لتعديل معلوماته."
+    },
+    "undo": "التراجع عن التعديل",
+    "redo": "إعادة التعديل",
+    "save": {
+      "saved": "تم حفظ التعديلات",
+      "dirty": "تعديلات غير محفوظة",
+      "saving": "جارٍ الحفظ…",
+      "error": "خطأ في الحفظ",
+      "retry": "إعادة المحاولة"
+    },
+    "blocks": {
+      "title": "عناصر القسم",
+      "description": "اختر عنصراً لتعديله أو أعد ترتيب القائمة.",
+      "add": "إضافة عنصر",
+      "list": "عناصر القسم المحدد",
+      "empty": "لا يحتوي هذا القسم على أي عنصر بعد.",
+      "noSection": "أضف قسماً أولاً.",
+      "selectBlock": "أضف عنصراً أو حدده لعرض محرره.",
+      "noContent": "بدون محتوى",
+      "questionNumber": "السؤال {{number}}",
+      "pointsCompact": "{{points}} ن",
+      "organization": {
+        "title": "التنظيم",
+        "startsNewQuestion": "يبدأ هذا العنصر سؤالاً جديداً",
+        "help": "يُحسب الرقم تلقائياً حسب ترتيب عناصر الفرض."
+      },
+      "noSettings": "لا يحتاج هذا العنصر إلى إعدادات إضافية.",
+      "pageBreakInfo": "سيبدأ المحتوى الموالي في صفحة جديدة عند العرض.",
+      "unsupportedEditor": "نوع العنصر: {{type}}. سيُضاف المحرر المفصل لهذا العنصر في مرحلة قادمة.",
+      "essayLimit": "يوجد بالفعل موضوع مقالي في هذا الفرض.",
+      "imageUnavailable": "ستتوفر إضافة الصور مع التخزين الحقيقي للملفات. لن يتم إنشاء ملف وهمي.",
+      "palette": {
+        "title": "إضافة عنصر",
+        "description": "اختر نوع العنصر لإضافته في نهاية هذا القسم.",
+        "categories": {
+          "content": "المحتوى",
+          "exercises": "الأسئلة والتمارين",
+          "structure": "البنية"
+        }
+      },
+      "types": {
+        "instruction": "تعليمة",
+        "textDocument": "وثيقة نصية",
+        "image": "صورة / وثيقة",
+        "question": "سؤال",
+        "definition": "تعريف",
+        "trueFalse": "صحيح / خطأ",
+        "multipleChoice": "اختيار من متعدد",
+        "fillBlank": "ملء الفراغ",
+        "table": "جدول",
+        "matching": "صل بسهم",
+        "essay": "موضوع مقالي",
+        "freeText": "نص حر",
+        "separator": "فاصل",
+        "pageBreak": "فاصل صفحة"
+      },
+      "descriptions": {
+        "instruction": "إضافة تعليمة موجهة إلى التلاميذ.",
+        "textDocument": "إضافة وثيقة للقراءة مع مصدرها.",
+        "image": "إدراج صورة أو وثيقة بصرية.",
+        "question": "طرح سؤال مع مساحة للإجابة.",
+        "definition": "طلب تعريف مصطلح أو عدة مصطلحات.",
+        "trueFalse": "تقويم عبارات بصحيح أو خطأ.",
+        "multipleChoice": "اقتراح جواب واحد أو عدة أجوبة.",
+        "fillBlank": "إنشاء نص بفراغات للإكمال.",
+        "table": "عرض جدول أو إعداده للإكمال.",
+        "matching": "ربط عناصر عمودين.",
+        "essay": "إضافة الموضوع المقالي الوحيد في الفرض.",
+        "freeText": "إضافة نص حر أو ملاحظة أو عنوان فرعي.",
+        "separator": "إنشاء فاصل بصري.",
+        "pageBreak": "بدء المحتوى التالي في صفحة جديدة."
+      },
+      "actions": {
+        "drag": "نقل {{name}} بالسحب والإفلات",
+        "duplicate": "تكرار {{name}}",
+        "delete": "حذف {{name}}",
+        "moveUp": "نقل {{name}} إلى الأعلى",
+        "moveDown": "نقل {{name}} إلى الأسفل"
+      },
+      "delete": {
+        "title": "حذف هذا العنصر؟",
+        "description": "سيُحذف العنصر من القسم. يمكنك التراجع عن هذا الإجراء باستعمال زر التراجع.",
+        "cancel": "إلغاء",
+        "confirm": "حذف"
+      },
+      "summary": {
+        "terms": "{{count}} مصطلح",
+        "statements": "{{count}} عبارة",
+        "options": "{{count}} اختيار",
+        "blanks": "{{count}} فراغ",
+        "pairs": "{{count}} زوج",
+        "topics": "{{count}} عنصر",
+        "table": "{{columns}} × {{rows}}"
+      },
+      "errors": {
+        "NO_ACTIVE_SECTION": "أضف قسماً أولاً.",
+        "BLOCK_NOT_FOUND": "لم يعد هذا العنصر متاحاً.",
+        "ESSAY_LIMIT_REACHED": "يوجد بالفعل موضوع مقالي في هذا الفرض.",
+        "IMAGE_ASSET_REQUIRED": "يلزم مورد صورة حقيقي لإضافة هذا العنصر.",
+        "INVALID_BLOCK": "سيؤدي هذا التعديل إلى إنشاء عنصر غير صالح."
+      },
+      "questionEditor": {
+        "title": "سؤال",
+        "question": "السؤال",
+        "questionPlaceholder": "اكتب السؤال…",
+        "emptyWarning": "السؤال فارغ. يمكنك متابعة تعديله.",
+        "points": "النقطة",
+        "pointsError": "يجب أن تكون النقطة عدداً موجباً أو صفراً.",
+        "answerMode": "نمط الإجابة",
+        "answerLines": "عدد الأسطر",
+        "answerLinesError": "يجب أن يكون عدد الأسطر عدداً صحيحاً أكبر من صفر.",
+        "modes": {
+          "none": "بدون",
+          "lines": "أسطر",
+          "box": "إطار"
+        }
+      },
+      "fields": {
+        "points": "النقط",
+        "pointsError": "يجب أن تكون النقط عدداً موجباً أو صفراً.",
+        "positiveIntegerError": "يجب أن تكون القيمة عدداً صحيحاً أكبر من صفر.",
+        "explicitTotalHint": "إذا حُدد هذا المجموع، فإنه يعوّض مجموع نقط العناصر."
+      },
+      "itemActions": {
+        "moveUp": "نقل {{name}} إلى الأعلى",
+        "moveDown": "نقل {{name}} إلى الأسفل",
+        "remove": "حذف {{name}}"
+      },
+      "instruction": {
+        "content": "التعليمة",
+        "placeholder": "اكتب التعليمة…"
+      },
+      "freeText": {
+        "variant": "طريقة العرض",
+        "content": "النص",
+        "placeholder": "اكتب النص الحر…",
+        "variants": {
+          "paragraph": "فقرة",
+          "note": "ملاحظة",
+          "subtitle": "عنوان فرعي"
+        }
+      },
+      "textDocument": {
+        "instruction": "التعليمة",
+        "title": "العنوان",
+        "content": "المحتوى",
+        "source": "المصدر",
+        "reference": "المرجع",
+        "bordered": "عرض الوثيقة داخل إطار",
+        "placeholders": {
+          "instruction": "اكتب التعليمة المرتبطة بالوثيقة…",
+          "title": "عنوان اختياري للوثيقة",
+          "content": "اكتب محتوى الوثيقة…",
+          "source": "مصدر اختياري",
+          "reference": "مرجع اختياري"
+        }
+      },
+      "definition": {
+        "instruction": "التعليمة",
+        "instructionPlaceholder": "اكتب التعليمة…",
+        "items": "المصطلحات المطلوب تعريفها",
+        "itemNumber": "المصطلح {{number}}",
+        "term": "المصطلح",
+        "termPlaceholder": "اكتب المصطلح…",
+        "answerLines": "عدد الأسطر",
+        "points": "النقط",
+        "addItem": "إضافة مصطلح"
+      },
+      "trueFalse": {
+        "instruction": "التعليمة",
+        "instructionPlaceholder": "اكتب التعليمة…",
+        "statements": "العبارات",
+        "empty": "أضف العبارة الأولى.",
+        "statementNumber": "العبارة {{number}}",
+        "statement": "العبارة",
+        "statementPlaceholder": "اكتب العبارة…",
+        "points": "النقط",
+        "addStatement": "إضافة عبارة"
+      },
+      "multipleChoice": {
+        "question": "السؤال",
+        "questionPlaceholder": "اكتب السؤال…",
+        "allowMultipleAnswers": "السماح بأكثر من إجابة",
+        "options": "الاختيارات المقترحة",
+        "optionNumber": "الاختيار {{number}}",
+        "option": "نص الاختيار",
+        "optionPlaceholder": "اكتب الاختيار…",
+        "addOption": "إضافة اختيار"
+      },
+      "fillBlank": {
+        "instruction": "التعليمة",
+        "instructionPlaceholder": "اكتب التعليمة…",
+        "segments": "مقاطع النص",
+        "empty": "أضف نصاً أو فراغاً للإكمال.",
+        "segmentNumber": "المقطع {{number}}",
+        "textSegment": "نص",
+        "blankSegment": "فراغ للإكمال",
+        "text": "النص",
+        "textPlaceholder": "اكتب هذا الجزء من النص…",
+        "width": "عرض الفراغ",
+        "widthError": "يجب أن يكون العرض عدداً أكبر من صفر.",
+        "addText": "إضافة نص",
+        "addBlank": "إضافة فراغ"
+      },
+      "table": {
+        "showHeader": "إظهار رأس الجدول",
+        "columns": "الأعمدة",
+        "columnNumber": "العمود {{number}}",
+        "columnPlaceholder": "عنوان العمود…",
+        "addColumn": "إضافة عمود",
+        "rows": "الأسطر",
+        "emptyRows": "أضف السطر الأول.",
+        "rowNumber": "السطر {{number}}",
+        "cellLabel": "السطر {{row}}، العمود {{column}}",
+        "addRow": "إضافة سطر"
+      },
+      "matching": {
+        "instruction": "التعليمة",
+        "instructionPlaceholder": "اكتب التعليمة…",
+        "leftItems": "العمود الأيسر",
+        "rightItems": "العمود الأيمن",
+        "empty": "هذا العمود فارغ.",
+        "itemNumber": "العنصر {{number}}",
+        "itemPlaceholder": "اكتب العنصر…",
+        "addLeft": "إضافة إلى اليسار",
+        "addRight": "إضافة إلى اليمين",
+        "shuffleRight": "خلط العمود الأيمن عند العرض"
+      },
+      "essay": {
+        "context": "السياق",
+        "contextPlaceholder": "اكتب السياق الاختياري…",
+        "instruction": "التعليمة",
+        "instructionPlaceholder": "اكتب تعليمة الموضوع…",
+        "topics": "العناصر المطلوب تناولها",
+        "empty": "أضف العنصر الأول.",
+        "topicNumber": "العنصر {{number}}",
+        "topicPlaceholder": "اكتب العنصر…",
+        "addTopic": "إضافة عنصر"
+      },
+      "image": {
+        "chooseFile": "اختيار صورة",
+        "replace": "استبدال الصورة",
+        "saving": "جارٍ حفظ الصورة…",
+        "loading": "جارٍ تحميل الصورة…",
+        "previewAlt": "معاينة الصورة",
+        "missing": "الصورة غير موجودة. يمكنك استبدالها.",
+        "loadError": "تعذر تحميل هذه الصورة. يمكنك استبدالها.",
+        "title": "العنوان",
+        "caption": "التعليق",
+        "source": "المصدر",
+        "width": "العرض النسبي",
+        "widthError": "يجب أن يكون العرض عدداً أكبر من صفر.",
+        "alignment": "المحاذاة",
+        "bordered": "إظهار إطار",
+        "placeholders": {
+          "title": "عنوان اختياري للصورة",
+          "caption": "تعليق اختياري…",
+          "source": "مصدر اختياري"
+        },
+        "alignments": {
+          "start": "البداية",
+          "center": "الوسط",
+          "end": "النهاية"
+        },
+        "errors": {
+          "INVALID_IMAGE_TYPE": "اختر صورة بصيغة PNG أو JPEG أو WEBP.",
+          "IMAGE_TOO_LARGE": "يتجاوز حجم الصورة الحد الأقصى البالغ 10 ميغابايت.",
+          "ASSET_SAVE_FAILED": "تعذر حفظ الصورة على هذا الجهاز."
+        }
+      }
+    }
+  },
+  "validation": {
+    "summary": {
+      "title": "تنبيهات الفرض",
+      "counts": "{{errors}} خطأ و{{warnings}} تنبيه",
+      "details": "عرض التفاصيل"
+    },
+    "exam": {
+      "titleRequired": "عنوان الفرض إلزامي.",
+      "multipleEssayBlocks": "لا يمكن أن يحتوي الفرض على أكثر من موضوع مقالي واحد.",
+      "totalPointsMismatch": "يختلف المجموع المحسوب عن المجموع المنتظر.",
+      "totalPointsMismatchDetailed": "المجموع المحسوب: {{calculated}} / {{expected}}. لا يمنع هذا التنبيه الحفظ أو التصدير."
+    },
+    "section": {
+      "titleMissing": "يوجد قسم بدون عنوان."
+    },
+    "question": {
+      "empty": "يوجد سؤال فارغ.",
+      "answerLinesRequired": "عدد أسطر الإجابة مطلوب.",
+      "answerLinesNotAllowed": "أسطر الإجابة غير مسموحة في هذا النمط."
+    },
+    "definition": {
+      "itemsRequired": "يجب أن يحتوي التعريف على مصطلح واحد على الأقل."
+    },
+    "multipleChoice": {
+      "optionsRequired": "يجب أن يحتوي الاختيار المتعدد على خيار واحد على الأقل."
+    },
+    "table": {
+      "columnsRequired": "يجب أن يحتوي الجدول على عمود واحد على الأقل."
+    },
+    "matching": {
+      "leftEmpty": "العمود الأيسر في تمرين الربط فارغ.",
+      "rightEmpty": "العمود الأيمن في تمرين الربط فارغ."
+    }
+  },
+  "projectBackup": {
+    "export": {
+      "action": "تصدير المشروع",
+      "preparing": "جارٍ تحضير المشروع…"
+    },
+    "import": {
+      "action": "استيراد مشروع",
+      "title": "استيراد مشروع كامل",
+      "description": "استعد فرضًا وجميع صوره من ملف .exam.json.",
+      "fileLabel": "ملف المشروع",
+      "fileHint": "الصيغة المقبولة: .exam.json (بحد أقصى 100 ميغابايت). لن يُحفظ أي شيء قبل تأكيدك.",
+      "confirm": "استيراد",
+      "cancel": "إلغاء",
+      "states": {
+        "reading": "جارٍ قراءة الملف…",
+        "validating": "جارٍ التحقق من المشروع وصوره…",
+        "importing": "جارٍ الاستيراد والحفظ…",
+        "success": "تم استيراد المشروع."
+      },
+      "summary": {
+        "title": "العنوان",
+        "level": "المستوى",
+        "subject": "المادة",
+        "academicYear": "السنة الدراسية",
+        "updatedAt": "آخر تعديل",
+        "sections": "الأقسام",
+        "images": "الصور",
+        "version": "إصدار النسخة الاحتياطية"
+      },
+      "collision": {
+        "description": "يوجد على هذا الجهاز فرض يحمل المعرّف نفسه. اختر كيفية المتابعة.",
+        "copy": "الاستيراد كنسخة",
+        "replace": "استبدال الفرض المحلي"
+      }
+    },
+    "errors": {
+      "FILE_TOO_LARGE": "يتجاوز هذا الملف الحد الأقصى البالغ 100 ميغابايت.",
+      "FILE_READ_FAILED": "تعذرت قراءة هذا الملف.",
+      "MALFORMED_JSON": "ملف JSON غير مقروء أو تالف.",
+      "WRONG_FORMAT": "هذا الملف ليس مشروع Exam Builder.",
+      "UNSUPPORTED_BACKUP_VERSION": "إصدار هذه النسخة الاحتياطية غير مدعوم.",
+      "INVALID_BACKUP": "بنية النسخة الاحتياطية غير صالحة.",
+      "INVALID_EXAM": "الفرض الموجود في النسخة الاحتياطية غير صالح.",
+      "EXAM_MIGRATION_FAILED": "يستعمل هذا الفرض بنية قديمة تعذر تحديثها تلقائياً.",
+      "UNSUPPORTED_FUTURE_EXAM_SCHEMA": "أُنشئ هذا الفرض باستعمال إصدار أحدث من Exam Builder.",
+      "DUPLICATE_ASSET_ID": "تحتوي النسخة الاحتياطية على صور متعددة بالمعرّف نفسه.",
+      "UNSUPPORTED_ASSET_MIME_TYPE": "تحتوي النسخة الاحتياطية على صيغة صورة غير مدعومة.",
+      "INVALID_BASE64": "بيانات إحدى الصور غير صالحة.",
+      "ASSET_SIZE_MISMATCH": "لا يطابق الحجم المصرح به لإحدى الصور بياناتها.",
+      "ASSET_CHECKSUM_MISMATCH": "تعذر تأكيد سلامة إحدى الصور.",
+      "MISSING_REFERENCED_ASSET": "إحدى الصور المستعملة في الفرض مفقودة من النسخة الاحتياطية.",
+      "ASSET_READ_FAILED": "تعذرت قراءة صورة محلية لازمة للتصدير.",
+      "SECURE_CONTEXT_REQUIRED": "تتطلب هذه الخاصية اتصال HTTPS آمناً.",
+      "ASSET_SAVE_FAILED": "تعذر حفظ الصور. أُلغيت البيانات المكتوبة قدر الإمكان.",
+      "EXAM_SAVE_FAILED": "تعذر حفظ الفرض. أُزيلت الصور الجديدة قدر الإمكان.",
+      "EXAM_LOOKUP_FAILED": "تعذر التحقق من الفروض الموجودة على هذا الجهاز.",
+      "COLLISION_RESOLUTION_REQUIRED": "اختر إنشاء نسخة أو استبدال الفرض الموجود."
+    }
+  },
+  "exportPdf": {
+    "action": "تصدير PDF",
+    "preparing": "جارٍ التحضير…",
+    "hint": "اختر «حفظ بتنسيق PDF» في نافذة الطباعة.",
+    "dialog": {
+      "title": "تخطيط ملف PDF",
+      "description": "اختر طريقة توزيع صفحات الفرض على أوراق الطباعة.",
+      "layoutLabel": "تخطيط الصفحات",
+      "saveAsPdfHint": "في النافذة التالية، اختر «حفظ بتنسيق PDF».",
+      "continue": "متابعة"
+    },
+    "layouts": {
+      "oneUp": {
+        "title": "صفحة واحدة في كل ورقة",
+        "description": "مستند A4 عادي."
+      },
+      "twoUp": {
+        "title": "صفحتان في كل ورقة",
+        "description": "توضع صفحتان من الفرض في ورقة A4 واحدة بالعرض."
+      }
+    },
+    "errors": {
+      "noExam": "لا يوجد فرض متاح للطباعة.",
+      "invalidExam": "يتضمن الفرض خطأ بنيويا يجب تصحيحه قبل الطباعة.",
+      "saveFailed": "تعذر حفظ التعديلات. أعد المحاولة قبل التصدير.",
+      "rendererTimeout": "تعذر تثبيت المعاينة. أعد المحاولة.",
+      "imageFailed": "تعذر تحضير إحدى الصور للطباعة.",
+      "printFailed": "تعذر فتح نافذة الطباعة."
+    },
+    "warnings": {
+      "missingImages_zero": "لا توجد صور مفقودة.",
+      "missingImages_one": "ستُستبدل صورة واحدة غير متاحة بمساحة مخصصة.",
+      "missingImages_two": "ستُستبدل صورتان غير متاحتين بمساحتين مخصصتين.",
+      "missingImages_few": "ستُستبدل {{count}} صور غير متاحة بمساحات مخصصة.",
+      "missingImages_many": "ستُستبدل {{count}} صورة غير متاحة بمساحات مخصصة.",
+      "missingImages_other": "ستُستبدل {{count}} صورة غير متاحة بمساحات مخصصة."
+    }
+  },
+  "exportDocx": {
+    "action": "تصدير Word",
+    "preparing": "جارٍ تحضير مستند Word…",
+    "generating": "جارٍ إنشاء مستند Word…",
+    "hint": "تنزيل ملف DOCX قابل للتعديل.",
+    "errors": {
+      "noExam": "لا يوجد فرض متاح للتصدير إلى Word.",
+      "invalidExam": "يتضمن الفرض خطأ بنيويا يجب تصحيحه قبل التصدير.",
+      "saveFailed": "تعذر حفظ الفرض قبل التصدير.",
+      "generationFailed": "تعذر تحضير مستند Word.",
+      "downloadFailed": "تم إنشاء مستند Word، لكن تعذر تنزيله."
+    },
+    "warnings": {
+      "missingImages_zero": "لا توجد صور مفقودة.",
+      "missingImages_one": "عُوّضت صورة واحدة غير متاحة بمساحة مخصصة.",
+      "missingImages_two": "عُوّضت صورتان غير متاحتين بمساحتين مخصصتين.",
+      "missingImages_few": "عُوّضت {{count}} صور غير متاحة بمساحات مخصصة.",
+      "missingImages_many": "عُوّضت {{count}} صورة غير متاحة بمساحات مخصصة.",
+      "missingImages_other": "عُوّضت {{count}} صورة غير متاحة بمساحات مخصصة.",
+      "logoUnavailable": "تعذر إدراج الشعار المؤسساتي."
+    }
+  },
+  "examRenderer": {
+    "preview": {
+      "title": "معاينة A4",
+      "zoomLabel": "مستوى تكبير المعاينة",
+      "fit": "ملاءمة",
+      "pageCount_one": "صفحة واحدة",
+      "pageCount_two": "صفحتان",
+      "pageCount_few": "{{count}} صفحات",
+      "pageCount_many": "{{count}} صفحة",
+      "pageCount_other": "{{count}} صفحة",
+      "pageLabel": "الصفحة {{page}} / {{total}}"
+    }
+  },
+  "templates": {
+    "title": "النماذج",
+    "description": "اختر التصميم القابل للطباعة لفرضك.",
+    "classic": {
+      "title": "النموذج المغربي الكلاسيكي للإعدادي",
+      "description": "نموذج A4 الافتراضي المحسن لفروض الإعدادي ثنائية اللغة بالمغرب.",
+      "default": "افتراضي"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "description": "أدِر تفضيلات التطبيق المحلية على هذا الجهاز.",
+    "interfaceLanguage": "لغة الواجهة",
+    "interfaceLanguageHelp": "لا يحدد هذا الإعداد لغة محتوى الفرض.",
+    "localStorageNotice": "تُحفظ الفروض محلياً على هذا الجهاز. لحفظها احتياطياً أو نقلها، استعمل «تصدير المشروع».",
+    "preferences": {
+      "loadError": "تعذرت قراءة التفضيل المحفوظ. تبقى لغة هذه الجلسة متاحة.",
+      "saveError": "تعذر حفظ اللغة على هذا الجهاز."
+    }
+  },
+  "errors": {
+    "unexpected": "حدث خطأ غير متوقع.",
+    "retry": "إعادة المحاولة",
+    "backToExams": "العودة إلى فروضي"
+  },
+  "common": {
+    "language": "اللغة",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "changeLanguage": "تغيير لغة الواجهة",
+    "foundationNotice": "منشئ الفروض — إنشاء محلي لفروض قابلة للطباعة"
+  }
+}

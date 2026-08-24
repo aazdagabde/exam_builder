@@ -1,0 +1,11 @@
+export { ExamPreview } from "@/features/exam-renderer/components/ExamPreview";
+export { calculateFitScale } from "@/features/exam-renderer/components/preview-zoom";
+export { ExamRenderer } from "@/features/exam-renderer/components/ExamRenderer";
+export { A4Page } from "@/features/exam-renderer/components/A4Page";
+export { BlockRenderer } from "@/features/exam-renderer/components/BlockRenderer";
+export { ExamHeader } from "@/features/exam-renderer/components/ExamHeader";
+export { SectionRenderer } from "@/features/exam-renderer/components/SectionRenderer";
+export { getDocumentLabels } from "@/features/exam-renderer/document-labels";
+export { createPaginationUnits } from "@/features/exam-renderer/pagination/create-pagination-units";
+export { paginateUnits } from "@/features/exam-renderer/pagination/paginate-exam";
+export { getExamTemplate } from "@/features/exam-renderer/templates/template-registry";

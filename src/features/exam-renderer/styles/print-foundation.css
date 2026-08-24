@@ -1,0 +1,82 @@
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .exam-renderer,
+  .exam-renderer * {
+    visibility: visible;
+  }
+
+  [data-preview-control],
+  [data-print-hidden],
+  .exam-measurement {
+    display: none !important;
+  }
+
+  .exam-renderer,
+  .exam-template,
+  .exam-pages,
+  .exam-preview-page-group,
+  .exam-preview-page-slot,
+  .exam-preview-page-scale {
+    display: block;
+    width: auto !important;
+    height: auto !important;
+    margin: 0;
+    padding: 0;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  .exam-renderer {
+    position: static !important;
+    inset: auto !important;
+  }
+
+  .exam-template,
+  .exam-pages,
+  .exam-preview-page-group,
+  .exam-preview-page-slot,
+  .exam-preview-page-scale {
+    position: static;
+  }
+
+  .exam-pages,
+  .exam-preview-page-group {
+    gap: 0;
+    direction: ltr;
+  }
+
+  .exam-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    box-shadow: none;
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .exam-renderer[dir="rtl"] .exam-page {
+    direction: rtl;
+  }
+}

@@ -1,0 +1,197 @@
+// @vitest-environment node
+
+import {
+  computeQuestionNumbering,
+  CURRENT_EXAM_SCHEMA_VERSION,
+  ExamMigrationError,
+  migrateExamToLatest,
+} from "@/domain/exam";
+import {
+  allBlockExamples,
+  createTestExam,
+  createTestSection,
+} from "@/domain/exam/__tests__/exam.fixtures";
+
+type PreviousExamInput = {
+  schemaVersion?: number;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  settings: Record<string, unknown>;
+  sections: Array<{
+    id: string;
+    title: string;
+    blocks: Array<Record<string, unknown>>;
+  }>;
+  [key: string]: unknown;
+};
+
+function asPreviousExam(input = createTestExam()): PreviousExamInput {
+  const previous = structuredClone(input) as unknown as PreviousExamInput;
+  previous.schemaVersion = 1;
+  return previous;
+}
+
+function fixture(type: string) {
+  const block = allBlockExamples.find((candidate) => candidate.type === type);
+  if (!block) throw new Error(`Missing ${type} test fixture.`);
+  return structuredClone(block) as unknown as Record<string, unknown>;
+}
+
+describe("Exam persistent schema migrations", () => {
+  it("migrates v1 to v2 with current defaults while preserving identity", () => {
+    const source = asPreviousExam(
+      createTestExam([
+        createTestSection([
+          allBlockExamples[1]!,
+          allBlockExamples[3]!,
+          allBlockExamples[12]!,
+          allBlockExamples[13]!,
+        ]),
+      ]),
+    );
+    delete source.settings.questionNumbering;
+    for (const block of source.sections[0]!.blocks) {
+      delete block.startsNewQuestion;
+    }
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.settings.questionNumbering).toEqual({
+      enabled: true,
+      restartPerSection: true,
+    });
+    expect(
+      migrated.sections[0]!.blocks.map((block) => [
+        block.type,
+        block.startsNewQuestion,
+      ]),
+    ).toEqual([
+      ["text-document", false],
+      ["question", true],
+      ["separator", false],
+      ["page-break", false],
+    ]);
+    expect(migrated.id).toBe(source.id);
+    expect(migrated.sections[0]!.id).toBe(source.sections[0]!.id);
+    expect(migrated.sections[0]!.blocks.map((block) => block.id)).toEqual(
+      source.sections[0]!.blocks.map((block) => block.id),
+    );
+    expect(migrated.createdAt).toBe(source.createdAt);
+    expect(migrated.updatedAt).toBe(source.updatedAt);
+    expect(source.schemaVersion).toBe(1);
+    expect(source.sections[0]!.blocks[0]).not.toHaveProperty(
+      "startsNewQuestion",
+    );
+  });
+
+  it("preserves explicit v1 numbering choices and image references", () => {
+    const source = asPreviousExam(
+      createTestExam([
+        createTestSection([
+          allBlockExamples[2]!,
+          allBlockExamples[3]!,
+          allBlockExamples[11]!,
+        ]),
+      ]),
+    );
+    source.settings.questionNumbering = {
+      enabled: false,
+      restartPerSection: false,
+    };
+    source.sections[0]!.blocks[0]!.startsNewQuestion = false;
+    source.sections[0]!.blocks[1]!.startsNewQuestion = false;
+    source.sections[0]!.blocks[2]!.startsNewQuestion = true;
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.settings.questionNumbering).toEqual({
+      enabled: false,
+      restartPerSection: false,
+    });
+    expect(migrated.sections[0]!.blocks[1]!.startsNewQuestion).toBe(false);
+    expect(migrated.sections[0]!.blocks[2]!.startsNewQuestion).toBe(true);
+    expect(migrated.sections[0]!.blocks[0]).toMatchObject({
+      type: "image",
+      imageId: "resource-1",
+    });
+  });
+
+  it("reconstructs representative v1 numbering deterministically", () => {
+    const blocks = [
+      fixture("text-document"),
+      fixture("question"),
+      { ...fixture("question"), id: "question-2" },
+      fixture("definition"),
+      fixture("true-false"),
+      fixture("table"),
+    ];
+    blocks.forEach((block, order) => {
+      block.order = order;
+      delete block.startsNewQuestion;
+    });
+    const source = asPreviousExam();
+    delete source.settings.questionNumbering;
+    source.sections = [{ id: "section-reference", title: "Reference", blocks }];
+
+    const migrated = migrateExamToLatest(source);
+
+    expect([...computeQuestionNumbering(migrated).entries()]).toEqual([
+      ["question-1", 1],
+      ["question-2", 2],
+      ["definition-1", 3],
+      ["true-false-1", 4],
+      ["table-1", 5],
+    ]);
+  });
+
+  it("is idempotent for an already-current Exam", () => {
+    const current = createTestExam([createTestSection([allBlockExamples[3]!])]);
+
+    expect(migrateExamToLatest(migrateExamToLatest(current))).toEqual(current);
+  });
+
+  it("treats a missing version only as v1 migration input", () => {
+    const source = asPreviousExam();
+    delete source.schemaVersion;
+
+    expect(migrateExamToLatest(source).schemaVersion).toBe(
+      CURRENT_EXAM_SCHEMA_VERSION,
+    );
+  });
+
+  it("rejects future schema versions with a structured error", () => {
+    expect(() => migrateExamToLatest({ schemaVersion: 999 })).toThrowError(
+      expect.objectContaining<Partial<ExamMigrationError>>({
+        code: "UNSUPPORTED_FUTURE_EXAM_SCHEMA",
+        sourceVersion: 999,
+      }),
+    );
+  });
+
+  it.each([0, -1, 1.5, "2"])(
+    "rejects invalid schema version %s explicitly",
+    (schemaVersion) => {
+      expect(() => migrateExamToLatest({ schemaVersion })).toThrowError(
+        expect.objectContaining<Partial<ExamMigrationError>>({
+          code: "UNSUPPORTED_EXAM_SCHEMA",
+        }),
+      );
+    },
+  );
+
+  it("rejects an invalid current record instead of applying defaults", () => {
+    const current = createTestExam([
+      createTestSection([allBlockExamples[3]!]),
+    ]) as unknown as PreviousExamInput;
+    delete current.settings.questionNumbering;
+
+    expect(() => migrateExamToLatest(current)).toThrowError(
+      expect.objectContaining<Partial<ExamMigrationError>>({
+        code: "EXAM_MIGRATION_FAILED",
+        sourceVersion: CURRENT_EXAM_SCHEMA_VERSION,
+      }),
+    );
+  });
+});

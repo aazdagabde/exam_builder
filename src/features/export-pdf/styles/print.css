@@ -1,0 +1,130 @@
+.print-layout {
+  display: none;
+}
+
+@media print {
+  html,
+  body,
+  #root,
+  [data-app-shell],
+  [data-app-shell] > main,
+  [data-builder-shell="true"],
+  [data-builder-shell="true"] > main,
+  .builder-page,
+  .builder-workspace,
+  .builder-pane--preview,
+  .builder-preview-panel > aside,
+  .exam-preview-viewport {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  [data-print-hidden],
+  .builder-pane--structure,
+  .builder-pane--editor,
+  [role="dialog"],
+  [data-radix-popper-content-wrapper] {
+    display: none !important;
+  }
+
+  .builder-workspace,
+  .builder-pane--preview {
+    display: block !important;
+    position: static !important;
+  }
+
+  .exam-preview-viewport {
+    direction: ltr;
+  }
+
+  [data-print-root] {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  html[data-printing="true"] [data-print-root] > .exam-template {
+    display: none !important;
+  }
+
+  .print-layout {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    direction: ltr;
+  }
+
+  .print-sheet {
+    display: flex !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background: #fff;
+  }
+
+  .print-layout--one-up .print-sheet {
+    width: 210mm;
+    height: 297mm;
+  }
+
+  .print-layout--two-up .print-sheet {
+    width: 297mm;
+    height: 210mm;
+    gap: 3mm;
+    padding: 3mm;
+  }
+
+  .print-sheet--ltr {
+    flex-direction: row;
+  }
+
+  .print-sheet--rtl {
+    flex-direction: row-reverse;
+  }
+
+  .print-slot {
+    display: flex !important;
+    min-width: 0;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .print-layout--one-up .print-slot {
+    width: 210mm;
+    height: 297mm;
+  }
+
+  .print-layout--two-up .print-slot {
+    width: 144mm;
+    height: 204mm;
+  }
+
+  .print-page-frame {
+    position: relative;
+    flex: none;
+    overflow: hidden;
+  }
+
+  .print-page-frame > .print-logical-page {
+    position: absolute;
+    inset: 0 auto auto 0;
+    margin: 0 !important;
+    transform: scale(var(--print-page-scale)) !important;
+    transform-origin: top left;
+  }
+}

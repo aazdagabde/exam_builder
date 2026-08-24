@@ -1,0 +1,650 @@
+{
+  "app": {
+    "name": "Exam Builder",
+    "tagline": "Créez des devoirs clairs, prêts à imprimer."
+  },
+  "nav": {
+    "exams": "Mes devoirs",
+    "templates": "Modèles",
+    "settings": "Paramètres"
+  },
+  "dashboard": {
+    "title": "Mes devoirs",
+    "description": "Retrouvez et organisez vos devoirs depuis un même espace.",
+    "newExam": "Nouveau devoir",
+    "loading": "Chargement de vos devoirs",
+    "retry": "Réessayer",
+    "empty": {
+      "title": "Aucun devoir pour le moment",
+      "description": "Vous n’avez encore aucun devoir. Créez votre premier devoir ou importez une sauvegarde."
+    },
+    "loadError": {
+      "title": "Impossible de charger vos devoirs",
+      "description": "Une erreur est survenue lors de la lecture des données stockées sur cet appareil.",
+      "futureVersionDescription": "Un devoir a été créé avec une version plus récente d’Exam Builder. Mettez l’application à jour pour l’ouvrir."
+    }
+  },
+  "exam": {
+    "untitled": "Devoir sans titre",
+    "unknownLevel": "Niveau non renseigné",
+    "unknownSubject": "Matière non renseignée",
+    "number": "Devoir n° {{number}}",
+    "level": "Niveau",
+    "subject": "Matière",
+    "lastModified": "Dernière modification :",
+    "actions": {
+      "edit": "Modifier",
+      "more": "Actions pour {{title}}",
+      "duplicate": "Dupliquer",
+      "duplicating": "Duplication…",
+      "delete": "Supprimer"
+    },
+    "delete": {
+      "title": "Supprimer ce devoir ?",
+      "description": "Cette action supprimera définitivement le devoir stocké sur cet appareil.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer",
+      "deleting": "Suppression…"
+    },
+    "feedback": {
+      "duplicated": "Le devoir a été dupliqué.",
+      "deleted": "Le devoir a été supprimé.",
+      "duplicateError": "Impossible de dupliquer le devoir. Réessayez.",
+      "deleteError": "Impossible de supprimer le devoir. Il est toujours conservé."
+    }
+  },
+  "newExam": {
+    "title": "Nouveau devoir",
+    "description": "Renseignez l’essentiel, choisissez la structure, puis commencez l’édition.",
+    "steps": {
+      "label": "Étapes de création du devoir",
+      "information": "Informations",
+      "structure": "Structure"
+    },
+    "information": {
+      "title": "Informations générales",
+      "description": "Les champs marqués d’un astérisque sont obligatoires."
+    },
+    "fields": {
+      "title": "Titre du devoir",
+      "level": "Niveau",
+      "subject": "Matière",
+      "academicYear": "Année scolaire",
+      "examNumber": "Numéro du devoir",
+      "duration": "Durée",
+      "teacher": "Professeur",
+      "institution": "Établissement",
+      "documentLanguage": "Langue du devoir",
+      "template": "Modèle"
+    },
+    "placeholders": {
+      "title": "Ex. فرض محروس رقم 1",
+      "level": "Choisir un niveau"
+    },
+    "hints": {
+      "duration": "Durée en minutes, par exemple 60."
+    },
+    "templates": {
+      "moroccanCollegeClassic": "Moroccan College Classic"
+    },
+    "sections": {
+      "title": "Structure initiale",
+      "description": "Adaptez les sections proposées. Les questions et les blocs seront ajoutés dans l’éditeur.",
+      "itemLabel": "Section {{number}}",
+      "add": "Ajouter une section",
+      "removeNamed": "Supprimer {{name}}"
+    },
+    "actions": {
+      "cancel": "Annuler",
+      "back": "Retour",
+      "continue": "Continuer",
+      "create": "Créer le devoir",
+      "creating": "Création…"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire.",
+      "durationPositive": "La durée doit être un nombre entier de minutes supérieur à zéro.",
+      "sectionRequired": "Ajoutez au moins une section.",
+      "sectionTitleRequired": "Le titre de cette section est obligatoire."
+    },
+    "error": {
+      "save": "Impossible de créer le devoir. Vos saisies sont conservées ; réessayez."
+    }
+  },
+  "examBuilder": {
+    "title": "Éditeur de devoir",
+    "back": "Retour aux devoirs",
+    "examSettings": {
+      "open": "Paramètres du devoir",
+      "title": "Paramètres du devoir",
+      "description": "Réglez la langue du document, le total attendu et les champs à imprimer pour l’élève.",
+      "fields": {
+        "title": "Titre du devoir",
+        "documentLanguage": "Langue du devoir",
+        "totalPoints": "Total attendu",
+        "showTotalPoints": "Afficher le total des points dans le document"
+      },
+      "studentFields": {
+        "title": "Champs élève",
+        "fullName": "Nom et prénom",
+        "studentNumber": "Numéro",
+        "className": "Classe",
+        "grade": "Note"
+      }
+    },
+    "questionNumbering": {
+      "title": "Numérotation des questions",
+      "enabled": "Numéroter automatiquement les nouvelles questions",
+      "restartPerSection": "Recommencer à 1 dans chaque section"
+    },
+    "layout": {
+      "viewLabel": "Zone de travail du devoir",
+      "structure": "Structure",
+      "editor": "Édition",
+      "preview": "Aperçu"
+    },
+    "loading": "Chargement du devoir",
+    "notFound": {
+      "title": "Devoir introuvable",
+      "description": "Ce devoir n’existe pas ou n’est plus disponible sur cet appareil."
+    },
+    "error": {
+      "title": "Impossible de charger le devoir",
+      "description": "Une erreur est survenue pendant la lecture des données locales.",
+      "futureVersionDescription": "Ce devoir a été créé avec une version plus récente d’Exam Builder. Mettez l’application à jour pour l’ouvrir.",
+      "retry": "Réessayer"
+    },
+    "sections": {
+      "title": "Structure",
+      "count": "Sections : {{count}}",
+      "blockCount_one": "{{count}} élément",
+      "blockCount_other": "{{count}} éléments",
+      "list": "Sections du devoir",
+      "add": "Ajouter une section",
+      "untitled": "Section sans titre"
+    },
+    "section": {
+      "description": "Modifiez les informations de la section sélectionnée.",
+      "fields": {
+        "title": "Titre",
+        "subject": "Matière",
+        "points": "Points de la section"
+      },
+      "actions": {
+        "drag": "Déplacer {{name}} par glisser-déposer",
+        "duplicate": "Dupliquer {{name}}",
+        "delete": "Supprimer {{name}}",
+        "moveUp": "Monter {{name}}",
+        "moveDown": "Descendre {{name}}"
+      }
+    },
+    "deleteSection": {
+      "title": "Supprimer cette section ?",
+      "description": "La section et tous ses éléments seront retirés du devoir. Vous pourrez annuler cette action avec Annuler la modification.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer"
+    },
+    "empty": {
+      "title": "Aucune section",
+      "description": "Ajoutez une section pour commencer à structurer ce devoir.",
+      "selectSection": "Sélectionnez une section pour modifier ses informations."
+    },
+    "undo": "Annuler la modification",
+    "redo": "Rétablir la modification",
+    "save": {
+      "saved": "Modifications enregistrées",
+      "dirty": "Modifications non enregistrées",
+      "saving": "Enregistrement…",
+      "error": "Erreur d’enregistrement",
+      "retry": "Réessayer"
+    },
+    "blocks": {
+      "title": "Éléments de la section",
+      "description": "Sélectionnez un élément pour le modifier ou réorganisez la liste.",
+      "add": "Ajouter un élément",
+      "list": "Éléments de la section sélectionnée",
+      "empty": "Cette section ne contient encore aucun élément.",
+      "noSection": "Ajoutez d’abord une section.",
+      "selectBlock": "Ajoutez ou sélectionnez un élément pour afficher son éditeur.",
+      "noContent": "Sans contenu",
+      "questionNumber": "Question {{number}}",
+      "pointsCompact": "{{points}} pt",
+      "organization": {
+        "title": "Organisation",
+        "startsNewQuestion": "Cet élément commence une nouvelle question",
+        "help": "Le numéro est calculé automatiquement selon l’ordre du devoir."
+      },
+      "noSettings": "Cet élément ne nécessite aucun réglage supplémentaire.",
+      "pageBreakInfo": "Ce saut forcera le contenu suivant à commencer sur une nouvelle page lors du rendu.",
+      "unsupportedEditor": "Type de bloc : {{type}}. L’éditeur détaillé de ce bloc sera ajouté dans une prochaine étape.",
+      "essayLimit": "Un sujet de rédaction existe déjà dans ce devoir.",
+      "imageUnavailable": "L’ajout d’image sera disponible avec le stockage réel des fichiers. Aucun faux fichier ne sera créé.",
+      "palette": {
+        "title": "Ajouter un élément",
+        "description": "Choisissez le type d’élément à ajouter à la fin de cette section.",
+        "categories": {
+          "content": "Contenu",
+          "exercises": "Questions et exercices",
+          "structure": "Structure"
+        }
+      },
+      "types": {
+        "instruction": "Consigne",
+        "textDocument": "Document texte",
+        "image": "Image / document",
+        "question": "Question",
+        "definition": "Définition",
+        "trueFalse": "Vrai / Faux",
+        "multipleChoice": "Choix multiple",
+        "fillBlank": "Texte à trous",
+        "table": "Tableau",
+        "matching": "Relier",
+        "essay": "Sujet de rédaction",
+        "freeText": "Texte libre",
+        "separator": "Séparateur",
+        "pageBreak": "Saut de page"
+      },
+      "descriptions": {
+        "instruction": "Présenter une consigne aux élèves.",
+        "textDocument": "Ajouter un document à lire et sa source.",
+        "image": "Insérer une image ou un document visuel.",
+        "question": "Poser une question avec une zone de réponse.",
+        "definition": "Faire définir un ou plusieurs termes.",
+        "trueFalse": "Évaluer des affirmations vrai ou faux.",
+        "multipleChoice": "Proposer une ou plusieurs réponses.",
+        "fillBlank": "Créer un texte avec des espaces à compléter.",
+        "table": "Présenter ou faire compléter un tableau.",
+        "matching": "Relier les éléments de deux colonnes.",
+        "essay": "Ajouter l’unique sujet de rédaction du devoir.",
+        "freeText": "Ajouter un texte, une note ou un sous-titre.",
+        "separator": "Créer une séparation visuelle.",
+        "pageBreak": "Commencer le contenu suivant sur une nouvelle page."
+      },
+      "actions": {
+        "drag": "Déplacer {{name}} par glisser-déposer",
+        "duplicate": "Dupliquer {{name}}",
+        "delete": "Supprimer {{name}}",
+        "moveUp": "Monter {{name}}",
+        "moveDown": "Descendre {{name}}"
+      },
+      "delete": {
+        "title": "Supprimer cet élément ?",
+        "description": "L’élément sera retiré de la section. Vous pourrez annuler cette action avec Annuler la modification.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "summary": {
+        "terms": "{{count}} terme(s)",
+        "statements": "{{count}} affirmation(s)",
+        "options": "{{count}} option(s)",
+        "blanks": "{{count}} trou(s)",
+        "pairs": "{{count}} paire(s)",
+        "topics": "{{count}} élément(s)",
+        "table": "{{columns}} × {{rows}}"
+      },
+      "errors": {
+        "NO_ACTIVE_SECTION": "Ajoutez d’abord une section.",
+        "BLOCK_NOT_FOUND": "Cet élément n’est plus disponible.",
+        "ESSAY_LIMIT_REACHED": "Un sujet de rédaction existe déjà dans ce devoir.",
+        "IMAGE_ASSET_REQUIRED": "Une ressource image réelle est nécessaire pour ajouter cet élément.",
+        "INVALID_BLOCK": "Cette modification produirait un élément invalide."
+      },
+      "questionEditor": {
+        "title": "Question",
+        "question": "Question",
+        "questionPlaceholder": "Saisissez la question…",
+        "emptyWarning": "La question est vide. Vous pouvez continuer à la modifier.",
+        "points": "Points",
+        "pointsError": "Les points doivent être un nombre positif ou nul.",
+        "answerMode": "Mode de réponse",
+        "answerLines": "Nombre de lignes",
+        "answerLinesError": "Le nombre de lignes doit être un entier strictement positif.",
+        "modes": {
+          "none": "Aucune",
+          "lines": "Lignes",
+          "box": "Cadre"
+        }
+      },
+      "fields": {
+        "points": "Points",
+        "pointsError": "Les points doivent être un nombre positif ou nul.",
+        "positiveIntegerError": "La valeur doit être un entier strictement positif.",
+        "explicitTotalHint": "Si renseigné, ce total remplace la somme des points des éléments."
+      },
+      "itemActions": {
+        "moveUp": "Monter {{name}}",
+        "moveDown": "Descendre {{name}}",
+        "remove": "Supprimer {{name}}"
+      },
+      "instruction": {
+        "content": "Consigne",
+        "placeholder": "Saisissez la consigne…"
+      },
+      "freeText": {
+        "variant": "Présentation",
+        "content": "Texte",
+        "placeholder": "Saisissez le texte libre…",
+        "variants": {
+          "paragraph": "Paragraphe",
+          "note": "Note",
+          "subtitle": "Sous-titre"
+        }
+      },
+      "textDocument": {
+        "instruction": "Consigne",
+        "title": "Titre",
+        "content": "Contenu",
+        "source": "Source",
+        "reference": "Référence",
+        "bordered": "Afficher le document dans un cadre",
+        "placeholders": {
+          "instruction": "Saisissez la consigne associée au document…",
+          "title": "Titre facultatif du document",
+          "content": "Saisissez le contenu du document…",
+          "source": "Source facultative",
+          "reference": "Référence facultative"
+        }
+      },
+      "definition": {
+        "instruction": "Consigne",
+        "instructionPlaceholder": "Saisissez la consigne…",
+        "items": "Termes à définir",
+        "itemNumber": "Terme {{number}}",
+        "term": "Terme",
+        "termPlaceholder": "Saisissez le terme…",
+        "answerLines": "Nombre de lignes",
+        "points": "Points",
+        "addItem": "Ajouter un terme"
+      },
+      "trueFalse": {
+        "instruction": "Consigne",
+        "instructionPlaceholder": "Saisissez la consigne…",
+        "statements": "Affirmations",
+        "empty": "Ajoutez une première affirmation.",
+        "statementNumber": "Affirmation {{number}}",
+        "statement": "Affirmation",
+        "statementPlaceholder": "Saisissez l’affirmation…",
+        "points": "Points",
+        "addStatement": "Ajouter une affirmation"
+      },
+      "multipleChoice": {
+        "question": "Question",
+        "questionPlaceholder": "Saisissez la question…",
+        "allowMultipleAnswers": "Autoriser plusieurs réponses",
+        "options": "Choix proposés",
+        "optionNumber": "Choix {{number}}",
+        "option": "Texte du choix",
+        "optionPlaceholder": "Saisissez le choix…",
+        "addOption": "Ajouter un choix"
+      },
+      "fillBlank": {
+        "instruction": "Consigne",
+        "instructionPlaceholder": "Saisissez la consigne…",
+        "segments": "Segments du texte",
+        "empty": "Ajoutez du texte ou un espace à compléter.",
+        "segmentNumber": "Segment {{number}}",
+        "textSegment": "Texte",
+        "blankSegment": "Espace à compléter",
+        "text": "Texte",
+        "textPlaceholder": "Saisissez ce fragment de texte…",
+        "width": "Largeur de l’espace",
+        "widthError": "La largeur doit être un nombre strictement positif.",
+        "addText": "Ajouter du texte",
+        "addBlank": "Ajouter un espace"
+      },
+      "table": {
+        "showHeader": "Afficher l’en-tête",
+        "columns": "Colonnes",
+        "columnNumber": "Colonne {{number}}",
+        "columnPlaceholder": "Titre de la colonne…",
+        "addColumn": "Ajouter une colonne",
+        "rows": "Lignes",
+        "emptyRows": "Ajoutez une première ligne.",
+        "rowNumber": "Ligne {{number}}",
+        "cellLabel": "Ligne {{row}}, colonne {{column}}",
+        "addRow": "Ajouter une ligne"
+      },
+      "matching": {
+        "instruction": "Consigne",
+        "instructionPlaceholder": "Saisissez la consigne…",
+        "leftItems": "Colonne gauche",
+        "rightItems": "Colonne droite",
+        "empty": "Cette colonne est vide.",
+        "itemNumber": "Élément {{number}}",
+        "itemPlaceholder": "Saisissez l’élément…",
+        "addLeft": "Ajouter à gauche",
+        "addRight": "Ajouter à droite",
+        "shuffleRight": "Mélanger la colonne droite au rendu"
+      },
+      "essay": {
+        "context": "Contexte",
+        "contextPlaceholder": "Saisissez le contexte facultatif…",
+        "instruction": "Consigne",
+        "instructionPlaceholder": "Saisissez la consigne du sujet…",
+        "topics": "Éléments à traiter",
+        "empty": "Ajoutez un premier élément.",
+        "topicNumber": "Élément {{number}}",
+        "topicPlaceholder": "Saisissez l’élément…",
+        "addTopic": "Ajouter un élément"
+      },
+      "image": {
+        "chooseFile": "Choisir une image",
+        "replace": "Remplacer l’image",
+        "saving": "Enregistrement de l’image…",
+        "loading": "Chargement de l’image…",
+        "previewAlt": "Aperçu de l’image",
+        "missing": "Image introuvable. Vous pouvez la remplacer.",
+        "loadError": "Impossible de charger cette image. Vous pouvez la remplacer.",
+        "title": "Titre",
+        "caption": "Légende",
+        "source": "Source",
+        "width": "Largeur relative",
+        "widthError": "La largeur doit être un nombre strictement positif.",
+        "alignment": "Alignement",
+        "bordered": "Afficher une bordure",
+        "placeholders": {
+          "title": "Titre facultatif de l’image",
+          "caption": "Légende facultative…",
+          "source": "Source facultative"
+        },
+        "alignments": {
+          "start": "Début",
+          "center": "Centre",
+          "end": "Fin"
+        },
+        "errors": {
+          "INVALID_IMAGE_TYPE": "Choisissez une image PNG, JPEG ou WEBP.",
+          "IMAGE_TOO_LARGE": "L’image dépasse la taille maximale de 10 Mo.",
+          "ASSET_SAVE_FAILED": "Impossible d’enregistrer l’image sur cet appareil."
+        }
+      }
+    }
+  },
+  "validation": {
+    "summary": {
+      "title": "Diagnostics du devoir",
+      "counts": "{{errors}} erreur(s), {{warnings}} avertissement(s)",
+      "details": "Afficher les détails"
+    },
+    "exam": {
+      "titleRequired": "Le titre du devoir est obligatoire.",
+      "multipleEssayBlocks": "Le devoir ne peut contenir qu’un seul sujet de rédaction.",
+      "totalPointsMismatch": "Le total calculé diffère du total attendu.",
+      "totalPointsMismatchDetailed": "Total calculé : {{calculated}} / {{expected}}. Cet avertissement ne bloque ni la sauvegarde ni les exports."
+    },
+    "section": {
+      "titleMissing": "Une section n’a pas de titre."
+    },
+    "question": {
+      "empty": "Une question est vide.",
+      "answerLinesRequired": "Le nombre de lignes de réponse est requis.",
+      "answerLinesNotAllowed": "Les lignes de réponse ne sont pas autorisées pour ce mode."
+    },
+    "definition": {
+      "itemsRequired": "Une définition doit contenir au moins un terme."
+    },
+    "multipleChoice": {
+      "optionsRequired": "Un QCM doit contenir au moins une option."
+    },
+    "table": {
+      "columnsRequired": "Un tableau doit contenir au moins une colonne."
+    },
+    "matching": {
+      "leftEmpty": "La colonne de gauche de l’exercice Relier est vide.",
+      "rightEmpty": "La colonne de droite de l’exercice Relier est vide."
+    }
+  },
+  "projectBackup": {
+    "export": {
+      "action": "Exporter le projet",
+      "preparing": "Préparation du projet…"
+    },
+    "import": {
+      "action": "Importer un projet",
+      "title": "Importer un projet complet",
+      "description": "Restaurez un devoir et toutes les images qu’il utilise depuis un fichier .exam.json.",
+      "fileLabel": "Fichier de projet",
+      "fileHint": "Format accepté : .exam.json (100 Mo maximum). Rien ne sera enregistré avant votre confirmation.",
+      "confirm": "Importer",
+      "cancel": "Annuler",
+      "states": {
+        "reading": "Lecture du fichier…",
+        "validating": "Validation du projet et de ses images…",
+        "importing": "Import et enregistrement…",
+        "success": "Projet importé."
+      },
+      "summary": {
+        "title": "Titre",
+        "level": "Niveau",
+        "subject": "Matière",
+        "academicYear": "Année scolaire",
+        "updatedAt": "Dernière modification",
+        "sections": "Sections",
+        "images": "Images",
+        "version": "Version de sauvegarde"
+      },
+      "collision": {
+        "description": "Un devoir portant le même identifiant existe déjà sur cet appareil. Choisissez comment poursuivre.",
+        "copy": "Importer comme copie",
+        "replace": "Remplacer le devoir local"
+      }
+    },
+    "errors": {
+      "FILE_TOO_LARGE": "Ce fichier dépasse la limite de 100 Mo.",
+      "FILE_READ_FAILED": "Impossible de lire ce fichier.",
+      "MALFORMED_JSON": "Le fichier JSON est illisible ou endommagé.",
+      "WRONG_FORMAT": "Ce fichier n’est pas un projet Exam Builder.",
+      "UNSUPPORTED_BACKUP_VERSION": "Cette version de sauvegarde n’est pas prise en charge.",
+      "INVALID_BACKUP": "La structure de la sauvegarde est invalide.",
+      "INVALID_EXAM": "Le devoir contenu dans la sauvegarde est invalide.",
+      "EXAM_MIGRATION_FAILED": "Le devoir utilise une ancienne structure qui ne peut pas être mise à jour automatiquement.",
+      "UNSUPPORTED_FUTURE_EXAM_SCHEMA": "Ce devoir a été créé avec une version plus récente d’Exam Builder.",
+      "DUPLICATE_ASSET_ID": "La sauvegarde contient plusieurs images avec le même identifiant.",
+      "UNSUPPORTED_ASSET_MIME_TYPE": "La sauvegarde contient un format d’image non pris en charge.",
+      "INVALID_BASE64": "Les données d’une image sont invalides.",
+      "ASSET_SIZE_MISMATCH": "La taille déclarée d’une image ne correspond pas à ses données.",
+      "ASSET_CHECKSUM_MISMATCH": "L’intégrité d’une image ne peut pas être confirmée.",
+      "MISSING_REFERENCED_ASSET": "Une image utilisée par le devoir manque dans la sauvegarde.",
+      "ASSET_READ_FAILED": "Impossible de lire une image locale nécessaire à l’export.",
+      "SECURE_CONTEXT_REQUIRED": "Cette fonctionnalité nécessite une connexion HTTPS sécurisée.",
+      "ASSET_SAVE_FAILED": "Impossible d’enregistrer les images. Les données déjà écrites ont été annulées autant que possible.",
+      "EXAM_SAVE_FAILED": "Impossible d’enregistrer le devoir. Les nouvelles images ont été retirées autant que possible.",
+      "EXAM_LOOKUP_FAILED": "Impossible de vérifier les devoirs déjà présents sur cet appareil.",
+      "COLLISION_RESOLUTION_REQUIRED": "Choisissez de créer une copie ou de remplacer le devoir existant."
+    }
+  },
+  "exportPdf": {
+    "action": "Exporter PDF",
+    "preparing": "Préparation…",
+    "hint": "Dans la fenêtre d’impression, choisissez « Enregistrer au format PDF ».",
+    "dialog": {
+      "title": "Disposition du PDF",
+      "description": "Choisissez comment placer les pages du devoir sur les feuilles imprimées.",
+      "layoutLabel": "Disposition des pages",
+      "saveAsPdfHint": "Dans la fenêtre suivante, choisissez « Enregistrer au format PDF ».",
+      "continue": "Continuer"
+    },
+    "layouts": {
+      "oneUp": {
+        "title": "Une page par feuille",
+        "description": "Document A4 standard."
+      },
+      "twoUp": {
+        "title": "Deux pages par feuille",
+        "description": "Deux pages du devoir sont placées sur une seule feuille A4 paysage."
+      }
+    },
+    "errors": {
+      "noExam": "Aucun devoir n’est disponible pour l’impression.",
+      "invalidExam": "Le devoir contient une erreur structurelle à corriger avant l’impression.",
+      "saveFailed": "L’enregistrement a échoué. Réessayez avant d’exporter.",
+      "rendererTimeout": "L’aperçu n’a pas pu être stabilisé. Réessayez.",
+      "imageFailed": "Une image n’a pas pu être préparée pour l’impression.",
+      "printFailed": "La fenêtre d’impression n’a pas pu être ouverte."
+    },
+    "warnings": {
+      "missingImages_one": "1 image indisponible sera remplacée par un emplacement réservé.",
+      "missingImages_other": "{{count}} images indisponibles seront remplacées par des emplacements réservés."
+    }
+  },
+  "exportDocx": {
+    "action": "Exporter Word",
+    "preparing": "Préparation du document Word…",
+    "generating": "Génération du document Word…",
+    "hint": "Télécharger un fichier DOCX éditable.",
+    "errors": {
+      "noExam": "Aucun devoir n’est disponible pour l’export Word.",
+      "invalidExam": "Le devoir contient une erreur structurelle à corriger avant l’export.",
+      "saveFailed": "Impossible d’enregistrer le devoir avant l’export.",
+      "generationFailed": "Impossible de préparer le document Word.",
+      "downloadFailed": "Le document Word a été généré, mais son téléchargement a échoué."
+    },
+    "warnings": {
+      "missingImages_one": "1 image indisponible a été remplacée par un emplacement réservé.",
+      "missingImages_other": "{{count}} images indisponibles ont été remplacées par des emplacements réservés.",
+      "logoUnavailable": "Le logo institutionnel n’a pas pu être intégré."
+    }
+  },
+  "examRenderer": {
+    "preview": {
+      "title": "Aperçu A4",
+      "zoomLabel": "Niveau de zoom de l’aperçu",
+      "fit": "Ajuster",
+      "pageCount_one": "{{count}} page",
+      "pageCount_other": "{{count}} pages",
+      "pageLabel": "Page {{page}} / {{total}}"
+    }
+  },
+  "templates": {
+    "title": "Modèles",
+    "description": "Choisissez la présentation imprimable de votre devoir.",
+    "classic": {
+      "title": "Collège marocain classique",
+      "description": "Le modèle A4 par défaut, optimisé pour les devoirs bilingues des collèges marocains.",
+      "default": "Par défaut"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "description": "Gérez les préférences locales de l’application sur cet appareil.",
+    "interfaceLanguage": "Langue de l’interface",
+    "interfaceLanguageHelp": "Ce réglage ne détermine pas la langue du contenu d’un devoir.",
+    "localStorageNotice": "Les devoirs sont stockés localement sur cet appareil. Pour les sauvegarder ou les transférer, utilisez « Exporter le projet ».",
+    "preferences": {
+      "loadError": "Impossible de lire la préférence enregistrée. La langue de cette session reste disponible.",
+      "saveError": "Impossible d’enregistrer la langue sur cet appareil."
+    }
+  },
+  "errors": {
+    "unexpected": "Une erreur inattendue s’est produite.",
+    "retry": "Réessayer",
+    "backToExams": "Retour à mes devoirs"
+  },
+  "common": {
+    "language": "Langue",
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "changeLanguage": "Changer la langue de l’interface",
+    "foundationNotice": "Exam Builder — création locale de devoirs imprimables"
+  }
+}
