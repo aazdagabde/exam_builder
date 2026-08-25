@@ -21,6 +21,7 @@ export type BlockSummary =
       categories: number;
     }
   | { kind: "timeline"; start: number; end: number; events: number }
+  | { kind: "diagram"; nodes: number; edges: number }
   | { kind: "none" };
 
 function firstText(...values: Array<string | undefined>): BlockSummary {
@@ -86,6 +87,12 @@ export function getBlockSummary(block: ExamBlock): BlockSummary {
         kind: "chart",
         chartType: block.chartType,
         categories: block.labels.length,
+      };
+    case "diagram":
+      return {
+        kind: "diagram",
+        nodes: block.nodes.length,
+        edges: block.edges.length,
       };
     case "essay":
       return block.instruction.trim()

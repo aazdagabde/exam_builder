@@ -1,5 +1,6 @@
 import type { ExamBlock } from "@/domain/exam/blocks.types";
 import { calculateExamPoints } from "@/domain/exam/exam.points";
+import { diagramHasCycle, isDiagramTooDense } from "@/domain/exam/exam.diagram";
 import {
   computeTimelineEventPositions,
   getTimelineTickCount,
@@ -33,6 +34,11 @@ export const ExamValidationCode = {
   CHART_EMPTY: "CHART_EMPTY",
   CHART_PIE_MULTIPLE_SERIES: "CHART_PIE_MULTIPLE_SERIES",
   CHART_PIE_NEGATIVE_VALUES: "CHART_PIE_NEGATIVE_VALUES",
+  DIAGRAM_EMPTY: "DIAGRAM_EMPTY",
+  DIAGRAM_EMPTY_NODE: "DIAGRAM_EMPTY_NODE",
+  DIAGRAM_INVALID_EDGE: "DIAGRAM_INVALID_EDGE",
+  DIAGRAM_CYCLE: "DIAGRAM_CYCLE",
+  DIAGRAM_TOO_DENSE: "DIAGRAM_TOO_DENSE",
   TOTAL_POINTS_MISMATCH: "TOTAL_POINTS_MISMATCH",
 } as const;
 
@@ -72,6 +78,11 @@ const messageKeys: Record<ExamValidationCode, string> = {
   CHART_EMPTY: "validation.chart.empty",
   CHART_PIE_MULTIPLE_SERIES: "validation.chart.pieMultipleSeries",
   CHART_PIE_NEGATIVE_VALUES: "validation.chart.pieNegativeValues",
+  DIAGRAM_EMPTY: "validation.diagram.empty",
+  DIAGRAM_EMPTY_NODE: "validation.diagram.emptyNode",
+  DIAGRAM_INVALID_EDGE: "validation.diagram.invalidEdge",
+  DIAGRAM_CYCLE: "validation.diagram.cycle",
+  DIAGRAM_TOO_DENSE: "validation.diagram.tooDense",
   TOTAL_POINTS_MISMATCH: "validation.exam.totalPointsMismatch",
 };
 
@@ -331,6 +342,67 @@ function validateBlock(
           createIssue(ExamValidationCode.CHART_PIE_NEGATIVE_VALUES, "warning", {
             ...context,
             path: `${blockPath}.series`,
+          }),
+        );
+      }
+      break;
+    }
+
+    case "diagram": {
+      const nodeIds = new Set(block.nodes.map((node) => node.id));
+      if (block.nodes.length === 0 || block.edges.length === 0) {
+        issues.push(
+          createIssue(ExamValidationCode.DIAGRAM_EMPTY, "warning", {
+            ...context,
+            path: `${blockPath}.nodes`,
+          }),
+        );
+      }
+      block.nodes.forEach((node, nodeIndex) => {
+        if (!node.text.trim()) {
+          issues.push(
+            createIssue(ExamValidationCode.DIAGRAM_EMPTY_NODE, "warning", {
+              ...context,
+              path: `${blockPath}.nodes.${nodeIndex}.text`,
+            }),
+          );
+        }
+      });
+      const relations = new Set<string>();
+      block.edges.forEach((edge, edgeIndex) => {
+        const relation = JSON.stringify([
+          edge.fromNodeId,
+          edge.toNodeId,
+          edge.label,
+        ]);
+        const invalid =
+          !nodeIds.has(edge.fromNodeId) ||
+          !nodeIds.has(edge.toNodeId) ||
+          edge.fromNodeId === edge.toNodeId ||
+          relations.has(relation);
+        if (invalid) {
+          issues.push(
+            createIssue(ExamValidationCode.DIAGRAM_INVALID_EDGE, "warning", {
+              ...context,
+              path: `${blockPath}.edges.${edgeIndex}`,
+            }),
+          );
+        }
+        relations.add(relation);
+      });
+      if (block.layout === "hierarchy" && diagramHasCycle(block)) {
+        issues.push(
+          createIssue(ExamValidationCode.DIAGRAM_CYCLE, "warning", {
+            ...context,
+            path: `${blockPath}.edges`,
+          }),
+        );
+      }
+      if (isDiagramTooDense(block)) {
+        issues.push(
+          createIssue(ExamValidationCode.DIAGRAM_TOO_DENSE, "warning", {
+            ...context,
+            path: `${blockPath}.nodes`,
           }),
         );
       }

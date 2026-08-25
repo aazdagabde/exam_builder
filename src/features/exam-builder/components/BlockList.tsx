@@ -285,6 +285,11 @@ function TranslatedSummary({ summary }: { summary: BlockSummary }) {
         end: summary.end,
         count: summary.events,
       });
+    case "diagram":
+      return t("examBuilder.blocks.summary.diagram", {
+        nodes: summary.nodes,
+        edges: summary.edges,
+      });
     case "none":
       return t("examBuilder.blocks.noContent");
   }

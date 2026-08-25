@@ -5,6 +5,7 @@ import {
   CURRENT_EXAM_SCHEMA_VERSION,
   EXAM_SCHEMA_VERSION_2,
   EXAM_SCHEMA_VERSION_3,
+  EXAM_SCHEMA_VERSION_4,
   ExamMigrationError,
   migrateExamToLatest,
 } from "@/domain/exam";
@@ -41,6 +42,28 @@ function fixture(type: string) {
 }
 
 describe("Exam persistent schema migrations", () => {
+  it("migrates v4 to v5 without inventing a Diagram or changing blocks", () => {
+    const current = createTestExam([
+      createTestSection(
+        allBlockExamples.filter((block) => block.type !== "diagram"),
+      ),
+    ]);
+    const source = {
+      ...structuredClone(current),
+      schemaVersion: EXAM_SCHEMA_VERSION_4,
+    };
+    const beforeBlocks = structuredClone(source.sections[0]!.blocks);
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.sections[0]!.blocks).toEqual(beforeBlocks);
+    expect(
+      migrated.sections[0]!.blocks.some((block) => block.type === "diagram"),
+    ).toBe(false);
+    expect(source.schemaVersion).toBe(EXAM_SCHEMA_VERSION_4);
+  });
+
   it("migrates v1 to v2 with current defaults while preserving identity", () => {
     const source = asPreviousExam(
       createTestExam([

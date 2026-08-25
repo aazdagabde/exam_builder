@@ -3,6 +3,7 @@
 import {
   ExamBlockSchema,
   ExamSchema,
+  DiagramBlockSchema,
   FillBlankBlockSchema,
   QuestionBlockSchema,
   TableBlockSchema,
@@ -138,7 +139,7 @@ describe("Exam structural schemas", () => {
     ).toBe(false);
   });
 
-  it("parses all 16 supported block discriminants", () => {
+  it("parses all 17 supported block discriminants", () => {
     const parsedBlocks = allBlockExamples.map((block) =>
       ExamBlockSchema.parse(block),
     );
@@ -160,7 +161,44 @@ describe("Exam structural schemas", () => {
       "page-break",
       "timeline",
       "chart",
+      "diagram",
     ]);
+  });
+
+  it("validates Diagram node and edge identities and references", () => {
+    const diagram = allBlockExamples.find((block) => block.type === "diagram")!;
+    expect(DiagramBlockSchema.safeParse(diagram).success).toBe(true);
+
+    const invalidCases = [
+      { ...diagram, nodes: [...diagram.nodes, { ...diagram.nodes[0]! }] },
+      { ...diagram, edges: [...diagram.edges, { ...diagram.edges[0]! }] },
+      {
+        ...diagram,
+        edges: [
+          { ...diagram.edges[0]!, id: "unknown-edge", toNodeId: "missing" },
+        ],
+      },
+      {
+        ...diagram,
+        edges: [
+          {
+            ...diagram.edges[0]!,
+            id: "self-edge",
+            toNodeId: diagram.nodes[0]!.id,
+          },
+        ],
+      },
+      {
+        ...diagram,
+        edges: [
+          diagram.edges[0]!,
+          { ...diagram.edges[0]!, id: "duplicate-relation" },
+        ],
+      },
+    ];
+    invalidCases.forEach((candidate) => {
+      expect(DiagramBlockSchema.safeParse(candidate).success).toBe(false);
+    });
   });
 
   it("requires current numbering fields instead of applying legacy defaults", () => {

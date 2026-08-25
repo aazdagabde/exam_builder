@@ -20,6 +20,7 @@ export const EXAM_BLOCK_TYPES = [
   "matching",
   "timeline",
   "chart",
+  "diagram",
   "essay",
   "free-text",
   "separator",
@@ -40,6 +41,7 @@ export const CREATABLE_EXAM_BLOCK_TYPES = [
   "matching",
   "timeline",
   "chart",
+  "diagram",
   "essay",
   "free-text",
   "separator",
@@ -53,7 +55,8 @@ export type CreateBlockInternalIdKind =
   | "timeline-event"
   | "timeline-period"
   | "chart-category"
-  | "chart-series";
+  | "chart-series"
+  | "diagram-node";
 
 export interface CreateExamBlockOptions {
   type: CreatableExamBlockType;
@@ -190,6 +193,18 @@ export function createExamBlock({
         showLegend: true,
         showValues: false,
         yAxisLabel: "",
+        startsNewQuestion,
+      };
+      break;
+    case "diagram":
+      block = {
+        id,
+        type,
+        order,
+        title: "",
+        layout: "horizontal-flow",
+        nodes: [{ id: createInternalId("diagram-node"), text: "" }],
+        edges: [],
         startsNewQuestion,
       };
       break;

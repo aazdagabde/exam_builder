@@ -15,6 +15,7 @@ import {
   Rows3,
   Table2,
   TextQuote,
+  Workflow,
   type LucideIcon,
 } from "lucide-react";
 
@@ -114,6 +115,13 @@ export const BLOCK_CATALOG: readonly BlockCatalogEntry[] = [
     descriptionKey: "examBuilder.blocks.descriptions.chart",
     category: "exercises",
     icon: ChartColumn,
+  },
+  {
+    type: "diagram",
+    labelKey: "examBuilder.blocks.types.diagram",
+    descriptionKey: "examBuilder.blocks.descriptions.diagram",
+    category: "exercises",
+    icon: Workflow,
   },
   {
     type: "essay",

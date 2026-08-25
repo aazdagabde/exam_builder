@@ -1,6 +1,7 @@
 import type { ExamBlock } from "@/domain/exam";
 import type { ResolvedImageAssets } from "@/features/exam-renderer/assets/renderer-assets";
 import { DefinitionRenderer } from "@/features/exam-renderer/components/blocks/DefinitionRenderer";
+import { DiagramBlockRenderer } from "@/features/exam-renderer/components/blocks/DiagramBlockRenderer";
 import { ChartRenderer } from "@/features/exam-renderer/components/blocks/ChartRenderer";
 import { EssayRenderer } from "@/features/exam-renderer/components/blocks/EssayRenderer";
 import { FillBlankRenderer } from "@/features/exam-renderer/components/blocks/FillBlankRenderer";
@@ -115,6 +116,8 @@ function renderBlockContent(
       return <TimelineRenderer block={block} labels={labels} />;
     case "chart":
       return <ChartRenderer block={block} labels={labels} />;
+    case "diagram":
+      return <DiagramBlockRenderer block={block} labels={labels} />;
     case "essay":
       return <EssayRenderer block={block} labels={labels} />;
     case "free-text":

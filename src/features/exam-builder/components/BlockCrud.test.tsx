@@ -53,7 +53,7 @@ beforeEach(async () => {
 });
 
 describe("Block CRUD UI", () => {
-  it("offers all 16 block types and opens the complete Question editor", async () => {
+  it("offers all 17 block types and opens the complete Question editor", async () => {
     const user = userEvent.setup();
     const store = renderBlockCrud(
       createTestExam([createTestSection([], { id: "section" })]),
@@ -63,7 +63,7 @@ describe("Block CRUD UI", () => {
       screen.getByRole("button", { name: "Ajouter un élément" }),
     );
     const dialog = screen.getByRole("dialog", { name: "Ajouter un élément" });
-    expect(within(dialog).getAllByRole("button")).toHaveLength(17);
+    expect(within(dialog).getAllByRole("button")).toHaveLength(18);
     expect(
       within(dialog).getByRole("button", { name: "Image / document" }),
     ).toBeEnabled();

@@ -483,13 +483,14 @@ type ExamBlock =
   | MatchingBlock
   | TimelineBlock
   | ChartBlock
+  | DiagramBlock
   | EssayBlock
   | FreeTextBlock
   | SeparatorBlock
   | PageBreakBlock;
 ```
 
-Le schéma courant V4 prend en charge 16 types de blocs. Les deux blocs visuels
+Le schéma courant V5 prend en charge 17 types de blocs. Les blocs visuels
 structurés ont les responsabilités suivantes :
 
 - `TimelineBlock` propose les styles `simple` et `historical`, avec espacement
@@ -501,12 +502,17 @@ structurés ont les responsabilités suivantes :
 - `ChartBlock` conserve catégories, séries et valeurs numériques pour les rendus
   en barres, courbe et secteurs. La géométrie SVG et les couleurs restent des
   responsabilités du renderer, pas du Domain persistant.
+- `DiagramBlock` conserve un titre, une disposition structurée, des nœuds et
+  leurs relations. Aucune géométrie n'est persistée : le renderer SVG calcule
+  les positions horizontales, verticales ou hiérarchiques selon la langue du
+  document. Le fallback DOCX reste natif et éditable.
 
 La migration V3 → V4 conserve les anciennes Timelines avec `simple`,
 `sequence`, `scale: null`, `periods: []` et `axisValue: null`. Les nouvelles
 Timelines utilisent `historical`, `scaled`, une échelle 1900–1950 et une
 chronologie LTR, y compris dans un document arabe. La prochaine évolution
-persistante — notamment `DiagramBlock` — devra utiliser V4 → V5.
+persistante V4 → V5 introduit `DiagramBlock` sans ajouter de bloc aux devoirs
+existants. Dexie reste V2 et l'enveloppe de sauvegarde reste V1.
 
 Chaque bloc possède au minimum :
 

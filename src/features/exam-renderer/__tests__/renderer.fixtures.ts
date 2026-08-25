@@ -205,6 +205,34 @@ export const rendererBlocks: ExamBlock[] = [
     yAxisLabel: "مليون",
     points: 2,
   },
+  {
+    id: "diagram",
+    type: "diagram",
+    startsNewQuestion: true,
+    order: 16,
+    title: "مسار التوزيع",
+    layout: "horizontal-flow",
+    nodes: [
+      { id: "diagram-production", text: "الإنتاج" },
+      { id: "diagram-transport", text: "النقل" },
+      { id: "diagram-distribution", text: "التوزيع" },
+    ],
+    edges: [
+      {
+        id: "diagram-edge-a",
+        fromNodeId: "diagram-production",
+        toNodeId: "diagram-transport",
+        label: "",
+      },
+      {
+        id: "diagram-edge-b",
+        fromNodeId: "diagram-transport",
+        toNodeId: "diagram-distribution",
+        label: "يوصل",
+      },
+    ],
+    points: 2,
+  },
 ];
 
 export function createRendererTestExam(language: "ar" | "fr" = "ar"): Exam {

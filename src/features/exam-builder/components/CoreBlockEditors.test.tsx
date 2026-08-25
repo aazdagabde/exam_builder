@@ -370,7 +370,10 @@ describe("Core block editors", () => {
       act(() => store.getState().selectBlock(block.id));
       const entry = getBlockCatalogEntry(block.type);
       expect(
-        screen.getByRole("heading", { name: i18n.t(entry.labelKey) }),
+        screen.getByRole("heading", {
+          name: i18n.t(entry.labelKey),
+          level: 3,
+        }),
       ).toBeVisible();
     }
 

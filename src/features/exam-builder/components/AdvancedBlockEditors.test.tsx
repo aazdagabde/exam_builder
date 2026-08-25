@@ -5,6 +5,7 @@ import { I18nextProvider } from "react-i18next";
 import { AssetRepositoryProvider } from "@/app/providers/AssetRepositoryProvider";
 import {
   ExamSchema,
+  type DiagramBlock,
   type EssayBlock,
   type ExamBlock,
   type MatchingBlock,
@@ -48,6 +49,72 @@ function renderAdvancedEditor(block: ExamBlock) {
 beforeEach(async () => {
   await changeInterfaceLanguage("fr");
   applyDocumentLanguage("fr");
+});
+
+describe("DiagramBlockEditor", () => {
+  it("supports accessible CRUD, reorder, atomic cascade deletion and Undo/Redo", async () => {
+    const user = userEvent.setup();
+    const block: DiagramBlock = {
+      id: "diagram",
+      type: "diagram",
+      startsNewQuestion: true,
+      order: 0,
+      title: "",
+      layout: "horizontal-flow",
+      nodes: [
+        { id: "a", text: "A" },
+        { id: "b", text: "B" },
+      ],
+      edges: [],
+    };
+    const store = renderAdvancedEditor(block);
+
+    await user.click(
+      screen.getByRole("button", { name: "Ajouter un élément" }),
+    );
+    const nodeInputs = screen.getAllByLabelText(/Élément [123]$/);
+    expect(nodeInputs[2]).toHaveFocus();
+    await user.type(nodeInputs[2]!, "C");
+    await user.tab();
+    await user.click(screen.getByRole("button", { name: "Monter Élément 3" }));
+
+    await user.selectOptions(screen.getByLabelText("De"), "a");
+    await user.selectOptions(screen.getByLabelText("Vers"), "b");
+    await user.type(screen.getByLabelText("Libellé facultatif"), "cause");
+    await user.click(
+      screen.getByRole("button", { name: "Ajouter la relation" }),
+    );
+    let value = store.getState().exam?.sections[0]?.blocks[0] as DiagramBlock;
+    expect(value.nodes.map((node) => node.text)).toEqual(["A", "C", "B"]);
+    expect(value.edges).toHaveLength(1);
+
+    const historyBeforeDelete = store.getState().past.length;
+    await user.click(
+      screen.getByRole("button", { name: "Supprimer Élément 3" }),
+    );
+    value = store.getState().exam?.sections[0]?.blocks[0] as DiagramBlock;
+    expect(value.nodes.map((node) => node.text)).toEqual(["A", "C"]);
+    expect(value.edges).toEqual([]);
+    expect(store.getState().past).toHaveLength(historyBeforeDelete + 1);
+
+    act(() => store.getState().undo());
+    value = store.getState().exam?.sections[0]?.blocks[0] as DiagramBlock;
+    expect(value.nodes.map((node) => node.text)).toEqual(["A", "C", "B"]);
+    expect(value.edges).toHaveLength(1);
+    act(() => store.getState().redo());
+    expect(
+      (store.getState().exam?.sections[0]?.blocks[0] as DiagramBlock).edges,
+    ).toEqual([]);
+
+    await user.selectOptions(
+      screen.getByLabelText("Disposition"),
+      "vertical-flow",
+    );
+    expect(
+      (store.getState().exam?.sections[0]?.blocks[0] as DiagramBlock).layout,
+    ).toBe("vertical-flow");
+    expect(store.getState().saveStatus).toBe("dirty");
+  });
 });
 
 describe("TableBlockEditor", () => {

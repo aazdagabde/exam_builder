@@ -25,6 +25,7 @@ describe("Exam block helpers", () => {
     ["matching", true],
     ["timeline", true],
     ["chart", true],
+    ["diagram", true],
     ["essay", true],
     ["instruction", false],
     ["text-document", false],
@@ -55,6 +56,23 @@ describe("Exam block helpers", () => {
 
   it("never exposes Image as creatable without a real asset workflow", () => {
     expect(CREATABLE_EXAM_BLOCK_TYPES).not.toContain("image");
+  });
+
+  it("creates a neutral Diagram with one initial node", () => {
+    const block = createExamBlock({
+      type: "diagram",
+      id: "diagram",
+      order: 0,
+      createInternalId: (kind) => `${kind}-1`,
+    });
+    expect(block).toMatchObject({
+      type: "diagram",
+      startsNewQuestion: true,
+      title: "",
+      layout: "horizontal-flow",
+      nodes: [{ id: "diagram-node-1", text: "" }],
+      edges: [],
+    });
   });
 
   it("creates an ImageBlock only with an explicit asset ID", () => {

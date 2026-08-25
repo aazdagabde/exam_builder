@@ -21,6 +21,8 @@ export type DuplicateIdKind =
   | "timeline-period"
   | "chart-category"
   | "chart-series"
+  | "diagram-node"
+  | "diagram-edge"
   | "essay-topic";
 
 export interface DuplicateIdContext {
@@ -206,6 +208,29 @@ export function duplicateBlock(
           values: [...series.values],
         })),
       };
+
+    case "diagram": {
+      const nodeIds = new Map(
+        block.nodes.map((node) => [
+          node.id,
+          createInternalId({ kind: "diagram-node", sourceId: node.id }),
+        ]),
+      );
+      return {
+        ...block,
+        id,
+        nodes: block.nodes.map((node) => ({
+          ...node,
+          id: nodeIds.get(node.id)!,
+        })),
+        edges: block.edges.map((edge) => ({
+          ...edge,
+          id: createInternalId({ kind: "diagram-edge", sourceId: edge.id }),
+          fromNodeId: nodeIds.get(edge.fromNodeId) ?? edge.fromNodeId,
+          toNodeId: nodeIds.get(edge.toNodeId) ?? edge.toNodeId,
+        })),
+      };
+    }
 
     case "essay":
       return {

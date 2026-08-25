@@ -41,10 +41,55 @@
 }
 
 .exam-timeline,
-.exam-chart {
+.exam-chart,
+.exam-diagram {
   min-width: 0;
   margin: 0;
   break-inside: avoid;
+}
+
+.exam-diagram__svg {
+  display: block;
+  width: 100%;
+  max-height: 145mm;
+  overflow: visible;
+  font-family: inherit;
+}
+
+.exam-diagram__nodes rect {
+  fill: #fafafa;
+  stroke: #1f2937;
+  stroke-width: 1.8;
+}
+
+.exam-diagram__nodes text {
+  fill: #111;
+  font-size: 15px;
+  font-weight: 600;
+  unicode-bidi: plaintext;
+}
+
+.exam-diagram__edges path {
+  fill: none;
+  stroke: #1f2937;
+  stroke-width: 2;
+}
+
+.exam-diagram__edges text {
+  fill: #374151;
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  unicode-bidi: plaintext;
+}
+
+.exam-diagram__warning {
+  margin: 0 0 2mm;
+  color: #92400e;
+  font-size: var(--exam-font-small);
+  text-align: center;
 }
 
 .exam-timeline__events {

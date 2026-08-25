@@ -172,6 +172,15 @@ function estimateWholeBlockHeight(block: ExamBlock): number {
         : 145 + Math.max(0, block.events.length - 6) * 12;
     case "chart":
       return 390;
+    case "diagram": {
+      const levels =
+        block.layout === "vertical-flow"
+          ? block.nodes.length
+          : block.layout === "horizontal-flow"
+            ? Math.ceil(block.nodes.length / 4)
+            : Math.max(1, Math.ceil(block.nodes.length / 4));
+      return 80 + levels * 110;
+    }
     case "essay":
       return 80 + block.topics.length * 32;
     case "separator":

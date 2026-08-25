@@ -169,6 +169,33 @@ export const allBlockExamples: ExamBlock[] = [
     showValues: true,
     yAxisLabel: "Millions",
   },
+  {
+    id: "diagram-1",
+    type: "diagram",
+    startsNewQuestion: true,
+    order: 16,
+    title: "Distribution",
+    layout: "horizontal-flow",
+    nodes: [
+      { id: "diagram-node-1", text: "Production" },
+      { id: "diagram-node-2", text: "Transport" },
+      { id: "diagram-node-3", text: "Distribution" },
+    ],
+    edges: [
+      {
+        id: "diagram-edge-1",
+        fromNodeId: "diagram-node-1",
+        toNodeId: "diagram-node-2",
+        label: "",
+      },
+      {
+        id: "diagram-edge-2",
+        fromNodeId: "diagram-node-2",
+        toNodeId: "diagram-node-3",
+        label: "achemine",
+      },
+    ],
+  },
 ];
 
 export function createTestSection(

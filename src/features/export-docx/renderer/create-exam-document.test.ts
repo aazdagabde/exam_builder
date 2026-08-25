@@ -31,7 +31,7 @@ describe("DOCX renderer", () => {
     expect(mmToTwips(17.5)).toBe(992);
   });
 
-  it("routes all 16 discriminated block types", () => {
+  it("routes all 17 discriminated block types", () => {
     const context = { language: "fr" as const };
     const labels = getDocumentLabels("fr");
     const assets = { images: new Map() };
@@ -56,6 +56,7 @@ describe("DOCX renderer", () => {
         "matching",
         "timeline",
         "chart",
+        "diagram",
         "essay",
         "free-text",
         "separator",
@@ -119,6 +120,45 @@ describe("DOCX renderer", () => {
     expect(xml).toContain("Résistance");
     expect(xml).toContain("Chaque graduation représente 4 ans");
     expect(xml.match(/<w:tbl>/g)?.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("keeps horizontal, vertical and hierarchy Diagrams editable with all labels", async () => {
+    const source = allBlockExamples.find((block) => block.type === "diagram")!;
+    if (source.type !== "diagram") throw new Error("fixture mismatch");
+    const blocks: ExamBlock[] = [
+      {
+        ...source,
+        id: "diagram-horizontal",
+        layout: "horizontal-flow",
+        title: "Horizontal",
+      },
+      {
+        ...source,
+        id: "diagram-vertical",
+        layout: "vertical-flow",
+        title: "Vertical",
+      },
+      {
+        ...source,
+        id: "diagram-hierarchy",
+        layout: "hierarchy",
+        title: "Hierarchy",
+      },
+    ];
+    const exam = createTestExam([createTestSection(blocks)]);
+    exam.settings.documentLanguage = "fr";
+
+    const { archive, xml } = await documentXml(exam);
+
+    expect(xml).toContain("Horizontal");
+    expect(xml).toContain("Vertical");
+    expect(xml).toContain("Hierarchy");
+    expect(xml).toContain("Production");
+    expect(xml).toContain("Transport");
+    expect(xml).toContain("Distribution");
+    expect(xml).toContain("achemine");
+    expect(xml).toContain("Relations");
+    expect(archive.file("word/media/image1.png")).toBeNull();
   });
 
   it("keeps French paragraphs LTR and does not derive direction from UI", async () => {

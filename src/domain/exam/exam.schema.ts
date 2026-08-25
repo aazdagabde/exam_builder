@@ -6,6 +6,9 @@ import type {
   ChartSeries,
   DefinitionBlock,
   DefinitionItem,
+  DiagramBlock,
+  DiagramEdge,
+  DiagramNode,
   EssayBlock,
   EssayTopic,
   ExamBlock,
@@ -335,6 +338,81 @@ export const ChartBlockSchema = z
     });
   }) satisfies z.ZodType<ChartBlock>;
 
+export const DiagramNodeSchema = z.strictObject({
+  id: identifierSchema,
+  text: z.string(),
+}) satisfies z.ZodType<DiagramNode>;
+
+export const DiagramEdgeSchema = z.strictObject({
+  id: identifierSchema,
+  fromNodeId: identifierSchema,
+  toNodeId: identifierSchema,
+  label: z.string(),
+}) satisfies z.ZodType<DiagramEdge>;
+
+export const DiagramBlockSchema = z
+  .strictObject({
+    ...baseBlockShape,
+    type: z.literal("diagram"),
+    title: z.string(),
+    layout: z.enum(["horizontal-flow", "vertical-flow", "hierarchy"]),
+    nodes: z.array(DiagramNodeSchema),
+    edges: z.array(DiagramEdgeSchema),
+  })
+  .superRefine((block, context) => {
+    const nodeIds = new Set<string>();
+    block.nodes.forEach((node, index) => {
+      if (nodeIds.has(node.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["nodes", index, "id"],
+          message: "DIAGRAM_NODE_IDS_UNIQUE",
+        });
+      }
+      nodeIds.add(node.id);
+    });
+
+    const edgeIds = new Set<string>();
+    const relations = new Set<string>();
+    block.edges.forEach((edge, index) => {
+      if (edgeIds.has(edge.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index, "id"],
+          message: "DIAGRAM_EDGE_IDS_UNIQUE",
+        });
+      }
+      edgeIds.add(edge.id);
+      if (!nodeIds.has(edge.fromNodeId) || !nodeIds.has(edge.toNodeId)) {
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index],
+          message: "DIAGRAM_EDGE_REFERENCES_VALID_NODES",
+        });
+      }
+      if (edge.fromNodeId === edge.toNodeId) {
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index],
+          message: "DIAGRAM_SELF_EDGE_NOT_ALLOWED",
+        });
+      }
+      const relation = JSON.stringify([
+        edge.fromNodeId,
+        edge.toNodeId,
+        edge.label,
+      ]);
+      if (relations.has(relation)) {
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index],
+          message: "DIAGRAM_DUPLICATE_EDGE_NOT_ALLOWED",
+        });
+      }
+      relations.add(relation);
+    });
+  }) satisfies z.ZodType<DiagramBlock>;
+
 export const EssayTopicSchema = z.strictObject({
   id: identifierSchema,
   text: z.string(),
@@ -381,6 +459,7 @@ const structuralExamBlockSchema = z.discriminatedUnion("type", [
   MatchingBlockSchema,
   TimelineBlockSchema,
   ChartBlockSchema,
+  DiagramBlockSchema,
   EssayBlockSchema,
   FreeTextBlockSchema,
   SeparatorBlockSchema,

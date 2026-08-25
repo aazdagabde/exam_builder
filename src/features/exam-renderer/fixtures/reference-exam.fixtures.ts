@@ -6,6 +6,160 @@ import {
 
 const FIXTURE_NOW = "2026-08-22T12:00:00.000Z";
 
+export function createDiagramReferenceExam(
+  documentLanguage: DocumentLanguage,
+): Exam {
+  const arabic = documentLanguage === "ar";
+  const exam = createEmptyExam({
+    id: `diagram-reference-${documentLanguage}`,
+    now: FIXTURE_NOW,
+    documentLanguage,
+    templateId: "moroccan-college-classic",
+  });
+  const labels = arabic
+    ? {
+        title: "خطاطات تربوية",
+        section: "نماذج الخطاطات",
+        production: "الإنتاج",
+        transport: "النقل",
+        distribution: "التوزيع",
+        cause: "السبب",
+        event: "الحدث",
+        consequence: "النتيجة",
+        institution: "المؤسسة",
+        organA: "الجهاز أ",
+        organB: "الجهاز ب",
+        organC: "الجهاز ج",
+        relation: "يؤدي إلى",
+      }
+    : {
+        title: "Schémas pédagogiques",
+        section: "Modèles de schémas",
+        production: "Production",
+        transport: "Transport",
+        distribution: "Distribution",
+        cause: "Cause",
+        event: "Événement",
+        consequence: "Conséquence",
+        institution: "Institution",
+        organA: "Organe A",
+        organB: "Organe B",
+        organC: "Organe C",
+        relation: "entraîne",
+      };
+  return {
+    ...exam,
+    metadata: {
+      title: labels.title,
+      academicYear: "2026-2027",
+      institution: arabic ? "إعدادية ابن خلدون" : "Collège Ibn Khaldoun",
+      level: arabic ? "الثالثة إعدادي" : "3e année du collège",
+      subject: arabic ? "الاجتماعيات" : "Histoire-Géographie",
+      totalPoints: 6,
+    },
+    sections: [
+      {
+        id: "diagram-section",
+        title: labels.section,
+        points: 6,
+        blocks: [
+          {
+            id: "diagram-horizontal-qa",
+            type: "diagram",
+            startsNewQuestion: true,
+            order: 0,
+            points: 2,
+            title: arabic ? "تدفق أفقي" : "Flux horizontal",
+            layout: "horizontal-flow",
+            nodes: [
+              { id: "horizontal-production", text: labels.production },
+              { id: "horizontal-transport", text: labels.transport },
+              { id: "horizontal-distribution", text: labels.distribution },
+            ],
+            edges: [
+              {
+                id: "horizontal-edge-1",
+                fromNodeId: "horizontal-production",
+                toNodeId: "horizontal-transport",
+                label: "",
+              },
+              {
+                id: "horizontal-edge-2",
+                fromNodeId: "horizontal-transport",
+                toNodeId: "horizontal-distribution",
+                label: labels.relation,
+              },
+            ],
+          },
+          {
+            id: "diagram-vertical-qa",
+            type: "diagram",
+            startsNewQuestion: true,
+            order: 1,
+            points: 2,
+            title: arabic ? "تدفق عمودي" : "Flux vertical",
+            layout: "vertical-flow",
+            nodes: [
+              { id: "vertical-cause", text: labels.cause },
+              { id: "vertical-event", text: labels.event },
+              { id: "vertical-consequence", text: labels.consequence },
+            ],
+            edges: [
+              {
+                id: "vertical-edge-1",
+                fromNodeId: "vertical-cause",
+                toNodeId: "vertical-event",
+                label: labels.relation,
+              },
+              {
+                id: "vertical-edge-2",
+                fromNodeId: "vertical-event",
+                toNodeId: "vertical-consequence",
+                label: "",
+              },
+            ],
+          },
+          {
+            id: "diagram-hierarchy-qa",
+            type: "diagram",
+            startsNewQuestion: true,
+            order: 2,
+            points: 2,
+            title: arabic ? "تنظيم هرمي" : "Hiérarchie",
+            layout: "hierarchy",
+            nodes: [
+              { id: "hierarchy-root", text: labels.institution },
+              { id: "hierarchy-a", text: labels.organA },
+              { id: "hierarchy-b", text: labels.organB },
+              { id: "hierarchy-c", text: labels.organC },
+            ],
+            edges: [
+              {
+                id: "hierarchy-edge-a",
+                fromNodeId: "hierarchy-root",
+                toNodeId: "hierarchy-a",
+                label: "",
+              },
+              {
+                id: "hierarchy-edge-b",
+                fromNodeId: "hierarchy-root",
+                toNodeId: "hierarchy-b",
+                label: "",
+              },
+              {
+                id: "hierarchy-edge-c",
+                fromNodeId: "hierarchy-root",
+                toNodeId: "hierarchy-c",
+                label: "",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
+
 export function createRendererReferenceExam(
   documentLanguage: DocumentLanguage,
 ): Exam {

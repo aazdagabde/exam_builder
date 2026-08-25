@@ -11,6 +11,8 @@ export type TimelineEventId = string;
 export type TimelinePeriodId = string;
 export type ChartCategoryId = string;
 export type ChartSeriesId = string;
+export type DiagramNodeId = string;
+export type DiagramEdgeId = string;
 
 export type ExamBlockType =
   | "instruction"
@@ -25,6 +27,7 @@ export type ExamBlockType =
   | "matching"
   | "timeline"
   | "chart"
+  | "diagram"
   | "essay"
   | "free-text"
   | "separator"
@@ -233,6 +236,28 @@ export interface ChartBlock extends BaseBlock {
   yAxisLabel?: string;
 }
 
+export type DiagramLayout = "horizontal-flow" | "vertical-flow" | "hierarchy";
+
+export interface DiagramNode {
+  id: DiagramNodeId;
+  text: string;
+}
+
+export interface DiagramEdge {
+  id: DiagramEdgeId;
+  fromNodeId: DiagramNodeId;
+  toNodeId: DiagramNodeId;
+  label: string;
+}
+
+export interface DiagramBlock extends BaseBlock {
+  type: "diagram";
+  title: string;
+  layout: DiagramLayout;
+  nodes: DiagramNode[];
+  edges: DiagramEdge[];
+}
+
 export interface EssayTopic {
   id: EssayTopicId;
   text: string;
@@ -279,6 +304,7 @@ export type ExamBlock =
   | MatchingBlock
   | TimelineBlock
   | ChartBlock
+  | DiagramBlock
   | EssayBlock
   | FreeTextBlock
   | SeparatorBlock

@@ -18,8 +18,9 @@ npm run dev
 ## Fonctionnalités V1 disponibles
 
 - Dashboard local : création, modification, duplication et suppression des devoirs.
-- Builder avec sections, 16 types de blocs, glisser-déposer, alternatives clavier, Undo/Redo et autosave.
+- Builder avec sections, 17 types de blocs, glisser-déposer, alternatives clavier, Undo/Redo et autosave.
 - Lignes du temps simples ou historiques : échelle numérique abstraite, graduations, événements proportionnels, périodes et sens chronologique indépendant du français/arabe.
+- Schémas pédagogiques structurés : flux horizontal, flux vertical et hiérarchie, rendus en SVG vectoriel RTL/LTR.
 - Numérotation automatique et réordonnable des questions, identique en aperçu, PDF et DOCX.
 - Interface arabe par défaut ou française, avec direction RTL/LTR et préférence synchronisée par cookie et IndexedDB.
 - Aperçu A4 multi-pages avec le template **Moroccan College Classic**.

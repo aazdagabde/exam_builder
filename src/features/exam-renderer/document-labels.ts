@@ -1,6 +1,8 @@
 import type { DocumentLanguage } from "@/domain/exam";
 
 export interface DocumentLabels {
+  language: DocumentLanguage;
+  direction: "rtl" | "ltr";
   academy: string;
   provincialDirectorate: string;
   institution: string;
@@ -30,10 +32,14 @@ export interface DocumentLabels {
   chartNoData: string;
   chartType: string;
   category: string;
+  diagram: string;
+  diagramCycle: string;
 }
 
 const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
   ar: {
+    language: "ar",
+    direction: "rtl",
     academy: "الأكاديمية الجهوية",
     provincialDirectorate: "المديرية الإقليمية",
     institution: "المؤسسة",
@@ -63,8 +69,12 @@ const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
     chartNoData: "لا توجد بيانات للعرض.",
     chartType: "النوع",
     category: "الفئة",
+    diagram: "خطاطة",
+    diagramCycle: "تحتوي الخطاطة على علاقة دائرية لا تتوافق مع التنظيم الهرمي.",
   },
   fr: {
+    language: "fr",
+    direction: "ltr",
     academy: "Académie régionale",
     provincialDirectorate: "Direction provinciale",
     institution: "Établissement",
@@ -94,6 +104,9 @@ const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
     chartNoData: "Aucune donnée à afficher.",
     chartType: "Type",
     category: "Catégorie",
+    diagram: "Schéma",
+    diagramCycle:
+      "Le schéma contient une relation cyclique incompatible avec la disposition hiérarchique.",
   },
 };
 

@@ -5,6 +5,7 @@ import { canBlockStartQuestion, type ExamBlock } from "@/domain/exam";
 import { BlockEditorShell } from "@/features/exam-builder/components/block-editors/BlockEditorShell";
 import { ChartBlockEditor } from "@/features/exam-builder/components/block-editors/ChartBlockEditor";
 import { DefinitionBlockEditor } from "@/features/exam-builder/components/block-editors/DefinitionBlockEditor";
+import { DiagramBlockEditor } from "@/features/exam-builder/components/block-editors/DiagramBlockEditor";
 import { FillBlankBlockEditor } from "@/features/exam-builder/components/block-editors/FillBlankBlockEditor";
 import { FreeTextBlockEditor } from "@/features/exam-builder/components/block-editors/FreeTextBlockEditor";
 import { InstructionBlockEditor } from "@/features/exam-builder/components/block-editors/InstructionBlockEditor";
@@ -68,6 +69,8 @@ function RoutedBlockEditor({ block }: { block: ExamBlock }) {
       return <TimelineBlockEditor block={block} />;
     case "chart":
       return <ChartBlockEditor block={block} />;
+    case "diagram":
+      return <DiagramBlockEditor block={block} />;
     case "essay":
       return <EssayBlockEditor block={block} />;
     case "free-text":

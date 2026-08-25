@@ -5,6 +5,7 @@ import {
   ExamValidationCode,
   validateExam,
   type ExamBlock,
+  type DiagramBlock,
   type QuestionBlock,
   type TimelineBlock,
 } from "@/domain/exam";
@@ -281,5 +282,38 @@ describe("Exam business validation", () => {
         ExamValidationCode.TIMELINE_SCALE_INVALID,
       ),
     ).toHaveLength(1);
+  });
+
+  it("keeps temporary Diagram states non-blocking and warns for cycle and density", () => {
+    const source = allBlockExamples.find((block) => block.type === "diagram")!;
+    if (source.type !== "diagram") throw new Error("fixture mismatch");
+    const nodes = Array.from({ length: 16 }, (_, index) => ({
+      id: `node-${index}`,
+      text: index === 0 ? "" : `Node ${index}`,
+    }));
+    const diagram: DiagramBlock = {
+      ...source,
+      layout: "hierarchy",
+      nodes,
+      edges: [
+        { id: "edge-a", fromNodeId: "node-0", toNodeId: "node-1", label: "" },
+        { id: "edge-b", fromNodeId: "node-1", toNodeId: "node-2", label: "" },
+        { id: "edge-c", fromNodeId: "node-2", toNodeId: "node-0", label: "" },
+      ],
+    };
+    const issues = validateExam(createTestExam([createTestSection([diagram])]));
+    const diagramIssues = issues.filter((issue) =>
+      String(issue.code).startsWith("DIAGRAM_"),
+    );
+    expect(diagramIssues.map((issue) => issue.code)).toEqual(
+      expect.arrayContaining([
+        ExamValidationCode.DIAGRAM_EMPTY_NODE,
+        ExamValidationCode.DIAGRAM_CYCLE,
+        ExamValidationCode.DIAGRAM_TOO_DENSE,
+      ]),
+    );
+    expect(diagramIssues.every((issue) => issue.severity === "warning")).toBe(
+      true,
+    );
   });
 });

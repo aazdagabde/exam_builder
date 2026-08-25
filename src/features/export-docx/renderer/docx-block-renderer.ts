@@ -818,6 +818,103 @@ function renderChart(
   return result;
 }
 
+function diagramNodeText(
+  block: Extract<ExamBlock, { type: "diagram" }>,
+  nodeId: string,
+): string {
+  return block.nodes.find((node) => node.id === nodeId)?.text || "…";
+}
+
+function renderDiagram(
+  block: Extract<ExamBlock, { type: "diagram" }>,
+  context: DocxRenderContext,
+  labels: DocumentLabels,
+): FileChild[] {
+  const result: FileChild[] = [
+    paragraph(
+      context,
+      [
+        textRun(context, block.title.trim() || labels.diagram, {
+          bold: true,
+          boldComplexScript: true,
+        }),
+        ...pointsText(context, block.points, labels.points),
+      ],
+      { alignment: AlignmentType.CENTER, keepNext: true },
+    ),
+  ];
+
+  if (block.layout === "horizontal-flow") {
+    result.push(
+      textParagraph(
+        context,
+        block.nodes.map((node) => node.text || "…").join(" → ") || "…",
+        { alignment: AlignmentType.CENTER, keepLines: true },
+      ),
+    );
+  } else if (block.layout === "vertical-flow") {
+    block.nodes.forEach((node, index) => {
+      result.push(
+        textParagraph(context, node.text || "…", {
+          alignment: AlignmentType.CENTER,
+          keepNext: index < block.nodes.length - 1,
+          keepLines: true,
+        }),
+      );
+      if (index < block.nodes.length - 1) {
+        result.push(
+          textParagraph(context, "↓", {
+            alignment: AlignmentType.CENTER,
+            keepNext: true,
+          }),
+        );
+      }
+    });
+  } else {
+    const incoming = new Set(block.edges.map((edge) => edge.toNodeId));
+    const roots = block.nodes.filter((node) => !incoming.has(node.id));
+    const startingNodes = roots.length > 0 ? roots : block.nodes;
+    const visited = new Set<string>();
+    const visit = (nodeId: string, depth: number) => {
+      if (visited.has(nodeId)) return;
+      visited.add(nodeId);
+      result.push(
+        textParagraph(
+          context,
+          `${depth === 0 ? "" : `${"  ".repeat(depth - 1)}├ `}${diagramNodeText(block, nodeId)}`,
+          { keepLines: true },
+        ),
+      );
+      block.edges
+        .filter((edge) => edge.fromNodeId === nodeId)
+        .forEach((edge) => visit(edge.toNodeId, depth + 1));
+    };
+    startingNodes.forEach((node) => visit(node.id, 0));
+    block.nodes.forEach((node) => visit(node.id, 0));
+  }
+
+  if (block.edges.length > 0) {
+    result.push(
+      textParagraph(
+        context,
+        context.language === "ar" ? "العلاقات" : "Relations",
+        { bold: true, boldComplexScript: true, keepNext: true },
+      ),
+    );
+    block.edges.forEach((edge) => {
+      const label = edge.label.trim() ? ` — ${edge.label} → ` : " → ";
+      result.push(
+        textParagraph(
+          context,
+          `${diagramNodeText(block, edge.fromNodeId)}${label}${diagramNodeText(block, edge.toNodeId)}`,
+          { keepLines: true },
+        ),
+      );
+    });
+  }
+  return result;
+}
+
 function renderEssay(
   block: Extract<ExamBlock, { type: "essay" }>,
   context: DocxRenderContext,
@@ -1127,6 +1224,9 @@ export function renderExamBlock(
       break;
     case "chart":
       content = renderChart(block, context, labels);
+      break;
+    case "diagram":
+      content = renderDiagram(block, context, labels);
       break;
     case "essay":
       content = renderEssay(block, context, labels);

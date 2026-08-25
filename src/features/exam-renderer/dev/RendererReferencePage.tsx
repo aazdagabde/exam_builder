@@ -5,6 +5,7 @@ import "@/features/exam-renderer/dev/renderer-reference-print.css";
 import type { ResolvedImageAssets } from "@/features/exam-renderer/assets/renderer-assets";
 import { ExamRenderer } from "@/features/exam-renderer/components/ExamRenderer";
 import {
+  createDiagramReferenceExam,
   createRendererReferenceExam,
   REFERENCE_LANDSCAPE_DATA_URL,
 } from "@/features/exam-renderer/fixtures/reference-exam.fixtures";
@@ -31,13 +32,15 @@ const REFERENCE_ASSETS: ResolvedImageAssets = new Map([
   ],
 ]);
 
-type ReferenceVariant = "generic" | "third-year" | "first-year";
+type ReferenceVariant = "generic" | "third-year" | "first-year" | "diagram";
 
 export function RendererReferencePage() {
   const parameters = new URLSearchParams(window.location.search);
   const requestedReference = parameters.get("reference");
   const initialReference: ReferenceVariant =
-    requestedReference === "third-year" || requestedReference === "first-year"
+    requestedReference === "third-year" ||
+    requestedReference === "first-year" ||
+    requestedReference === "diagram"
       ? requestedReference
       : "generic";
   const initialLanguage = parameters.get("lang") === "fr" ? "fr" : "ar";
@@ -60,11 +63,13 @@ export function RendererReferencePage() {
   const [reports, setReports] = useState<PageOverflowReport[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
   const exam =
-    reference === "third-year"
-      ? createThirdYearReferenceExam()
-      : reference === "first-year"
-        ? createFirstYearReferenceExam()
-        : createRendererReferenceExam(language);
+    reference === "diagram"
+      ? createDiagramReferenceExam(language)
+      : reference === "third-year"
+        ? createThirdYearReferenceExam()
+        : reference === "first-year"
+          ? createFirstYearReferenceExam()
+          : createRendererReferenceExam(language);
 
   useEffect(() => {
     void changeInterfaceLanguage(interfaceLanguage);

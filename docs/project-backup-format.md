@@ -21,6 +21,8 @@ Ce document décrit le format de transfert local d’Exam Builder. `PROJECT.md` 
   métier courant ; un import connu plus ancien est migré avant validation finale.
 - Pour Exam V4, les Timelines conservent intégralement style, mode d’espacement,
   sens chronologique, échelle, positions d’événements, légende et périodes.
+- Pour Exam V5, les DiagramBlocks conservent disposition, nœuds, relations,
+  libellés et identifiants dans la même enveloppe `backupVersion: 1`.
 - `assets` contient uniquement les images réellement référencées par les `ImageBlock` du devoir.
 
 Une version de sauvegarde inconnue est refusée explicitement. Une future migration devra être ajoutée sans réinterpréter silencieusement le format 1.

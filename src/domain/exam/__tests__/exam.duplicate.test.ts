@@ -59,6 +59,10 @@ function collectInternalIds(exam: Exam): string[] {
           ids.push(...block.labels.map((category) => category.id));
           ids.push(...block.series.map((series) => series.id));
           break;
+        case "diagram":
+          ids.push(...block.nodes.map((node) => node.id));
+          ids.push(...block.edges.map((edge) => edge.id));
+          break;
         case "essay":
           ids.push(...block.topics.map((topic) => topic.id));
           break;
@@ -138,6 +142,25 @@ describe("duplicateExam", () => {
     expect(copied.periods[0]).toEqual({
       ...timeline.periods[0],
       id: "copy:timeline-period:period",
+    });
+  });
+
+  it("regenerates Diagram IDs and remaps both edge endpoints", () => {
+    const source = allBlockExamples.find((block) => block.type === "diagram")!;
+    if (source.type !== "diagram") throw new Error("fixture mismatch");
+    const duplicate = duplicateSection(createTestSection([source]), {
+      id: "diagram-section-copy",
+      createInternalId: createCopiedId,
+    });
+    const copied = duplicate.blocks[0]!;
+    if (copied.type !== "diagram") throw new Error("fixture mismatch");
+    expect(copied.nodes.map((node) => node.id)).toEqual(
+      source.nodes.map((node) => `copy:diagram-node:${node.id}`),
+    );
+    expect(copied.edges[0]).toMatchObject({
+      id: `copy:diagram-edge:${source.edges[0]!.id}`,
+      fromNodeId: `copy:diagram-node:${source.edges[0]!.fromNodeId}`,
+      toNodeId: `copy:diagram-node:${source.edges[0]!.toNodeId}`,
     });
   });
 

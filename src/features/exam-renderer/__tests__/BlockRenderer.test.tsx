@@ -23,7 +23,7 @@ function renderBlock(block: ExamBlock, language: "ar" | "fr" = "ar") {
 }
 
 describe("BlockRenderer", () => {
-  it("routes all 16 domain block types", () => {
+  it("routes all 17 domain block types", () => {
     for (const block of rendererBlocks) {
       const view = renderBlock(block);
       expect(view.container).toBeInTheDocument();
@@ -353,5 +353,59 @@ describe("BlockRenderer", () => {
       ),
     ).toBeVisible();
     expect(negative.series[0]!.values).toEqual([12, -2]);
+  });
+
+  it("renders Diagram as SVG with document-language direction and unique markers", () => {
+    const source = rendererBlocks.find((block) => block.type === "diagram")!;
+    if (source.type !== "diagram") throw new Error("fixture mismatch");
+    const first = { ...source, id: "diagram-first" };
+    const second = { ...source, id: "diagram-second", order: source.order + 1 };
+    const view = render(
+      <>
+        <BlockRenderer
+          block={first}
+          labels={getDocumentLabels("ar")}
+          assets={new Map()}
+        />
+        <BlockRenderer
+          block={second}
+          labels={getDocumentLabels("ar")}
+          assets={new Map()}
+        />
+      </>,
+    );
+    const svgs = view.container.querySelectorAll(".exam-diagram__svg");
+    expect(svgs).toHaveLength(2);
+    expect(svgs[0]).toHaveAttribute("data-document-language", "ar");
+    const markerIds = Array.from(
+      view.container.querySelectorAll("marker"),
+      (marker) => marker.id,
+    );
+    expect(new Set(markerIds).size).toBe(2);
+    expect(view.container.querySelectorAll("canvas, img")).toHaveLength(0);
+    expect(view.container.textContent).toContain("يوصل");
+  });
+
+  it("warns and falls back safely for a cyclic hierarchy", () => {
+    const source = rendererBlocks.find((block) => block.type === "diagram")!;
+    if (source.type !== "diagram") throw new Error("fixture mismatch");
+    const cyclic = {
+      ...source,
+      layout: "hierarchy" as const,
+      edges: [
+        ...source.edges,
+        {
+          id: "diagram-cycle",
+          fromNodeId: source.nodes[2]!.id,
+          toNodeId: source.nodes[0]!.id,
+          label: "",
+        },
+      ],
+    };
+    const view = renderBlock(cyclic, "fr");
+    expect(
+      view.container.querySelector("[data-diagram-fallback='true']"),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/relation cyclique/)).toBeVisible();
   });
 });

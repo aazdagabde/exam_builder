@@ -2,6 +2,7 @@ export * from "@/domain/exam/blocks.types";
 export * from "@/domain/exam/exam.block";
 export * from "@/domain/exam/exam.chart";
 export * from "@/domain/exam/exam.duplicate";
+export * from "@/domain/exam/exam.diagram";
 export * from "@/domain/exam/exam.factory";
 export * from "@/domain/exam/exam.points";
 export * from "@/domain/exam/exam.question-numbering";

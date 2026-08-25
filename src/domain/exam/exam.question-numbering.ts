@@ -19,6 +19,7 @@ const DEFAULT_NUMBERED_TYPES = new Set<ExamBlockType>([
   "matching",
   "timeline",
   "chart",
+  "diagram",
   "essay",
 ]);
 

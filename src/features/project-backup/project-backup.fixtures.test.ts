@@ -99,12 +99,15 @@ describe("project backup export and validation", () => {
     });
   });
 
-  it("round-trips Timeline and Chart blocks in backup envelope v1", async () => {
+  it("round-trips Timeline, Chart and Diagram blocks in backup envelope v1", async () => {
     const exam = examWithImages([]);
     exam.sections = [
       createTestSection(
         allBlockExamples.filter(
-          (block) => block.type === "timeline" || block.type === "chart",
+          (block) =>
+            block.type === "timeline" ||
+            block.type === "chart" ||
+            block.type === "diagram",
         ),
       ),
     ];
@@ -141,7 +144,7 @@ describe("project backup export and validation", () => {
     );
     expect(
       prepared.backup.exam.sections[0]!.blocks.map((block) => block.type),
-    ).toEqual(["timeline", "chart"]);
+    ).toEqual(["timeline", "chart", "diagram"]);
     expect(prepared.backup.exam.sections[0]!.blocks[0]).toMatchObject({
       timelineStyle: "historical",
       spacingMode: "scaled",
@@ -149,7 +152,52 @@ describe("project backup export and validation", () => {
       scaleCaption: "1 graduation = 4 ans",
       periods: [{ id: "period", startValue: 1912, endValue: 1934 }],
     });
+    const diagram = prepared.backup.exam.sections[0]!.blocks[2];
+    expect(diagram?.type).toBe("diagram");
+    if (diagram?.type === "diagram") {
+      expect(diagram.layout).toBe("horizontal-flow");
+      expect(diagram.nodes.map((node) => node.id)).toEqual([
+        "diagram-node-1",
+        "diagram-node-2",
+        "diagram-node-3",
+      ]);
+      expect(diagram.edges[0]).toMatchObject({
+        fromNodeId: "diagram-node-1",
+        toNodeId: "diagram-node-2",
+      });
+    }
   });
+
+  it.each([2, 3, 4])(
+    "imports a v%i Exam backup through the full V5 pipeline",
+    async (schemaVersion) => {
+      const exam = examWithImages([]);
+      exam.sections = [
+        createTestSection(
+          allBlockExamples.filter((block) => block.type === "question"),
+        ),
+      ];
+      const backup = await createProjectBackup({
+        exam,
+        assetRepository: new FakeAssetRepository(),
+        now: () => TIME,
+      });
+      const previous = structuredClone(backup) as unknown as {
+        exam: { schemaVersion: number };
+      };
+      previous.exam.schemaVersion = schemaVersion;
+
+      const prepared = await prepareProjectImport(JSON.stringify(previous));
+
+      expect(prepared.backup.backupVersion).toBe(1);
+      expect(prepared.backup.exam.schemaVersion).toBe(
+        CURRENT_EXAM_SCHEMA_VERSION,
+      );
+      expect(
+        prepared.backup.exam.sections[0]!.blocks.map((block) => block.type),
+      ).toEqual(["question"]);
+    },
+  );
 
   it("round-trips numbering intent and migrates schema v1 exams without it", async () => {
     const exam = examWithImages([]);
