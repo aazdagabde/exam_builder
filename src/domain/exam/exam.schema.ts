@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 import type {
+  ChartBlock,
+  ChartCategory,
+  ChartSeries,
   DefinitionBlock,
   DefinitionItem,
   EssayBlock,
@@ -23,6 +26,8 @@ import type {
   TableColumn,
   TableRow,
   TextDocumentBlock,
+  TimelineBlock,
+  TimelineEvent,
   TrueFalseBlock,
   TrueFalseStatement,
 } from "@/domain/exam/blocks.types";
@@ -209,6 +214,92 @@ export const MatchingBlockSchema = z.strictObject({
   shuffleRight: z.boolean().optional(),
 }) satisfies z.ZodType<MatchingBlock>;
 
+export const TimelineEventSchema = z.strictObject({
+  id: identifierSchema,
+  date: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+}) satisfies z.ZodType<TimelineEvent>;
+
+export const TimelineBlockSchema = z
+  .strictObject({
+    ...baseBlockShape,
+    type: z.literal("timeline"),
+    title: z.string().optional(),
+    events: z.array(TimelineEventSchema).min(1),
+    orientation: z.enum(["horizontal", "vertical"]),
+    showDates: z.boolean(),
+  })
+  .superRefine((block, context) => {
+    const ids = new Set<string>();
+    block.events.forEach((event, index) => {
+      if (ids.has(event.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["events", index, "id"],
+          message: "TIMELINE_EVENT_IDS_UNIQUE",
+        });
+      }
+      ids.add(event.id);
+    });
+  }) satisfies z.ZodType<TimelineBlock>;
+
+export const ChartCategorySchema = z.strictObject({
+  id: identifierSchema,
+  label: z.string(),
+}) satisfies z.ZodType<ChartCategory>;
+
+export const ChartSeriesSchema = z.strictObject({
+  id: identifierSchema,
+  name: z.string(),
+  values: z.array(z.number().finite().nullable()),
+}) satisfies z.ZodType<ChartSeries>;
+
+export const ChartBlockSchema = z
+  .strictObject({
+    ...baseBlockShape,
+    type: z.literal("chart"),
+    title: z.string().optional(),
+    chartType: z.enum(["bar", "line", "pie"]),
+    labels: z.array(ChartCategorySchema),
+    series: z.array(ChartSeriesSchema),
+    showLegend: z.boolean(),
+    showValues: z.boolean(),
+    yAxisLabel: z.string().optional(),
+  })
+  .superRefine((block, context) => {
+    const categoryIds = new Set<string>();
+    block.labels.forEach((category, index) => {
+      if (categoryIds.has(category.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["labels", index, "id"],
+          message: "CHART_CATEGORY_IDS_UNIQUE",
+        });
+      }
+      categoryIds.add(category.id);
+    });
+
+    const seriesIds = new Set<string>();
+    block.series.forEach((series, index) => {
+      if (seriesIds.has(series.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["series", index, "id"],
+          message: "CHART_SERIES_IDS_UNIQUE",
+        });
+      }
+      seriesIds.add(series.id);
+      if (series.values.length !== block.labels.length) {
+        context.addIssue({
+          code: "custom",
+          path: ["series", index, "values"],
+          message: "CHART_VALUES_LENGTH_MISMATCH",
+        });
+      }
+    });
+  }) satisfies z.ZodType<ChartBlock>;
+
 export const EssayTopicSchema = z.strictObject({
   id: identifierSchema,
   text: z.string(),
@@ -253,6 +344,8 @@ const structuralExamBlockSchema = z.discriminatedUnion("type", [
   FillBlankBlockSchema,
   TableBlockSchema,
   MatchingBlockSchema,
+  TimelineBlockSchema,
+  ChartBlockSchema,
   EssayBlockSchema,
   FreeTextBlockSchema,
   SeparatorBlockSchema,

@@ -481,11 +481,22 @@ type ExamBlock =
   | FillBlankBlock
   | TableBlock
   | MatchingBlock
+  | TimelineBlock
+  | ChartBlock
   | EssayBlock
   | FreeTextBlock
   | SeparatorBlock
   | PageBreakBlock;
 ```
+
+Le schéma courant V3 prend en charge 16 types de blocs. Les deux blocs visuels
+structurés ont les responsabilités suivantes :
+
+- `TimelineBlock` conserve une suite ordonnée d’événements. La date est un texte
+  pédagogique libre et l’ordre de `events[]` n’est jamais trié automatiquement.
+- `ChartBlock` conserve catégories, séries et valeurs numériques pour les rendus
+  en barres, courbe et secteurs. La géométrie SVG et les couleurs restent des
+  responsabilités du renderer, pas du Domain persistant.
 
 Chaque bloc possède au minimum :
 

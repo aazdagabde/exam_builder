@@ -51,6 +51,13 @@ function collectInternalIds(exam: Exam): string[] {
           ids.push(...block.leftItems.map((item) => item.id));
           ids.push(...block.rightItems.map((item) => item.id));
           break;
+        case "timeline":
+          ids.push(...block.events.map((event) => event.id));
+          break;
+        case "chart":
+          ids.push(...block.labels.map((category) => category.id));
+          ids.push(...block.series.map((series) => series.id));
+          break;
         case "essay":
           ids.push(...block.topics.map((topic) => topic.id));
           break;

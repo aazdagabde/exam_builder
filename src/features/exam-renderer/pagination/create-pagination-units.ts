@@ -166,6 +166,12 @@ function estimateWholeBlockHeight(block: ExamBlock): number {
       return (
         50 + Math.max(block.leftItems.length, block.rightItems.length) * 42
       );
+    case "timeline":
+      return block.orientation === "vertical"
+        ? 55 + block.events.length * 72
+        : 145 + Math.max(0, block.events.length - 6) * 12;
+    case "chart":
+      return 390;
     case "essay":
       return 80 + block.topics.length * 32;
     case "separator":

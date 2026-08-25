@@ -1,5 +1,6 @@
 // @vitest-environment node
 
+import { addChartCategory } from "@/domain/exam";
 import {
   allBlockExamples,
   createTestExam,
@@ -512,5 +513,64 @@ describe("Exam Builder block actions", () => {
     expect(
       store.getState().exam?.sections[0]?.blocks.map((block) => block.order),
     ).toEqual([0, 1, 2]);
+  });
+
+  it("tracks Timeline and Chart mutations through undo and redo", () => {
+    const timeline = allBlockExamples.find(
+      (block) => block.type === "timeline",
+    )!;
+    const chart = allBlockExamples.find((block) => block.type === "chart")!;
+    const store = createExamBuilderStore(createRuntime());
+    store
+      .getState()
+      .initialize(
+        createTestExam([
+          createTestSection([timeline, chart], { id: "visuals" }),
+        ]),
+      );
+
+    store.getState().updateBlock(timeline.id, (block) =>
+      block.type === "timeline"
+        ? {
+            ...block,
+            events: [
+              ...block.events,
+              { id: "event-new", date: "1975", label: "Green March" },
+            ],
+          }
+        : block,
+    );
+    store
+      .getState()
+      .updateBlock(chart.id, (block) =>
+        block.type === "chart"
+          ? addChartCategory(block, { id: "category-new", label: "1980" })
+          : block,
+      );
+    expect(store.getState().revision).toBe(2);
+    expect(store.getState().past).toHaveLength(2);
+
+    store.getState().undo();
+    const undoneChart = store
+      .getState()
+      .exam?.sections[0]?.blocks.find((block) => block.type === "chart");
+    expect(undoneChart?.type).toBe("chart");
+    if (undoneChart?.type === "chart") {
+      expect(undoneChart.labels).toHaveLength(2);
+    }
+    store.getState().undo();
+    const undoneTimeline = store
+      .getState()
+      .exam?.sections[0]?.blocks.find((block) => block.type === "timeline");
+    if (undoneTimeline?.type === "timeline") {
+      expect(undoneTimeline.events).toHaveLength(2);
+    }
+    store.getState().redo();
+    const redoneTimeline = store
+      .getState()
+      .exam?.sections[0]?.blocks.find((block) => block.type === "timeline");
+    if (redoneTimeline?.type === "timeline") {
+      expect(redoneTimeline.events).toHaveLength(3);
+    }
   });
 });

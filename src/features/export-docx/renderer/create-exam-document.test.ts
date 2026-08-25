@@ -31,7 +31,7 @@ describe("DOCX renderer", () => {
     expect(mmToTwips(17.5)).toBe(992);
   });
 
-  it("routes all 14 discriminated block types", () => {
+  it("routes all 16 discriminated block types", () => {
     const context = { language: "fr" as const };
     const labels = getDocumentLabels("fr");
     const assets = { images: new Map() };
@@ -54,6 +54,8 @@ describe("DOCX renderer", () => {
         "fill-blank",
         "table",
         "matching",
+        "timeline",
+        "chart",
         "essay",
         "free-text",
         "separator",

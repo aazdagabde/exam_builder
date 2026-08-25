@@ -274,6 +274,11 @@ function TranslatedSummary({ summary }: { summary: BlockSummary }) {
         columns: summary.columns,
         rows: summary.rows,
       });
+    case "chart":
+      return t("examBuilder.blocks.summary.chart", {
+        type: t(`examBuilder.blocks.chart.types.${summary.chartType}`),
+        count: summary.categories,
+      });
     case "none":
       return t("examBuilder.blocks.noContent");
   }

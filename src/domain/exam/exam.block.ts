@@ -18,6 +18,8 @@ export const EXAM_BLOCK_TYPES = [
   "fill-blank",
   "table",
   "matching",
+  "timeline",
+  "chart",
   "essay",
   "free-text",
   "separator",
@@ -36,6 +38,8 @@ export const CREATABLE_EXAM_BLOCK_TYPES = [
   "fill-blank",
   "table",
   "matching",
+  "timeline",
+  "chart",
   "essay",
   "free-text",
   "separator",
@@ -43,7 +47,12 @@ export const CREATABLE_EXAM_BLOCK_TYPES = [
 ] as const satisfies readonly CreatableExamBlockType[];
 
 export type CreateBlockInternalIdKind =
-  "definition-item" | "multiple-choice-option" | "table-column";
+  | "definition-item"
+  | "multiple-choice-option"
+  | "table-column"
+  | "timeline-event"
+  | "chart-category"
+  | "chart-series";
 
 export interface CreateExamBlockOptions {
   type: CreatableExamBlockType;
@@ -133,6 +142,46 @@ export function createExamBlock({
         order,
         leftItems: [],
         rightItems: [],
+        startsNewQuestion,
+      };
+      break;
+    case "timeline":
+      block = {
+        id,
+        type,
+        order,
+        title: "",
+        events: [
+          {
+            id: createInternalId("timeline-event"),
+            date: "",
+            label: "",
+            description: "",
+          },
+        ],
+        orientation: "horizontal",
+        showDates: true,
+        startsNewQuestion,
+      };
+      break;
+    case "chart":
+      block = {
+        id,
+        type,
+        order,
+        title: "",
+        chartType: "bar",
+        labels: [{ id: createInternalId("chart-category"), label: "" }],
+        series: [
+          {
+            id: createInternalId("chart-series"),
+            name: "",
+            values: [null],
+          },
+        ],
+        showLegend: true,
+        showValues: false,
+        yAxisLabel: "",
         startsNewQuestion,
       };
       break;

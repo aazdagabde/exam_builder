@@ -1,6 +1,7 @@
 import type { ExamBlock } from "@/domain/exam";
 import type { ResolvedImageAssets } from "@/features/exam-renderer/assets/renderer-assets";
 import { DefinitionRenderer } from "@/features/exam-renderer/components/blocks/DefinitionRenderer";
+import { ChartRenderer } from "@/features/exam-renderer/components/blocks/ChartRenderer";
 import { EssayRenderer } from "@/features/exam-renderer/components/blocks/EssayRenderer";
 import { FillBlankRenderer } from "@/features/exam-renderer/components/blocks/FillBlankRenderer";
 import { FreeTextRenderer } from "@/features/exam-renderer/components/blocks/FreeTextRenderer";
@@ -12,6 +13,7 @@ import { PageBreakRenderer } from "@/features/exam-renderer/components/blocks/Pa
 import { QuestionRenderer } from "@/features/exam-renderer/components/blocks/QuestionRenderer";
 import { SeparatorRenderer } from "@/features/exam-renderer/components/blocks/SeparatorRenderer";
 import { TableRenderer } from "@/features/exam-renderer/components/blocks/TableRenderer";
+import { TimelineRenderer } from "@/features/exam-renderer/components/blocks/TimelineRenderer";
 import { TextDocumentRenderer } from "@/features/exam-renderer/components/blocks/TextDocumentRenderer";
 import { TrueFalseRenderer } from "@/features/exam-renderer/components/blocks/TrueFalseRenderer";
 import type { DocumentLabels } from "@/features/exam-renderer/document-labels";
@@ -109,6 +111,10 @@ function renderBlockContent(
       );
     case "matching":
       return <MatchingRenderer block={block} labels={labels} />;
+    case "timeline":
+      return <TimelineRenderer block={block} labels={labels} />;
+    case "chart":
+      return <ChartRenderer block={block} labels={labels} />;
     case "essay":
       return <EssayRenderer block={block} labels={labels} />;
     case "free-text":

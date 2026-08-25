@@ -23,6 +23,8 @@ describe("Exam block helpers", () => {
     ["fill-blank", true],
     ["table", true],
     ["matching", true],
+    ["timeline", true],
+    ["chart", true],
     ["essay", true],
     ["instruction", false],
     ["text-document", false],

@@ -3,6 +3,7 @@
 import {
   computeQuestionNumbering,
   CURRENT_EXAM_SCHEMA_VERSION,
+  EXAM_SCHEMA_VERSION_2,
   ExamMigrationError,
   migrateExamToLatest,
 } from "@/domain/exam";
@@ -83,6 +84,45 @@ describe("Exam persistent schema migrations", () => {
     expect(source.schemaVersion).toBe(1);
     expect(source.sections[0]!.blocks[0]).not.toHaveProperty(
       "startsNewQuestion",
+    );
+  });
+
+  it("migrates a v2 Exam with 14 blocks to v3 without inventing blocks", () => {
+    const current = createTestExam([
+      createTestSection(allBlockExamples.slice(0, 14)),
+    ]);
+    const source = {
+      ...structuredClone(current),
+      schemaVersion: EXAM_SCHEMA_VERSION_2,
+    };
+    const beforeBlocks = structuredClone(source.sections[0]!.blocks);
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.sections[0]!.blocks).toHaveLength(14);
+    expect(migrated.sections[0]!.blocks).toEqual(beforeBlocks);
+    expect(migrated.id).toBe(source.id);
+    expect(migrated.createdAt).toBe(source.createdAt);
+    expect(migrated.updatedAt).toBe(source.updatedAt);
+    expect(source.schemaVersion).toBe(EXAM_SCHEMA_VERSION_2);
+  });
+
+  it("chains v1 through v2 to v3", () => {
+    const source = asPreviousExam(
+      createTestExam([createTestSection(allBlockExamples.slice(0, 14))]),
+    );
+    delete source.settings.questionNumbering;
+    source.sections[0]!.blocks.forEach((block) => {
+      delete block.startsNewQuestion;
+    });
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.sections[0]!.blocks).toHaveLength(14);
+    expect(migrated.sections[0]!.blocks.map((block) => block.id)).toEqual(
+      source.sections[0]!.blocks.map((block) => block.id),
     );
   });
 

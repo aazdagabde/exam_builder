@@ -17,6 +17,9 @@ export type DuplicateIdKind =
   | "table-row"
   | "matching-left-item"
   | "matching-right-item"
+  | "timeline-event"
+  | "chart-category"
+  | "chart-series"
   | "essay-topic";
 
 export interface DuplicateIdContext {
@@ -158,6 +161,40 @@ export function duplicateBlock(
             kind: "matching-right-item",
             sourceId: item.id,
           }),
+        })),
+      };
+
+    case "timeline":
+      return {
+        ...block,
+        id,
+        events: block.events.map((event) => ({
+          ...event,
+          id: createInternalId({
+            kind: "timeline-event",
+            sourceId: event.id,
+          }),
+        })),
+      };
+
+    case "chart":
+      return {
+        ...block,
+        id,
+        labels: block.labels.map((category) => ({
+          ...category,
+          id: createInternalId({
+            kind: "chart-category",
+            sourceId: category.id,
+          }),
+        })),
+        series: block.series.map((series) => ({
+          ...series,
+          id: createInternalId({
+            kind: "chart-series",
+            sourceId: series.id,
+          }),
+          values: [...series.values],
         })),
       };
 

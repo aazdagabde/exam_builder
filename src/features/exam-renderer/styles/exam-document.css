@@ -34,6 +34,182 @@
     "Sakkal Majalla", "Traditional Arabic", Tahoma, Arial, sans-serif;
 }
 
+.exam-visual-title {
+  margin-block-end: 2mm;
+  font-weight: 700;
+  text-align: center;
+}
+
+.exam-timeline,
+.exam-chart {
+  min-width: 0;
+  margin: 0;
+  break-inside: avoid;
+}
+
+.exam-timeline__events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exam-timeline--horizontal .exam-timeline__events {
+  display: flex;
+  align-items: flex-start;
+}
+
+.exam-timeline--horizontal .exam-timeline__event {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 0;
+  text-align: center;
+}
+
+.exam-timeline--horizontal .exam-timeline__marker {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 3.2mm;
+  height: 3.2mm;
+  margin: 1.2mm auto;
+  border: 0.45mm solid #111;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.exam-timeline--horizontal .exam-timeline__event:not(:last-child)::after {
+  position: absolute;
+  inset-block-start: calc(1.55em + 2.7mm);
+  inset-inline-start: 50%;
+  width: 100%;
+  border-block-start: 0.4mm solid #111;
+  content: "";
+}
+
+.exam-timeline__date {
+  min-height: 1.55em;
+  font-size: var(--exam-font-small);
+  font-weight: 700;
+}
+
+.exam-timeline__label {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+  line-height: var(--exam-line-height-compact);
+}
+
+.exam-timeline__description {
+  margin-block-start: 0.8mm;
+  color: var(--exam-muted-color);
+  font-size: var(--exam-font-small);
+  line-height: var(--exam-line-height-compact);
+}
+
+.exam-timeline--vertical .exam-timeline__event {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(22mm, auto) 4mm minmax(0, 1fr);
+  gap: 2mm;
+  min-height: 17mm;
+}
+
+.exam-timeline--vertical .exam-timeline__marker {
+  position: relative;
+  z-index: 1;
+  width: 3.2mm;
+  height: 3.2mm;
+  margin-block-start: 0.8mm;
+  border: 0.45mm solid #111;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.exam-timeline--vertical .exam-timeline__event:not(:last-child)::after {
+  position: absolute;
+  inset-block-start: 4mm;
+  inset-block-end: -1mm;
+  inset-inline-start: calc(22mm + 3.5mm);
+  border-inline-start: 0.4mm solid #111;
+  content: "";
+}
+
+.exam-chart__svg {
+  display: block;
+  width: 100%;
+  max-height: 92mm;
+  overflow: visible;
+  font-family: inherit;
+}
+
+.exam-chart__svg text {
+  fill: #111;
+  font-size: 11px;
+}
+
+.exam-chart__grid-line {
+  stroke: #d4d4d4;
+  stroke-width: 0.8;
+}
+
+.exam-chart__axis-line,
+.exam-chart__zero-line {
+  stroke: #111;
+  stroke-width: 1.25;
+}
+
+.exam-chart__zero-line {
+  stroke-width: 1.7;
+}
+
+.exam-chart__category-label,
+.exam-chart__legend-text {
+  font-size: 10px !important;
+}
+
+.exam-chart__axis-label,
+.exam-chart__value {
+  font-size: 9px !important;
+}
+
+.exam-chart__pie-value {
+  fill: #fff !important;
+  font-size: 10px !important;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: #111;
+  stroke-width: 2px;
+}
+
+.exam-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5mm 4mm;
+  margin: 1mm 0 0;
+  padding: 0;
+  font-size: var(--exam-font-small);
+  list-style: none;
+}
+
+.exam-chart__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5mm;
+}
+
+.exam-chart__legend-swatch {
+  width: 5mm;
+  height: 2.5mm;
+  border: 0.35mm solid #111;
+}
+
+.exam-chart__fallback {
+  margin: 3mm 0;
+  padding: 4mm;
+  border: 0.35mm dashed #737373;
+  color: var(--exam-muted-color);
+  text-align: center;
+}
+
 .exam-renderer,
 .exam-renderer *,
 .exam-renderer *::before,

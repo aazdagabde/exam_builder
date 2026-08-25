@@ -23,7 +23,7 @@ function renderBlock(block: ExamBlock, language: "ar" | "fr" = "ar") {
 }
 
 describe("BlockRenderer", () => {
-  it("routes all 14 domain block types", () => {
+  it("routes all 16 domain block types", () => {
     for (const block of rendererBlocks) {
       const view = renderBlock(block);
       expect(view.container).toBeInTheDocument();
@@ -211,5 +211,54 @@ describe("BlockRenderer", () => {
     expect(screen.queryByText("السياق")).not.toBeInTheDocument();
     expect(screen.queryByText("العناصر")).not.toBeInTheDocument();
     expect(screen.getByRole("list")).toBeVisible();
+  });
+
+  it.each(["horizontal", "vertical"] as const)(
+    "renders a %s timeline while preserving Domain event order",
+    (orientation) => {
+      const timeline = rendererBlocks.find(
+        (block) => block.type === "timeline",
+      )!;
+      if (timeline.type !== "timeline") throw new Error("fixture mismatch");
+      const view = renderBlock({ ...timeline, orientation });
+      const events = view.container.querySelectorAll(".exam-timeline__event");
+      expect(events).toHaveLength(2);
+      expect(events[0]).toHaveTextContent("1912");
+      expect(events[1]).toHaveTextContent("1956");
+      expect(
+        view.container.querySelector(
+          `[data-timeline-orientation="${orientation}"]`,
+        ),
+      ).toBeInTheDocument();
+    },
+  );
+
+  it.each(["bar", "line", "pie"] as const)(
+    "renders a vector %s chart with labels",
+    (chartType) => {
+      const chart = rendererBlocks.find((block) => block.type === "chart")!;
+      if (chart.type !== "chart") throw new Error("fixture mismatch");
+      const view = renderBlock({ ...chart, chartType });
+      expect(view.container.querySelector("svg")).toBeInTheDocument();
+      expect(view.container.querySelector("svg")?.outerHTML).toContain("1960");
+      expect(screen.getByRole("img", { name: "السكان" })).toBeVisible();
+    },
+  );
+
+  it("renders a clear pie fallback without changing negative data", () => {
+    const chart = rendererBlocks.find((block) => block.type === "chart")!;
+    if (chart.type !== "chart") throw new Error("fixture mismatch");
+    const negative = {
+      ...chart,
+      chartType: "pie" as const,
+      series: [{ ...chart.series[0]!, values: [12, -2] }],
+    };
+    renderBlock(negative, "fr");
+    expect(
+      screen.getByText(
+        "Les données ne sont pas compatibles avec ce graphique.",
+      ),
+    ).toBeVisible();
+    expect(negative.series[0]!.values).toEqual([12, -2]);
   });
 });

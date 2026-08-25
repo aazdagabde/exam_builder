@@ -514,6 +514,150 @@ function renderMatching(
   return result;
 }
 
+function renderTimeline(
+  block: Extract<ExamBlock, { type: "timeline" }>,
+  context: DocxRenderContext,
+  labels: DocumentLabels,
+): FileChild[] {
+  const result: FileChild[] = [];
+  if (block.title?.trim()) {
+    result.push(
+      paragraph(
+        context,
+        [
+          textRun(context, block.title, {
+            bold: true,
+            boldComplexScript: true,
+          }),
+          ...pointsText(context, block.points, labels.points),
+        ],
+        { keepNext: true },
+      ),
+    );
+  }
+  block.events.forEach((event, index) => {
+    const date = block.showDates && event.date.trim() ? `${event.date} — ` : "";
+    result.push(
+      paragraph(
+        context,
+        [
+          textRun(context, `${date}${event.label || "\u00a0"}`, {
+            bold: true,
+            boldComplexScript: true,
+          }),
+          ...(index === block.events.length - 1 && !block.title?.trim()
+            ? pointsText(context, block.points, labels.points)
+            : []),
+        ],
+        { keepNext: Boolean(event.description?.trim()), keepLines: true },
+      ),
+    );
+    if (event.description?.trim()) {
+      result.push(
+        textParagraph(context, event.description, {
+          color: DOCX_COLORS.muted,
+          keepLines: true,
+        }),
+      );
+    }
+  });
+  return result;
+}
+
+function chartTypeLabel(
+  type: Extract<ExamBlock, { type: "chart" }>["chartType"],
+  language: DocxRenderContext["language"],
+): string {
+  const labels =
+    language === "ar"
+      ? { bar: "أعمدة", line: "منحنى", pie: "دائري" }
+      : { bar: "Barres", line: "Courbe", pie: "Circulaire" };
+  return labels[type];
+}
+
+function renderChart(
+  block: Extract<ExamBlock, { type: "chart" }>,
+  context: DocxRenderContext,
+  labels: DocumentLabels,
+): FileChild[] {
+  const result: FileChild[] = [
+    paragraph(
+      context,
+      [
+        textRun(
+          context,
+          `${labels.chart}${block.title?.trim() ? ` : ${block.title}` : ""}`,
+          { bold: true, boldComplexScript: true },
+        ),
+        ...pointsText(context, block.points, labels.points),
+      ],
+      { keepNext: true },
+    ),
+    textParagraph(
+      context,
+      `${labels.chartType} : ${chartTypeLabel(block.chartType, context.language)}`,
+      { keepNext: true, color: DOCX_COLORS.muted },
+    ),
+  ];
+  const columnCount = 1 + block.series.length;
+  const width = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / columnCount);
+  const rows = [
+    new TableRow({
+      tableHeader: true,
+      cantSplit: true,
+      children: [
+        labels.category,
+        ...block.series.map((series) => series.name),
+      ].map((value) =>
+        tableCell(
+          [
+            textParagraph(context, value || "\u00a0", {
+              bold: true,
+              boldComplexScript: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
+          { width, header: true },
+        ),
+      ),
+    }),
+    ...block.labels.map(
+      (category, categoryIndex) =>
+        new TableRow({
+          cantSplit: true,
+          children: [
+            tableCell([textParagraph(context, category.label || "\u00a0")], {
+              width,
+            }),
+            ...block.series.map((series) =>
+              tableCell(
+                [
+                  textParagraph(
+                    context,
+                    series.values[categoryIndex] === null ||
+                      series.values[categoryIndex] === undefined
+                      ? "\u00a0"
+                      : String(series.values[categoryIndex]),
+                    { alignment: AlignmentType.CENTER },
+                  ),
+                ],
+                { width },
+              ),
+            ),
+          ],
+        }),
+    ),
+  ];
+  result.push(
+    nativeTable({
+      context,
+      rows,
+      columnWidths: Array.from({ length: columnCount }, () => width),
+    }),
+  );
+  return result;
+}
+
 function renderEssay(
   block: Extract<ExamBlock, { type: "essay" }>,
   context: DocxRenderContext,
@@ -817,6 +961,12 @@ export function renderExamBlock(
       break;
     case "matching":
       content = renderMatching(block, context, labels);
+      break;
+    case "timeline":
+      content = renderTimeline(block, context, labels);
+      break;
+    case "chart":
+      content = renderChart(block, context, labels);
       break;
     case "essay":
       content = renderEssay(block, context, labels);

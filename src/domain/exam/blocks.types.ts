@@ -7,6 +7,9 @@ export type TableColumnId = string;
 export type TableRowId = string;
 export type MatchingItemId = string;
 export type EssayTopicId = string;
+export type TimelineEventId = string;
+export type ChartCategoryId = string;
+export type ChartSeriesId = string;
 
 export type ExamBlockType =
   | "instruction"
@@ -19,6 +22,8 @@ export type ExamBlockType =
   | "fill-blank"
   | "table"
   | "matching"
+  | "timeline"
+  | "chart"
   | "essay"
   | "free-text"
   | "separator"
@@ -162,6 +167,47 @@ export interface MatchingBlock extends BaseBlock {
   shuffleRight?: boolean;
 }
 
+export interface TimelineEvent {
+  id: TimelineEventId;
+  date: string;
+  label: string;
+  description?: string;
+}
+
+export type TimelineOrientation = "horizontal" | "vertical";
+
+export interface TimelineBlock extends BaseBlock {
+  type: "timeline";
+  title?: string;
+  events: TimelineEvent[];
+  orientation: TimelineOrientation;
+  showDates: boolean;
+}
+
+export type ChartType = "bar" | "line" | "pie";
+
+export interface ChartCategory {
+  id: ChartCategoryId;
+  label: string;
+}
+
+export interface ChartSeries {
+  id: ChartSeriesId;
+  name: string;
+  values: Array<number | null>;
+}
+
+export interface ChartBlock extends BaseBlock {
+  type: "chart";
+  title?: string;
+  chartType: ChartType;
+  labels: ChartCategory[];
+  series: ChartSeries[];
+  showLegend: boolean;
+  showValues: boolean;
+  yAxisLabel?: string;
+}
+
 export interface EssayTopic {
   id: EssayTopicId;
   text: string;
@@ -206,6 +252,8 @@ export type ExamBlock =
   | FillBlankBlock
   | TableBlock
   | MatchingBlock
+  | TimelineBlock
+  | ChartBlock
   | EssayBlock
   | FreeTextBlock
   | SeparatorBlock

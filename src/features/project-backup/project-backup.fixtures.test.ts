@@ -5,6 +5,10 @@ import {
   type Exam,
 } from "@/domain/exam";
 import {
+  allBlockExamples,
+  createTestSection,
+} from "@/domain/exam/__tests__/exam.fixtures";
+import {
   createProjectBackup,
   downloadProjectBackup,
   getProjectBackupFileName,
@@ -93,6 +97,34 @@ describe("project backup export and validation", () => {
       exam,
       assets: [],
     });
+  });
+
+  it("round-trips Timeline and Chart blocks in backup envelope v1", async () => {
+    const exam = examWithImages([]);
+    exam.sections = [
+      createTestSection(
+        allBlockExamples.filter(
+          (block) => block.type === "timeline" || block.type === "chart",
+        ),
+      ),
+    ];
+    const backup = await createProjectBackup({
+      exam,
+      assetRepository: new FakeAssetRepository(),
+      now: () => TIME,
+    });
+    const prepared = await prepareProjectImport(JSON.stringify(backup));
+
+    expect(prepared.backup.backupVersion).toBe(1);
+    expect(prepared.backup.exam.schemaVersion).toBe(
+      CURRENT_EXAM_SCHEMA_VERSION,
+    );
+    expect(prepared.backup.exam.sections[0]!.blocks).toEqual(
+      exam.sections[0]!.blocks,
+    );
+    expect(
+      prepared.backup.exam.sections[0]!.blocks.map((block) => block.type),
+    ).toEqual(["timeline", "chart"]);
   });
 
   it("round-trips numbering intent and migrates schema v1 exams without it", async () => {

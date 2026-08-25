@@ -122,6 +122,44 @@ export const allBlockExamples: ExamBlock[] = [
     startsNewQuestion: false,
     order: 13,
   },
+  {
+    id: "timeline-1",
+    type: "timeline",
+    startsNewQuestion: true,
+    order: 14,
+    title: "Moroccan independence",
+    events: [
+      {
+        id: "timeline-event-1",
+        date: "1912",
+        label: "Protectorate",
+        description: "Beginning of the protectorate",
+      },
+      {
+        id: "timeline-event-2",
+        date: "1956",
+        label: "Independence",
+      },
+    ],
+    orientation: "horizontal",
+    showDates: true,
+  },
+  {
+    id: "chart-1",
+    type: "chart",
+    startsNewQuestion: true,
+    order: 15,
+    title: "Population",
+    chartType: "bar",
+    labels: [
+      { id: "chart-category-1", label: "1960" },
+      { id: "chart-category-2", label: "1970" },
+    ],
+    series: [{ id: "chart-series-1", name: "Population", values: [12, 15.5] }],
+    showLegend: true,
+    showValues: true,
+    yAxisLabel: "Millions",
+  },
 ];
 
 export function createTestSection(

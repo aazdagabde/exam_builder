@@ -17,6 +17,10 @@ export const ExamValidationCode = {
   TABLE_COLUMNS_REQUIRED: "TABLE_COLUMNS_REQUIRED",
   MATCHING_LEFT_EMPTY: "MATCHING_LEFT_EMPTY",
   MATCHING_RIGHT_EMPTY: "MATCHING_RIGHT_EMPTY",
+  TIMELINE_EMPTY: "TIMELINE_EMPTY",
+  CHART_EMPTY: "CHART_EMPTY",
+  CHART_PIE_MULTIPLE_SERIES: "CHART_PIE_MULTIPLE_SERIES",
+  CHART_PIE_NEGATIVE_VALUES: "CHART_PIE_NEGATIVE_VALUES",
   TOTAL_POINTS_MISMATCH: "TOTAL_POINTS_MISMATCH",
 } as const;
 
@@ -46,6 +50,10 @@ const messageKeys: Record<ExamValidationCode, string> = {
   TABLE_COLUMNS_REQUIRED: "validation.table.columnsRequired",
   MATCHING_LEFT_EMPTY: "validation.matching.leftEmpty",
   MATCHING_RIGHT_EMPTY: "validation.matching.rightEmpty",
+  TIMELINE_EMPTY: "validation.timeline.empty",
+  CHART_EMPTY: "validation.chart.empty",
+  CHART_PIE_MULTIPLE_SERIES: "validation.chart.pieMultipleSeries",
+  CHART_PIE_NEGATIVE_VALUES: "validation.chart.pieNegativeValues",
   TOTAL_POINTS_MISMATCH: "validation.exam.totalPointsMismatch",
 };
 
@@ -169,6 +177,60 @@ function validateBlock(
         );
       }
       break;
+
+    case "timeline":
+      if (
+        block.events.every(
+          (event) =>
+            !event.date.trim() &&
+            !event.label.trim() &&
+            !(event.description ?? "").trim(),
+        )
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.TIMELINE_EMPTY, "warning", {
+            ...context,
+            path: `${blockPath}.events`,
+          }),
+        );
+      }
+      break;
+
+    case "chart": {
+      const values = block.series.flatMap((series) => series.values);
+      if (
+        block.labels.length === 0 ||
+        block.series.length === 0 ||
+        values.every((value) => value === null)
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_EMPTY, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      if (block.chartType === "pie" && block.series.length > 1) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_PIE_MULTIPLE_SERIES, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      if (
+        block.chartType === "pie" &&
+        values.some((value) => value !== null && value < 0)
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_PIE_NEGATIVE_VALUES, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      break;
+    }
   }
 
   return issues;

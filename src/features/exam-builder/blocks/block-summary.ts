@@ -5,9 +5,21 @@ export type BlockSummary =
   | {
       kind: "count";
       count: number;
-      item: "terms" | "statements" | "options" | "blanks" | "pairs" | "topics";
+      item:
+        | "terms"
+        | "statements"
+        | "options"
+        | "blanks"
+        | "pairs"
+        | "topics"
+        | "events";
     }
   | { kind: "table"; columns: number; rows: number }
+  | {
+      kind: "chart";
+      chartType: "bar" | "line" | "pie";
+      categories: number;
+    }
   | { kind: "none" };
 
 function firstText(...values: Array<string | undefined>): BlockSummary {
@@ -56,6 +68,14 @@ export function getBlockSummary(block: ExamBlock): BlockSummary {
         kind: "count",
         count: Math.max(block.leftItems.length, block.rightItems.length),
         item: "pairs",
+      };
+    case "timeline":
+      return { kind: "count", count: block.events.length, item: "events" };
+    case "chart":
+      return {
+        kind: "chart",
+        chartType: block.chartType,
+        categories: block.labels.length,
       };
     case "essay":
       return block.instruction.trim()

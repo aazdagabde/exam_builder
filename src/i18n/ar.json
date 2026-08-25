@@ -243,6 +243,8 @@
         "fillBlank": "ملء الفراغ",
         "table": "جدول",
         "matching": "صل بسهم",
+        "timeline": "الخط الزمني",
+        "chart": "المبيان",
         "essay": "موضوع مقالي",
         "freeText": "نص حر",
         "separator": "فاصل",
@@ -259,6 +261,8 @@
         "fillBlank": "إنشاء نص بفراغات للإكمال.",
         "table": "عرض جدول أو إعداده للإكمال.",
         "matching": "ربط عناصر عمودين.",
+        "timeline": "تنظيم أحداث وفق ترتيب يحدده الأستاذ.",
+        "chart": "عرض البيانات بالأعمدة أو المنحنى أو القطاعات.",
         "essay": "إضافة الموضوع المقالي الوحيد في الفرض.",
         "freeText": "إضافة نص حر أو ملاحظة أو عنوان فرعي.",
         "separator": "إنشاء فاصل بصري.",
@@ -284,7 +288,9 @@
         "blanks": "{{count}} فراغ",
         "pairs": "{{count}} زوج",
         "topics": "{{count}} عنصر",
-        "table": "{{columns}} × {{rows}}"
+        "events": "الخط الزمني · {{count}} حدث",
+        "table": "{{columns}} × {{rows}}",
+        "chart": "مبيان {{type}} · {{count}} فئة"
       },
       "errors": {
         "NO_ACTIVE_SECTION": "أضف قسماً أولاً.",
@@ -420,6 +426,53 @@
         "addRight": "إضافة إلى اليمين",
         "shuffleRight": "خلط العمود الأيمن عند العرض"
       },
+      "timeline": {
+        "title": "العنوان",
+        "titlePlaceholder": "عنوان اختياري للخط الزمني",
+        "orientation": "الاتجاه",
+        "orientations": {
+          "horizontal": "أفقي",
+          "vertical": "عمودي"
+        },
+        "showDates": "إظهار التواريخ أو الفترات",
+        "events": "الأحداث",
+        "eventNumber": "الحدث {{number}}",
+        "date": "التاريخ / الفترة",
+        "datePlaceholder": "مثال: 1956، القرن 19…",
+        "label": "الحدث",
+        "labelPlaceholder": "عنوان الحدث…",
+        "description": "وصف اختياري",
+        "addEvent": "إضافة حدث"
+      },
+      "chart": {
+        "chart": "المبيان",
+        "title": "العنوان",
+        "type": "النوع",
+        "types": {
+          "bar": "بالأعمدة",
+          "line": "منحنى",
+          "pie": "دائري"
+        },
+        "data": "البيانات",
+        "display": "العرض",
+        "series": "السلاسل",
+        "seriesNumber": "السلسلة {{number}}",
+        "seriesPlaceholder": "اسم السلسلة…",
+        "addSeries": "إضافة سلسلة",
+        "removeSeries": "حذف {{name}}",
+        "category": "الفئة",
+        "categoryNumber": "الفئة {{number}}",
+        "categoryPlaceholder": "اسم الفئة…",
+        "addCategory": "إضافة فئة",
+        "valueLabel": "قيمة {{series}} في {{category}}",
+        "invalidNumber": "أدخل عدداً محدوداً.",
+        "actions": "الإجراءات",
+        "showLegend": "إظهار المفتاح",
+        "showValues": "إظهار القيم",
+        "yAxisLabel": "تسمية المحور العمودي",
+        "pieSingleSeries": "يستعمل المبيان الدائري سلسلة واحدة.",
+        "pieNegative": "لا يمكن للمبيان الدائري عرض قيم سالبة. تم الاحتفاظ بالبيانات."
+      },
       "essay": {
         "context": "السياق",
         "contextPlaceholder": "اكتب السياق الاختياري…",
@@ -496,6 +549,14 @@
     "matching": {
       "leftEmpty": "العمود الأيسر في تمرين الربط فارغ.",
       "rightEmpty": "العمود الأيمن في تمرين الربط فارغ."
+    },
+    "timeline": {
+      "empty": "لا يتضمن الخط الزمني أي حدث معبأ بعد."
+    },
+    "chart": {
+      "empty": "لا يتضمن المبيان أي بيانات معبأة.",
+      "pieMultipleSeries": "يستعمل المبيان الدائري سلسلة واحدة.",
+      "pieNegativeValues": "لا يمكن للمبيان الدائري عرض قيم سالبة."
     }
   },
   "projectBackup": {

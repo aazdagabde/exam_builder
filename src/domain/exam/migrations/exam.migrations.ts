@@ -3,9 +3,11 @@ import {
   CURRENT_EXAM_SCHEMA_VERSION,
   EXAM_SCHEMA_VERSION_1,
   EXAM_SCHEMA_VERSION_2,
+  EXAM_SCHEMA_VERSION_3,
   type Exam,
 } from "@/domain/exam/exam.types";
 import { migrateExamV1ToV2 } from "@/domain/exam/migrations/v1-to-v2";
+import { migrateExamV2ToV3 } from "@/domain/exam/migrations/v2-to-v3";
 
 export type ExamMigrationErrorCode =
   | "EXAM_MIGRATION_FAILED"
@@ -37,6 +39,10 @@ const migrations: ReadonlyMap<number, MigrationStep> = new Map([
   [
     EXAM_SCHEMA_VERSION_1,
     { toVersion: EXAM_SCHEMA_VERSION_2, migrate: migrateExamV1ToV2 },
+  ],
+  [
+    EXAM_SCHEMA_VERSION_2,
+    { toVersion: EXAM_SCHEMA_VERSION_3, migrate: migrateExamV2ToV3 },
   ],
 ]);
 

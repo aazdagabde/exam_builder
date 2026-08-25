@@ -1,6 +1,7 @@
 import {
   AlignJustify,
   BookOpenText,
+  ChartColumn,
   CheckSquare2,
   FileImage,
   FileQuestion,
@@ -8,6 +9,7 @@ import {
   GalleryHorizontalEnd,
   ListChecks,
   ListTree,
+  Milestone,
   Minus,
   Pilcrow,
   Rows3,
@@ -98,6 +100,20 @@ export const BLOCK_CATALOG: readonly BlockCatalogEntry[] = [
     descriptionKey: "examBuilder.blocks.descriptions.matching",
     category: "exercises",
     icon: GalleryHorizontalEnd,
+  },
+  {
+    type: "timeline",
+    labelKey: "examBuilder.blocks.types.timeline",
+    descriptionKey: "examBuilder.blocks.descriptions.timeline",
+    category: "exercises",
+    icon: Milestone,
+  },
+  {
+    type: "chart",
+    labelKey: "examBuilder.blocks.types.chart",
+    descriptionKey: "examBuilder.blocks.descriptions.chart",
+    category: "exercises",
+    icon: ChartColumn,
   },
   {
     type: "essay",

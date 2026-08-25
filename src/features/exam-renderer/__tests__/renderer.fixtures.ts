@@ -147,6 +147,37 @@ export const rendererBlocks: ExamBlock[] = [
     style: "line",
   },
   { id: "break", type: "page-break", startsNewQuestion: false, order: 13 },
+  {
+    id: "timeline",
+    type: "timeline",
+    startsNewQuestion: true,
+    order: 14,
+    title: "محطات تاريخية",
+    orientation: "horizontal",
+    showDates: true,
+    events: [
+      { id: "event-1912", date: "1912", label: "الحماية" },
+      { id: "event-1956", date: "1956", label: "الاستقلال" },
+    ],
+    points: 2,
+  },
+  {
+    id: "chart",
+    type: "chart",
+    startsNewQuestion: true,
+    order: 15,
+    title: "السكان",
+    chartType: "bar",
+    labels: [
+      { id: "category-1960", label: "1960" },
+      { id: "category-1970", label: "1970" },
+    ],
+    series: [{ id: "population", name: "السكان", values: [12, 15] }],
+    showLegend: true,
+    showValues: true,
+    yAxisLabel: "مليون",
+    points: 2,
+  },
 ];
 
 export function createRendererTestExam(language: "ar" | "fr" = "ar"): Exam {
