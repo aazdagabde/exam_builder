@@ -78,8 +78,9 @@ function HistoricalTimeline({ block }: { block: TimelineBlock }) {
   const height = Math.max(170, captionY + (block.scaleCaption.trim() ? 24 : 4));
   const markerId = `timeline-${block.id}-arrow`;
   const axisStart =
-    block.chronologyDirection === "ltr" ? AXIS_LEFT : AXIS_RIGHT;
-  const axisEnd = block.chronologyDirection === "ltr" ? AXIS_RIGHT : AXIS_LEFT;
+    block.chronologyDirection === "ltr" ? AXIS_LEFT - 20 : AXIS_RIGHT + 20;
+  const axisEnd =
+    block.chronologyDirection === "ltr" ? AXIS_RIGHT + 20 : AXIS_LEFT - 20;
 
   return (
     <svg

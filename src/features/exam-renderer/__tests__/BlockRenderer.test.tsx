@@ -249,6 +249,13 @@ describe("BlockRenderer", () => {
     expect(Number(axis.getAttribute("x1"))).toBeLessThan(
       Number(axis.getAttribute("x2")),
     );
+    const tickXs = Array.from(
+      svg.querySelectorAll(".exam-timeline__tick line"),
+      (tick) => Number(tick.getAttribute("x1")),
+    );
+    expect(Number(axis.getAttribute("x2"))).toBeGreaterThan(
+      Math.max(...tickXs),
+    );
     expect(svg.querySelectorAll(".exam-timeline__tick")).toHaveLength(12);
     expect(svg.querySelectorAll(".exam-timeline__period")).toHaveLength(3);
     expect(svg.textContent).toContain("الحماية");
