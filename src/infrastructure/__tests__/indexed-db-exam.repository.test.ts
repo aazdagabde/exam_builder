@@ -260,23 +260,39 @@ describe("IndexedDbExamRepository", () => {
   });
 
   it("migrates mixed v1/v2 records during findAll", async () => {
-    const previous = createPersistableExam("exam-list-v1", {
+    const firstPrevious = createPersistableExam("exam-list-v1-first", {
       updatedAt: "2026-08-20T10:00:00.000Z",
       blocks: createComplexBlocks(),
     });
     const current = createPersistableExam("exam-list-v2", {
       updatedAt: "2026-08-21T10:00:00.000Z",
     });
+    const secondPrevious = createPersistableExam("exam-list-v1-second", {
+      updatedAt: "2026-08-22T10:00:00.000Z",
+      blocks: createComplexBlocks(),
+    });
     await database
       .table<unknown, string>("exams")
-      .bulkPut([toPreviousExam(previous), current]);
+      .bulkPut([
+        toPreviousExam(firstPrevious),
+        current,
+        toPreviousExam(secondPrevious),
+      ]);
 
-    await expect(repository.findAll()).resolves.toEqual([current, previous]);
-    await expect(
-      database.table<Record<string, unknown>, string>("exams").get(previous.id),
-    ).resolves.toMatchObject({
-      schemaVersion: CURRENT_EXAM_SCHEMA_VERSION,
-    });
+    await expect(repository.findAll()).resolves.toEqual([
+      secondPrevious,
+      current,
+      firstPrevious,
+    ]);
+    for (const previous of [firstPrevious, secondPrevious]) {
+      await expect(
+        database
+          .table<Record<string, unknown>, string>("exams")
+          .get(previous.id),
+      ).resolves.toMatchObject({
+        schemaVersion: CURRENT_EXAM_SCHEMA_VERSION,
+      });
+    }
   });
 
   it("migrates records independently and reports corrupt ones at startup", async () => {

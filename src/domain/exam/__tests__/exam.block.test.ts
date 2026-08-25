@@ -6,6 +6,7 @@ import {
   createExamBlock,
   createImageBlock,
   ExamBlockSchema,
+  getDefaultStartsNewQuestion,
   normalizeBlockOrder,
 } from "@/domain/exam";
 import {
@@ -14,6 +15,25 @@ import {
 } from "@/domain/exam/__tests__/exam.fixtures";
 
 describe("Exam block helpers", () => {
+  it.each([
+    ["question", true],
+    ["definition", true],
+    ["true-false", true],
+    ["multiple-choice", true],
+    ["fill-blank", true],
+    ["table", true],
+    ["matching", true],
+    ["essay", true],
+    ["instruction", false],
+    ["text-document", false],
+    ["image", false],
+    ["free-text", false],
+    ["separator", false],
+    ["page-break", false],
+  ] as const)("defaults startsNewQuestion for %s to %s", (type, expected) => {
+    expect(getDefaultStartsNewQuestion(type)).toBe(expected);
+  });
+
   it.each(CREATABLE_EXAM_BLOCK_TYPES)(
     "creates a schema-valid neutral %s block",
     (type) => {

@@ -146,6 +146,40 @@ describe("Exam persistent schema migrations", () => {
     ]);
   });
 
+  it("reconstructs the observed Arabic legacy questions in display order", () => {
+    const prompts = ["حدد(ي)", "اشرح(ي)", "ضع(ي)", "استخرج(ي)"];
+    const blocks = prompts.map((question, order) => ({
+      ...fixture("question"),
+      id: `observed-question-${order + 1}`,
+      order,
+      question,
+    }));
+    for (const block of blocks) {
+      Reflect.deleteProperty(block, "startsNewQuestion");
+    }
+
+    const source = asPreviousExam();
+    delete source.settings.questionNumbering;
+    source.sections = [{ id: "observed-section", title: "", blocks }];
+
+    const migrated = migrateExamToLatest(source);
+    const numbering = computeQuestionNumbering(migrated);
+
+    expect(numbering.size).toBe(4);
+    expect(
+      migrated.sections[0]!.blocks.map((block) => ({
+        text: block.type === "question" ? block.question : "",
+        label: `${numbering.get(block.id)}-`,
+        startsNewQuestion: block.startsNewQuestion,
+      })),
+    ).toEqual([
+      { text: "حدد(ي)", label: "1-", startsNewQuestion: true },
+      { text: "اشرح(ي)", label: "2-", startsNewQuestion: true },
+      { text: "ضع(ي)", label: "3-", startsNewQuestion: true },
+      { text: "استخرج(ي)", label: "4-", startsNewQuestion: true },
+    ]);
+  });
+
   it("is idempotent for an already-current Exam", () => {
     const current = createTestExam([createTestSection([allBlockExamples[3]!])]);
 

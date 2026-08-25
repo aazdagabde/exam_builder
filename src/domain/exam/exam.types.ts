@@ -1,7 +1,11 @@
 import type { ExamBlock } from "@/domain/exam/blocks.types";
 
-export const PREVIOUS_EXAM_SCHEMA_VERSION = 1 as const;
-export const CURRENT_EXAM_SCHEMA_VERSION = 2 as const;
+/** Immutable version markers used by historical migration steps. */
+export const EXAM_SCHEMA_VERSION_1 = 1 as const;
+export const EXAM_SCHEMA_VERSION_2 = 2 as const;
+
+/** The only Exam schema version accepted by the runtime Domain. */
+export const CURRENT_EXAM_SCHEMA_VERSION = EXAM_SCHEMA_VERSION_2;
 
 export type ExamId = string;
 export type SectionId = string;

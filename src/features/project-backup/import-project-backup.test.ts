@@ -1,5 +1,9 @@
 import type { ImageAssetRecord } from "@/domain/assets";
-import { createEmptyExam, type Exam } from "@/domain/exam";
+import {
+  createEmptyExam,
+  CURRENT_EXAM_SCHEMA_VERSION,
+  type Exam,
+} from "@/domain/exam";
 import { createProjectBackup } from "@/features/project-backup/export-project-backup";
 import {
   importProjectBackup,
@@ -94,6 +98,49 @@ async function preparedProject() {
 }
 
 describe("importProjectBackup", () => {
+  it("migrates a previous Exam schema before saving the imported project", async () => {
+    const backup = await createProjectBackup({
+      exam: sourceExam(),
+      assetRepository: new FakeAssetRepository([sourceAsset()]),
+      now: () => IMPORTED_AT,
+    });
+    const previousExam = structuredClone(backup.exam) as unknown as {
+      schemaVersion: number;
+      settings: { questionNumbering?: unknown };
+      sections: Array<{ blocks: Array<{ startsNewQuestion?: boolean }> }>;
+    };
+    previousExam.schemaVersion = 1;
+    delete previousExam.settings.questionNumbering;
+    for (const section of previousExam.sections) {
+      for (const block of section.blocks) delete block.startsNewQuestion;
+    }
+
+    const prepared = await prepareProjectImport(
+      JSON.stringify({ ...backup, exam: previousExam }),
+    );
+    const exams = new FakeExamRepository();
+    const result = await importProjectBackup({
+      prepared,
+      examRepository: exams,
+      assetRepository: new FakeAssetRepository(),
+      runtime: runtime("migrated-asset"),
+    });
+
+    expect(result.status).toBe("imported");
+    expect(exams.savedExams).toHaveLength(1);
+    expect(exams.savedExams[0]).toMatchObject({
+      schemaVersion: CURRENT_EXAM_SCHEMA_VERSION,
+      settings: {
+        questionNumbering: { enabled: true, restartPerSection: true },
+      },
+    });
+    expect(
+      exams.savedExams[0]!.sections[0]!.blocks.map(
+        (block) => block.startsNewQuestion,
+      ),
+    ).toEqual([false, false, true]);
+  });
+
   it("preserves Exam ID and timestamps without collision while remapping shared assets", async () => {
     const prepared = await preparedProject();
     const exams = new FakeExamRepository();
