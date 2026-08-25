@@ -9,6 +9,7 @@ import {
   type ExamBlock,
   type MatchingBlock,
   type TableBlock,
+  type TimelineBlock,
 } from "@/domain/exam";
 import {
   createTestExam,
@@ -246,6 +247,88 @@ describe("EssayBlockEditor", () => {
     expect(
       (store.getState().exam?.sections[0]?.blocks[0] as EssayBlock).topics,
     ).toHaveLength(1);
+  });
+});
+
+describe("TimelineBlockEditor", () => {
+  it("edits advanced settings, events and periods through history-aware store actions", async () => {
+    const user = userEvent.setup();
+    const block: TimelineBlock = {
+      id: "timeline",
+      type: "timeline",
+      startsNewQuestion: true,
+      order: 0,
+      title: "Repères",
+      orientation: "horizontal",
+      showDates: true,
+      timelineStyle: "simple",
+      spacingMode: "sequence",
+      chronologyDirection: "ltr",
+      scale: null,
+      scaleCaption: "",
+      periods: [],
+      events: [
+        {
+          id: "event",
+          date: "1912",
+          axisValue: null,
+          label: "Protectorat",
+          description: "",
+        },
+      ],
+    };
+    const store = renderAdvancedEditor(block);
+
+    fireEvent.change(screen.getByLabelText("Style"), {
+      target: { value: "historical" },
+    });
+    fireEvent.change(screen.getByLabelText("Espacement"), {
+      target: { value: "scaled" },
+    });
+    fireEvent.change(screen.getByLabelText("Sens chronologique"), {
+      target: { value: "rtl" },
+    });
+    fireEvent.change(screen.getByLabelText("Début"), {
+      target: { value: "1912" },
+    });
+    fireEvent.change(screen.getByLabelText("Fin"), {
+      target: { value: "1956" },
+    });
+    fireEvent.change(screen.getByLabelText("Pas des graduations"), {
+      target: { value: "4" },
+    });
+    fireEvent.change(screen.getByLabelText("Position sur l’axe"), {
+      target: { value: "1912" },
+    });
+    await user.click(
+      screen.getByRole("button", { name: "Ajouter une période" }),
+    );
+
+    let value = store.getState().exam?.sections[0]?.blocks[0] as TimelineBlock;
+    expect(value).toMatchObject({
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "rtl",
+      scale: { start: 1912, end: 1956, step: 4 },
+    });
+    expect(value.events[0]?.axisValue).toBe(1912);
+    expect(value.periods).toHaveLength(1);
+    expect(store.getState().saveStatus).toBe("dirty");
+    expect(ExamSchema.safeParse(store.getState().exam).success).toBe(true);
+
+    act(() => store.getState().undo());
+    value = store.getState().exam?.sections[0]?.blocks[0] as TimelineBlock;
+    expect(value.periods).toHaveLength(0);
+    act(() => store.getState().redo());
+    value = store.getState().exam?.sections[0]?.blocks[0] as TimelineBlock;
+    expect(value.periods).toHaveLength(1);
+
+    await user.click(
+      screen.getByRole("button", { name: "Supprimer Période 1" }),
+    );
+    expect(
+      (store.getState().exam?.sections[0]?.blocks[0] as TimelineBlock).periods,
+    ).toHaveLength(0);
   });
 });
 

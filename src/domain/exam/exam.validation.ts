@@ -1,5 +1,11 @@
 import type { ExamBlock } from "@/domain/exam/blocks.types";
 import { calculateExamPoints } from "@/domain/exam/exam.points";
+import {
+  computeTimelineEventPositions,
+  getTimelineTickCount,
+  isValidTimelineScale,
+  MAX_TIMELINE_TICKS,
+} from "@/domain/exam/exam.timeline";
 import type { Exam, ExamSection } from "@/domain/exam/exam.types";
 
 export const MAX_ESSAY_BLOCKS_PER_EXAM = 1;
@@ -17,6 +23,16 @@ export const ExamValidationCode = {
   TABLE_COLUMNS_REQUIRED: "TABLE_COLUMNS_REQUIRED",
   MATCHING_LEFT_EMPTY: "MATCHING_LEFT_EMPTY",
   MATCHING_RIGHT_EMPTY: "MATCHING_RIGHT_EMPTY",
+  TIMELINE_EMPTY: "TIMELINE_EMPTY",
+  TIMELINE_SCALE_INVALID: "TIMELINE_SCALE_INVALID",
+  TIMELINE_EVENT_OUT_OF_RANGE: "TIMELINE_EVENT_OUT_OF_RANGE",
+  TIMELINE_EVENT_POSITION_MISSING: "TIMELINE_EVENT_POSITION_MISSING",
+  TIMELINE_TOO_MANY_TICKS: "TIMELINE_TOO_MANY_TICKS",
+  TIMELINE_HORIZONTAL_TOO_DENSE: "TIMELINE_HORIZONTAL_TOO_DENSE",
+  TIMELINE_PERIOD_OUT_OF_RANGE: "TIMELINE_PERIOD_OUT_OF_RANGE",
+  CHART_EMPTY: "CHART_EMPTY",
+  CHART_PIE_MULTIPLE_SERIES: "CHART_PIE_MULTIPLE_SERIES",
+  CHART_PIE_NEGATIVE_VALUES: "CHART_PIE_NEGATIVE_VALUES",
   TOTAL_POINTS_MISMATCH: "TOTAL_POINTS_MISMATCH",
 } as const;
 
@@ -46,6 +62,16 @@ const messageKeys: Record<ExamValidationCode, string> = {
   TABLE_COLUMNS_REQUIRED: "validation.table.columnsRequired",
   MATCHING_LEFT_EMPTY: "validation.matching.leftEmpty",
   MATCHING_RIGHT_EMPTY: "validation.matching.rightEmpty",
+  TIMELINE_EMPTY: "validation.timeline.empty",
+  TIMELINE_SCALE_INVALID: "validation.timeline.scaleInvalid",
+  TIMELINE_EVENT_OUT_OF_RANGE: "validation.timeline.eventOutOfRange",
+  TIMELINE_EVENT_POSITION_MISSING: "validation.timeline.positionMissing",
+  TIMELINE_TOO_MANY_TICKS: "validation.timeline.tooManyTicks",
+  TIMELINE_HORIZONTAL_TOO_DENSE: "validation.timeline.tooDense",
+  TIMELINE_PERIOD_OUT_OF_RANGE: "validation.timeline.periodOutOfRange",
+  CHART_EMPTY: "validation.chart.empty",
+  CHART_PIE_MULTIPLE_SERIES: "validation.chart.pieMultipleSeries",
+  CHART_PIE_NEGATIVE_VALUES: "validation.chart.pieNegativeValues",
   TOTAL_POINTS_MISMATCH: "validation.exam.totalPointsMismatch",
 };
 
@@ -169,6 +195,147 @@ function validateBlock(
         );
       }
       break;
+
+    case "timeline":
+      if (
+        block.events.every(
+          (event) =>
+            !event.date.trim() &&
+            !event.label.trim() &&
+            !(event.description ?? "").trim(),
+        )
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.TIMELINE_EMPTY, "warning", {
+            ...context,
+            path: `${blockPath}.events`,
+          }),
+        );
+      }
+      if (block.spacingMode === "scaled") {
+        if (!isValidTimelineScale(block.scale)) {
+          issues.push(
+            createIssue(ExamValidationCode.TIMELINE_SCALE_INVALID, "warning", {
+              ...context,
+              path: `${blockPath}.scale`,
+            }),
+          );
+          break;
+        }
+        const scale = block.scale;
+        if (getTimelineTickCount(scale) > MAX_TIMELINE_TICKS) {
+          issues.push(
+            createIssue(ExamValidationCode.TIMELINE_TOO_MANY_TICKS, "warning", {
+              ...context,
+              path: `${blockPath}.scale.step`,
+            }),
+          );
+        }
+        block.events.forEach((event, eventIndex) => {
+          if (event.axisValue === null) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_EVENT_POSITION_MISSING,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.events.${eventIndex}.axisValue`,
+                },
+              ),
+            );
+          } else if (
+            event.axisValue < scale.start ||
+            event.axisValue > scale.end
+          ) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_EVENT_OUT_OF_RANGE,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.events.${eventIndex}.axisValue`,
+                },
+              ),
+            );
+          }
+        });
+        block.periods.forEach((period, periodIndex) => {
+          if (
+            period.startValue >= period.endValue ||
+            period.startValue < scale.start ||
+            period.endValue > scale.end
+          ) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_PERIOD_OUT_OF_RANGE,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.periods.${periodIndex}`,
+                },
+              ),
+            );
+          }
+        });
+        const { tooDense } = computeTimelineEventPositions({
+          events: block.events,
+          scale,
+          direction: block.chronologyDirection,
+          left: 55,
+          right: 945,
+          scaled: true,
+        });
+        if (
+          tooDense &&
+          block.orientation === "horizontal" &&
+          block.timelineStyle === "historical"
+        ) {
+          issues.push(
+            createIssue(
+              ExamValidationCode.TIMELINE_HORIZONTAL_TOO_DENSE,
+              "warning",
+              { ...context, path: `${blockPath}.events` },
+            ),
+          );
+        }
+      }
+      break;
+
+    case "chart": {
+      const values = block.series.flatMap((series) => series.values);
+      if (
+        block.labels.length === 0 ||
+        block.series.length === 0 ||
+        values.every((value) => value === null)
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_EMPTY, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      if (block.chartType === "pie" && block.series.length > 1) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_PIE_MULTIPLE_SERIES, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      if (
+        block.chartType === "pie" &&
+        values.some((value) => value !== null && value < 0)
+      ) {
+        issues.push(
+          createIssue(ExamValidationCode.CHART_PIE_NEGATIVE_VALUES, "warning", {
+            ...context,
+            path: `${blockPath}.series`,
+          }),
+        );
+      }
+      break;
+    }
   }
 
   return issues;

@@ -138,7 +138,7 @@ describe("Exam structural schemas", () => {
     ).toBe(false);
   });
 
-  it("parses all 14 supported block discriminants", () => {
+  it("parses all 16 supported block discriminants", () => {
     const parsedBlocks = allBlockExamples.map((block) =>
       ExamBlockSchema.parse(block),
     );
@@ -158,6 +158,8 @@ describe("Exam structural schemas", () => {
       "free-text",
       "separator",
       "page-break",
+      "timeline",
+      "chart",
     ]);
   });
 

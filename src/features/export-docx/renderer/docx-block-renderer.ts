@@ -514,6 +514,310 @@ function renderMatching(
   return result;
 }
 
+function renderTimeline(
+  block: Extract<ExamBlock, { type: "timeline" }>,
+  context: DocxRenderContext,
+  labels: DocumentLabels,
+): FileChild[] {
+  const result: FileChild[] = [];
+  if (block.title?.trim()) {
+    result.push(
+      paragraph(
+        context,
+        [
+          textRun(context, block.title, {
+            bold: true,
+            boldComplexScript: true,
+          }),
+          ...pointsText(context, block.points, labels.points),
+        ],
+        { keepNext: true },
+      ),
+    );
+  }
+  if (block.timelineStyle === "historical" && block.spacingMode === "scaled") {
+    const timelineLabels =
+      context.language === "ar"
+        ? {
+            timeline: "الخط الزمني",
+            scale: "المقياس",
+            step: "الفاصل",
+            date: "التاريخ",
+            position: "الموضع",
+            event: "الحدث",
+            description: "الوصف",
+            periods: "الفترات",
+            start: "البداية",
+            end: "النهاية",
+            period: "الفترة",
+          }
+        : {
+            timeline: "Ligne du temps",
+            scale: "Échelle",
+            step: "pas",
+            date: "Date",
+            position: "Position",
+            event: "Événement",
+            description: "Description",
+            periods: "Périodes",
+            start: "Début",
+            end: "Fin",
+            period: "Période",
+          };
+    if (!block.title?.trim()) {
+      result.push(
+        paragraph(
+          context,
+          [
+            textRun(context, timelineLabels.timeline, {
+              bold: true,
+              boldComplexScript: true,
+            }),
+            ...pointsText(context, block.points, labels.points),
+          ],
+          { keepNext: true },
+        ),
+      );
+    }
+    if (block.scale) {
+      result.push(
+        textParagraph(
+          context,
+          `${timelineLabels.scale} : ${block.scale.start}–${block.scale.end}, ${timelineLabels.step} ${block.scale.step}${block.scale.unitLabel.trim() ? ` · ${block.scale.unitLabel}` : ""}`,
+          { keepNext: true, color: DOCX_COLORS.muted },
+        ),
+      );
+    }
+    if (block.scaleCaption.trim()) {
+      result.push(
+        textParagraph(context, block.scaleCaption, {
+          keepNext: true,
+          color: DOCX_COLORS.muted,
+        }),
+      );
+    }
+    const eventWidth = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / 4);
+    result.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            tableHeader: true,
+            cantSplit: true,
+            children: [
+              timelineLabels.date,
+              timelineLabels.position,
+              timelineLabels.event,
+              timelineLabels.description,
+            ].map((value) =>
+              tableCell(
+                [
+                  textParagraph(context, value, {
+                    bold: true,
+                    boldComplexScript: true,
+                    alignment: AlignmentType.CENTER,
+                  }),
+                ],
+                { width: eventWidth, header: true },
+              ),
+            ),
+          }),
+          ...block.events.map(
+            (event) =>
+              new TableRow({
+                cantSplit: true,
+                children: [
+                  event.date,
+                  event.axisValue === null ? "" : String(event.axisValue),
+                  event.label,
+                  event.description,
+                ].map((value) =>
+                  tableCell([textParagraph(context, value || "\u00a0")], {
+                    width: eventWidth,
+                  }),
+                ),
+              }),
+          ),
+        ],
+      }),
+    );
+    if (block.periods.length > 0) {
+      result.push(
+        textParagraph(context, timelineLabels.periods, {
+          bold: true,
+          boldComplexScript: true,
+          keepNext: true,
+        }),
+      );
+      const periodWidth = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / 3);
+      result.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: [
+            new TableRow({
+              tableHeader: true,
+              cantSplit: true,
+              children: [
+                timelineLabels.start,
+                timelineLabels.end,
+                timelineLabels.period,
+              ].map((value) =>
+                tableCell(
+                  [
+                    textParagraph(context, value, {
+                      bold: true,
+                      boldComplexScript: true,
+                      alignment: AlignmentType.CENTER,
+                    }),
+                  ],
+                  { width: periodWidth, header: true },
+                ),
+              ),
+            }),
+            ...block.periods.map(
+              (period) =>
+                new TableRow({
+                  cantSplit: true,
+                  children: [
+                    String(period.startValue),
+                    String(period.endValue),
+                    period.label,
+                  ].map((value) =>
+                    tableCell([textParagraph(context, value || "\u00a0")], {
+                      width: periodWidth,
+                    }),
+                  ),
+                }),
+            ),
+          ],
+        }),
+      );
+    }
+    return result;
+  }
+  block.events.forEach((event, index) => {
+    const date = block.showDates && event.date.trim() ? `${event.date} — ` : "";
+    result.push(
+      paragraph(
+        context,
+        [
+          textRun(context, `${date}${event.label || "\u00a0"}`, {
+            bold: true,
+            boldComplexScript: true,
+          }),
+          ...(index === block.events.length - 1 && !block.title?.trim()
+            ? pointsText(context, block.points, labels.points)
+            : []),
+        ],
+        { keepNext: Boolean(event.description?.trim()), keepLines: true },
+      ),
+    );
+    if (event.description?.trim()) {
+      result.push(
+        textParagraph(context, event.description, {
+          color: DOCX_COLORS.muted,
+          keepLines: true,
+        }),
+      );
+    }
+  });
+  return result;
+}
+
+function chartTypeLabel(
+  type: Extract<ExamBlock, { type: "chart" }>["chartType"],
+  language: DocxRenderContext["language"],
+): string {
+  const labels =
+    language === "ar"
+      ? { bar: "أعمدة", line: "منحنى", pie: "دائري" }
+      : { bar: "Barres", line: "Courbe", pie: "Circulaire" };
+  return labels[type];
+}
+
+function renderChart(
+  block: Extract<ExamBlock, { type: "chart" }>,
+  context: DocxRenderContext,
+  labels: DocumentLabels,
+): FileChild[] {
+  const result: FileChild[] = [
+    paragraph(
+      context,
+      [
+        textRun(
+          context,
+          `${labels.chart}${block.title?.trim() ? ` : ${block.title}` : ""}`,
+          { bold: true, boldComplexScript: true },
+        ),
+        ...pointsText(context, block.points, labels.points),
+      ],
+      { keepNext: true },
+    ),
+    textParagraph(
+      context,
+      `${labels.chartType} : ${chartTypeLabel(block.chartType, context.language)}`,
+      { keepNext: true, color: DOCX_COLORS.muted },
+    ),
+  ];
+  const columnCount = 1 + block.series.length;
+  const width = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / columnCount);
+  const rows = [
+    new TableRow({
+      tableHeader: true,
+      cantSplit: true,
+      children: [
+        labels.category,
+        ...block.series.map((series) => series.name),
+      ].map((value) =>
+        tableCell(
+          [
+            textParagraph(context, value || "\u00a0", {
+              bold: true,
+              boldComplexScript: true,
+              alignment: AlignmentType.CENTER,
+            }),
+          ],
+          { width, header: true },
+        ),
+      ),
+    }),
+    ...block.labels.map(
+      (category, categoryIndex) =>
+        new TableRow({
+          cantSplit: true,
+          children: [
+            tableCell([textParagraph(context, category.label || "\u00a0")], {
+              width,
+            }),
+            ...block.series.map((series) =>
+              tableCell(
+                [
+                  textParagraph(
+                    context,
+                    series.values[categoryIndex] === null ||
+                      series.values[categoryIndex] === undefined
+                      ? "\u00a0"
+                      : String(series.values[categoryIndex]),
+                    { alignment: AlignmentType.CENTER },
+                  ),
+                ],
+                { width },
+              ),
+            ),
+          ],
+        }),
+    ),
+  ];
+  result.push(
+    nativeTable({
+      context,
+      rows,
+      columnWidths: Array.from({ length: columnCount }, () => width),
+    }),
+  );
+  return result;
+}
+
 function renderEssay(
   block: Extract<ExamBlock, { type: "essay" }>,
   context: DocxRenderContext,
@@ -817,6 +1121,12 @@ export function renderExamBlock(
       break;
     case "matching":
       content = renderMatching(block, context, labels);
+      break;
+    case "timeline":
+      content = renderTimeline(block, context, labels);
+      break;
+    case "chart":
+      content = renderChart(block, context, labels);
       break;
     case "essay":
       content = renderEssay(block, context, labels);

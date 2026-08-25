@@ -3,6 +3,8 @@
 import {
   computeQuestionNumbering,
   CURRENT_EXAM_SCHEMA_VERSION,
+  EXAM_SCHEMA_VERSION_2,
+  EXAM_SCHEMA_VERSION_3,
   ExamMigrationError,
   migrateExamToLatest,
 } from "@/domain/exam";
@@ -85,6 +87,87 @@ describe("Exam persistent schema migrations", () => {
       "startsNewQuestion",
     );
   });
+
+  it("migrates a v2 Exam with 14 blocks to v3 without inventing blocks", () => {
+    const current = createTestExam([
+      createTestSection(allBlockExamples.slice(0, 14)),
+    ]);
+    const source = {
+      ...structuredClone(current),
+      schemaVersion: EXAM_SCHEMA_VERSION_2,
+    };
+    const beforeBlocks = structuredClone(source.sections[0]!.blocks);
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.sections[0]!.blocks).toHaveLength(14);
+    expect(migrated.sections[0]!.blocks).toEqual(beforeBlocks);
+    expect(migrated.id).toBe(source.id);
+    expect(migrated.createdAt).toBe(source.createdAt);
+    expect(migrated.updatedAt).toBe(source.updatedAt);
+    expect(source.schemaVersion).toBe(EXAM_SCHEMA_VERSION_2);
+  });
+
+  it("chains v1 through v2 to v3", () => {
+    const source = asPreviousExam(
+      createTestExam([createTestSection(allBlockExamples.slice(0, 14))]),
+    );
+    delete source.settings.questionNumbering;
+    source.sections[0]!.blocks.forEach((block) => {
+      delete block.startsNewQuestion;
+    });
+
+    const migrated = migrateExamToLatest(source);
+
+    expect(migrated.schemaVersion).toBe(CURRENT_EXAM_SCHEMA_VERSION);
+    expect(migrated.sections[0]!.blocks).toHaveLength(14);
+    expect(migrated.sections[0]!.blocks.map((block) => block.id)).toEqual(
+      source.sections[0]!.blocks.map((block) => block.id),
+    );
+  });
+
+  it.each([
+    ["ar", "rtl"],
+    ["fr", "ltr"],
+  ] as const)(
+    "migrates a %s v3 Timeline to a simple sequence v4 Timeline",
+    (documentLanguage, chronologyDirection) => {
+      const current = createTestExam([
+        createTestSection([
+          allBlockExamples.find((block) => block.type === "timeline")!,
+        ]),
+      ]);
+      current.settings.documentLanguage = documentLanguage;
+      const source = structuredClone(current) as unknown as PreviousExamInput;
+      source.schemaVersion = EXAM_SCHEMA_VERSION_3;
+      const timeline = source.sections[0]!.blocks[0]!;
+      delete timeline.timelineStyle;
+      delete timeline.spacingMode;
+      delete timeline.chronologyDirection;
+      delete timeline.scale;
+      delete timeline.periods;
+      delete timeline.scaleCaption;
+      const events = timeline.events as Array<Record<string, unknown>>;
+      events.forEach((event) => delete event.axisValue);
+
+      const migrated = migrateExamToLatest(source);
+      const block = migrated.sections[0]!.blocks[0]!;
+      expect(block.type).toBe("timeline");
+      if (block.type !== "timeline") throw new Error("fixture mismatch");
+      expect(block).toMatchObject({
+        timelineStyle: "simple",
+        spacingMode: "sequence",
+        chronologyDirection,
+        scale: null,
+        periods: [],
+        scaleCaption: "",
+      });
+      expect(block.events.every((event) => event.axisValue === null)).toBe(
+        true,
+      );
+    },
+  );
 
   it("preserves explicit v1 numbering choices and image references", () => {
     const source = asPreviousExam(

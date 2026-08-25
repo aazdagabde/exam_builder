@@ -239,6 +239,8 @@
         "fillBlank": "Texte à trous",
         "table": "Tableau",
         "matching": "Relier",
+        "timeline": "Ligne du temps",
+        "chart": "Graphique",
         "essay": "Sujet de rédaction",
         "freeText": "Texte libre",
         "separator": "Séparateur",
@@ -255,6 +257,8 @@
         "fillBlank": "Créer un texte avec des espaces à compléter.",
         "table": "Présenter ou faire compléter un tableau.",
         "matching": "Relier les éléments de deux colonnes.",
+        "timeline": "Créer une chronologie avec événements, graduations et périodes.",
+        "chart": "Présenter des données en barres, courbe ou secteurs.",
         "essay": "Ajouter l’unique sujet de rédaction du devoir.",
         "freeText": "Ajouter un texte, une note ou un sous-titre.",
         "separator": "Créer une séparation visuelle.",
@@ -280,7 +284,10 @@
         "blanks": "{{count}} trou(s)",
         "pairs": "{{count}} paire(s)",
         "topics": "{{count}} élément(s)",
-        "table": "{{columns}} × {{rows}}"
+        "events": "Ligne du temps · {{count}} événement(s)",
+        "timeline": "Ligne du temps · {{start}}–{{end}} · {{count}} événement(s)",
+        "table": "{{columns}} × {{rows}}",
+        "chart": "Graphique en {{type}} · {{count}} catégorie(s)"
       },
       "errors": {
         "NO_ACTIVE_SECTION": "Ajoutez d’abord une section.",
@@ -416,6 +423,86 @@
         "addRight": "Ajouter à droite",
         "shuffleRight": "Mélanger la colonne droite au rendu"
       },
+      "timeline": {
+        "title": "Titre",
+        "titlePlaceholder": "Titre facultatif de la ligne du temps",
+        "appearance": "Apparence et structure",
+        "style": "Style",
+        "styles": {
+          "simple": "Simple",
+          "historical": "Historique"
+        },
+        "spacing": "Espacement",
+        "spacings": {
+          "sequence": "Séquentiel",
+          "scaled": "Échelle proportionnelle"
+        },
+        "chronologyDirection": "Sens chronologique",
+        "directions": {
+          "ltr": "Gauche → droite",
+          "rtl": "Droite → gauche"
+        },
+        "orientation": "Orientation",
+        "orientations": {
+          "horizontal": "Horizontale",
+          "vertical": "Verticale"
+        },
+        "verticalHistoricalHint": "Le rendu historique avancé et ses périodes sont disponibles horizontalement. Le rendu vertical conserve la présentation événementielle simple.",
+        "showDates": "Afficher les dates ou périodes",
+        "scale": "Échelle",
+        "scaleFields": {
+          "start": "Début",
+          "end": "Fin",
+          "step": "Pas des graduations",
+          "unitLabel": "Unité / légende facultative"
+        },
+        "scalePreview": "{{start}} → {{end}} · graduation tous les {{step}}",
+        "scaleCaption": "Légende pédagogique de l’échelle",
+        "events": "Événements",
+        "eventNumber": "Événement {{number}}",
+        "date": "Date affichée",
+        "datePlaceholder": "Ex. 1956, XIXe siècle…",
+        "label": "Événement",
+        "labelPlaceholder": "Intitulé de l’événement…",
+        "description": "Description facultative",
+        "axisValue": "Position sur l’axe",
+        "eventOutOfRange": "L’événement « {{event}} » se trouve hors de l’échelle.",
+        "addEvent": "Ajouter un événement",
+        "periods": "Périodes",
+        "periodNumber": "Période {{number}}",
+        "periodLabel": "Libellé",
+        "periodOutOfRange": "Cette période dépasse les limites de l’échelle.",
+        "addPeriod": "Ajouter une période"
+      },
+      "chart": {
+        "chart": "Graphique",
+        "title": "Titre",
+        "type": "Type",
+        "types": {
+          "bar": "barres",
+          "line": "courbe",
+          "pie": "secteurs"
+        },
+        "data": "Données",
+        "display": "Affichage",
+        "series": "Séries",
+        "seriesNumber": "Série {{number}}",
+        "seriesPlaceholder": "Nom de la série…",
+        "addSeries": "Ajouter une série",
+        "removeSeries": "Supprimer {{name}}",
+        "category": "Catégorie",
+        "categoryNumber": "Catégorie {{number}}",
+        "categoryPlaceholder": "Libellé de la catégorie…",
+        "addCategory": "Ajouter une catégorie",
+        "valueLabel": "Valeur de {{series}} pour {{category}}",
+        "invalidNumber": "Saisissez un nombre fini.",
+        "actions": "Actions",
+        "showLegend": "Afficher la légende",
+        "showValues": "Afficher les valeurs",
+        "yAxisLabel": "Libellé de l’axe vertical",
+        "pieSingleSeries": "Le graphique circulaire utilise une seule série.",
+        "pieNegative": "Un graphique circulaire ne peut pas afficher de valeurs négatives. Les données sont conservées."
+      },
       "essay": {
         "context": "Contexte",
         "contextPlaceholder": "Saisissez le contexte facultatif…",
@@ -492,6 +579,20 @@
     "matching": {
       "leftEmpty": "La colonne de gauche de l’exercice Relier est vide.",
       "rightEmpty": "La colonne de droite de l’exercice Relier est vide."
+    },
+    "timeline": {
+      "empty": "La ligne du temps ne contient encore aucun événement renseigné.",
+      "scaleInvalid": "L’échelle de la ligne du temps est invalide ou manquante.",
+      "eventOutOfRange": "Un événement se trouve hors de l’échelle.",
+      "positionMissing": "Un événement n’a pas encore de position sur l’axe.",
+      "tooManyTicks": "L’échelle produit trop de graduations pour une impression lisible.",
+      "tooDense": "Plusieurs événements sont trop proches pour être affichés confortablement.",
+      "periodOutOfRange": "Une période dépasse les limites de l’échelle."
+    },
+    "chart": {
+      "empty": "Le graphique ne contient aucune donnée renseignée.",
+      "pieMultipleSeries": "Un graphique circulaire utilise une seule série.",
+      "pieNegativeValues": "Un graphique circulaire ne peut pas afficher de valeurs négatives."
     }
   },
   "projectBackup": {

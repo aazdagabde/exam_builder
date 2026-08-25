@@ -5,6 +5,10 @@ import {
   type Exam,
 } from "@/domain/exam";
 import {
+  allBlockExamples,
+  createTestSection,
+} from "@/domain/exam/__tests__/exam.fixtures";
+import {
   createProjectBackup,
   downloadProjectBackup,
   getProjectBackupFileName,
@@ -92,6 +96,58 @@ describe("project backup export and validation", () => {
       exportedAt: TIME,
       exam,
       assets: [],
+    });
+  });
+
+  it("round-trips Timeline and Chart blocks in backup envelope v1", async () => {
+    const exam = examWithImages([]);
+    exam.sections = [
+      createTestSection(
+        allBlockExamples.filter(
+          (block) => block.type === "timeline" || block.type === "chart",
+        ),
+      ),
+    ];
+    const timeline = exam.sections[0]!.blocks.find(
+      (block) => block.type === "timeline",
+    );
+    if (timeline?.type === "timeline") {
+      timeline.timelineStyle = "historical";
+      timeline.spacingMode = "scaled";
+      timeline.chronologyDirection = "ltr";
+      timeline.scale = { start: 1912, end: 1956, step: 4, unitLabel: "années" };
+      timeline.scaleCaption = "1 graduation = 4 ans";
+      timeline.events = timeline.events.map((event, index) => ({
+        ...event,
+        axisValue: index === 0 ? 1912 : 1956,
+      }));
+      timeline.periods = [
+        { id: "period", startValue: 1912, endValue: 1934, label: "Résistance" },
+      ];
+    }
+    const backup = await createProjectBackup({
+      exam,
+      assetRepository: new FakeAssetRepository(),
+      now: () => TIME,
+    });
+    const prepared = await prepareProjectImport(JSON.stringify(backup));
+
+    expect(prepared.backup.backupVersion).toBe(1);
+    expect(prepared.backup.exam.schemaVersion).toBe(
+      CURRENT_EXAM_SCHEMA_VERSION,
+    );
+    expect(prepared.backup.exam.sections[0]!.blocks).toEqual(
+      exam.sections[0]!.blocks,
+    );
+    expect(
+      prepared.backup.exam.sections[0]!.blocks.map((block) => block.type),
+    ).toEqual(["timeline", "chart"]);
+    expect(prepared.backup.exam.sections[0]!.blocks[0]).toMatchObject({
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "ltr",
+      scaleCaption: "1 graduation = 4 ans",
+      periods: [{ id: "period", startValue: 1912, endValue: 1934 }],
     });
   });
 

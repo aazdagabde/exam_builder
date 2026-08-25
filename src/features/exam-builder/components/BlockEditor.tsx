@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { canBlockStartQuestion, type ExamBlock } from "@/domain/exam";
 import { BlockEditorShell } from "@/features/exam-builder/components/block-editors/BlockEditorShell";
+import { ChartBlockEditor } from "@/features/exam-builder/components/block-editors/ChartBlockEditor";
 import { DefinitionBlockEditor } from "@/features/exam-builder/components/block-editors/DefinitionBlockEditor";
 import { FillBlankBlockEditor } from "@/features/exam-builder/components/block-editors/FillBlankBlockEditor";
 import { FreeTextBlockEditor } from "@/features/exam-builder/components/block-editors/FreeTextBlockEditor";
@@ -12,6 +13,7 @@ import { EssayBlockEditor } from "@/features/exam-builder/components/block-edito
 import { MatchingBlockEditor } from "@/features/exam-builder/components/block-editors/MatchingBlockEditor";
 import { MultipleChoiceBlockEditor } from "@/features/exam-builder/components/block-editors/MultipleChoiceBlockEditor";
 import { TextDocumentBlockEditor } from "@/features/exam-builder/components/block-editors/TextDocumentBlockEditor";
+import { TimelineBlockEditor } from "@/features/exam-builder/components/block-editors/TimelineBlockEditor";
 import { TableBlockEditor } from "@/features/exam-builder/components/block-editors/TableBlockEditor";
 import { TrueFalseBlockEditor } from "@/features/exam-builder/components/block-editors/TrueFalseBlockEditor";
 import { QuestionBlockEditor } from "@/features/exam-builder/components/QuestionBlockEditor";
@@ -62,6 +64,10 @@ function RoutedBlockEditor({ block }: { block: ExamBlock }) {
       return <TableBlockEditor block={block} />;
     case "matching":
       return <MatchingBlockEditor block={block} />;
+    case "timeline":
+      return <TimelineBlockEditor block={block} />;
+    case "chart":
+      return <ChartBlockEditor block={block} />;
     case "essay":
       return <EssayBlockEditor block={block} />;
     case "free-text":

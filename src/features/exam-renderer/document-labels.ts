@@ -24,6 +24,12 @@ export interface DocumentLabels {
   points: string;
   total: string;
   imageUnavailable: string;
+  chart: string;
+  series: string;
+  chartInvalid: string;
+  chartNoData: string;
+  chartType: string;
+  category: string;
 }
 
 const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
@@ -51,6 +57,12 @@ const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
     points: "ن",
     total: "المجموع",
     imageUnavailable: "الصورة غير متوفرة",
+    chart: "المبيان",
+    series: "السلسلة",
+    chartInvalid: "بيانات المبيان غير متوافقة.",
+    chartNoData: "لا توجد بيانات للعرض.",
+    chartType: "النوع",
+    category: "الفئة",
   },
   fr: {
     academy: "Académie régionale",
@@ -76,6 +88,12 @@ const DOCUMENT_LABELS: Record<DocumentLanguage, DocumentLabels> = {
     points: "pt",
     total: "Total",
     imageUnavailable: "Image indisponible",
+    chart: "Graphique",
+    series: "Série",
+    chartInvalid: "Les données ne sont pas compatibles avec ce graphique.",
+    chartNoData: "Aucune donnée à afficher.",
+    chartType: "Type",
+    category: "Catégorie",
   },
 };
 

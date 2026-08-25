@@ -243,6 +243,8 @@
         "fillBlank": "ملء الفراغ",
         "table": "جدول",
         "matching": "صل بسهم",
+        "timeline": "الخط الزمني",
+        "chart": "المبيان",
         "essay": "موضوع مقالي",
         "freeText": "نص حر",
         "separator": "فاصل",
@@ -259,6 +261,8 @@
         "fillBlank": "إنشاء نص بفراغات للإكمال.",
         "table": "عرض جدول أو إعداده للإكمال.",
         "matching": "ربط عناصر عمودين.",
+        "timeline": "إنشاء خط زمني بالأحداث والتدريجات والفترات.",
+        "chart": "عرض البيانات بالأعمدة أو المنحنى أو القطاعات.",
         "essay": "إضافة الموضوع المقالي الوحيد في الفرض.",
         "freeText": "إضافة نص حر أو ملاحظة أو عنوان فرعي.",
         "separator": "إنشاء فاصل بصري.",
@@ -284,7 +288,10 @@
         "blanks": "{{count}} فراغ",
         "pairs": "{{count}} زوج",
         "topics": "{{count}} عنصر",
-        "table": "{{columns}} × {{rows}}"
+        "events": "الخط الزمني · {{count}} حدث",
+        "timeline": "الخط الزمني · {{start}}–{{end}} · {{count}} حدث",
+        "table": "{{columns}} × {{rows}}",
+        "chart": "مبيان {{type}} · {{count}} فئة"
       },
       "errors": {
         "NO_ACTIVE_SECTION": "أضف قسماً أولاً.",
@@ -420,6 +427,86 @@
         "addRight": "إضافة إلى اليمين",
         "shuffleRight": "خلط العمود الأيمن عند العرض"
       },
+      "timeline": {
+        "title": "العنوان",
+        "titlePlaceholder": "عنوان اختياري للخط الزمني",
+        "appearance": "المظهر والبنية",
+        "style": "النمط",
+        "styles": {
+          "simple": "بسيط",
+          "historical": "تاريخي"
+        },
+        "spacing": "التباعد",
+        "spacings": {
+          "sequence": "تسلسلي",
+          "scaled": "متناسب مع المقياس"
+        },
+        "chronologyDirection": "اتجاه التسلسل الزمني",
+        "directions": {
+          "ltr": "من اليسار إلى اليمين",
+          "rtl": "من اليمين إلى اليسار"
+        },
+        "orientation": "الاتجاه",
+        "orientations": {
+          "horizontal": "أفقي",
+          "vertical": "عمودي"
+        },
+        "verticalHistoricalHint": "يتوفر العرض التاريخي المتقدم وفتراته أفقيا. ويحتفظ العرض العمودي بتقديم الأحداث البسيط.",
+        "showDates": "إظهار التواريخ أو الفترات",
+        "scale": "المقياس",
+        "scaleFields": {
+          "start": "البداية",
+          "end": "النهاية",
+          "step": "فاصل التدريجات",
+          "unitLabel": "الوحدة / تسمية اختيارية"
+        },
+        "scalePreview": "من {{start}} إلى {{end}} · تدريجة كل {{step}}",
+        "scaleCaption": "تسمية تربوية للمقياس",
+        "events": "الأحداث",
+        "eventNumber": "الحدث {{number}}",
+        "date": "التاريخ المعروض",
+        "datePlaceholder": "مثال: 1956، القرن 19…",
+        "label": "الحدث",
+        "labelPlaceholder": "عنوان الحدث…",
+        "description": "وصف اختياري",
+        "axisValue": "الموضع على المحور",
+        "eventOutOfRange": "الحدث « {{event}} » خارج المقياس.",
+        "addEvent": "إضافة حدث",
+        "periods": "الفترات",
+        "periodNumber": "الفترة {{number}}",
+        "periodLabel": "التسمية",
+        "periodOutOfRange": "تتجاوز هذه الفترة حدود المقياس.",
+        "addPeriod": "إضافة فترة"
+      },
+      "chart": {
+        "chart": "المبيان",
+        "title": "العنوان",
+        "type": "النوع",
+        "types": {
+          "bar": "بالأعمدة",
+          "line": "منحنى",
+          "pie": "دائري"
+        },
+        "data": "البيانات",
+        "display": "العرض",
+        "series": "السلاسل",
+        "seriesNumber": "السلسلة {{number}}",
+        "seriesPlaceholder": "اسم السلسلة…",
+        "addSeries": "إضافة سلسلة",
+        "removeSeries": "حذف {{name}}",
+        "category": "الفئة",
+        "categoryNumber": "الفئة {{number}}",
+        "categoryPlaceholder": "اسم الفئة…",
+        "addCategory": "إضافة فئة",
+        "valueLabel": "قيمة {{series}} في {{category}}",
+        "invalidNumber": "أدخل عدداً محدوداً.",
+        "actions": "الإجراءات",
+        "showLegend": "إظهار المفتاح",
+        "showValues": "إظهار القيم",
+        "yAxisLabel": "تسمية المحور العمودي",
+        "pieSingleSeries": "يستعمل المبيان الدائري سلسلة واحدة.",
+        "pieNegative": "لا يمكن للمبيان الدائري عرض قيم سالبة. تم الاحتفاظ بالبيانات."
+      },
       "essay": {
         "context": "السياق",
         "contextPlaceholder": "اكتب السياق الاختياري…",
@@ -496,6 +583,20 @@
     "matching": {
       "leftEmpty": "العمود الأيسر في تمرين الربط فارغ.",
       "rightEmpty": "العمود الأيمن في تمرين الربط فارغ."
+    },
+    "timeline": {
+      "empty": "لا يتضمن الخط الزمني أي حدث معبأ بعد.",
+      "scaleInvalid": "مقياس الخط الزمني غير صالح أو غير موجود.",
+      "eventOutOfRange": "يوجد حدث خارج المقياس.",
+      "positionMissing": "يوجد حدث دون موضع على المحور.",
+      "tooManyTicks": "ينتج المقياس تدريجات كثيرة لا تناسب الطباعة المقروءة.",
+      "tooDense": "توجد أحداث متقاربة أكثر من اللازم لعرضها بوضوح.",
+      "periodOutOfRange": "توجد فترة تتجاوز حدود المقياس."
+    },
+    "chart": {
+      "empty": "لا يتضمن المبيان أي بيانات معبأة.",
+      "pieMultipleSeries": "يستعمل المبيان الدائري سلسلة واحدة.",
+      "pieNegativeValues": "لا يمكن للمبيان الدائري عرض قيم سالبة."
     }
   },
   "projectBackup": {

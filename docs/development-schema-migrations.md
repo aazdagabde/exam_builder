@@ -7,21 +7,26 @@ réutilisable pour toute évolution persistante de `Exam`.
 
 | Couche               | Version | Rôle                                |
 | -------------------- | ------: | ----------------------------------- |
-| `Exam.schemaVersion` |       2 | forme JSON métier courante          |
+| `Exam.schemaVersion` |       4 | forme JSON métier courante          |
 | base Dexie           |       2 | stores et index physiques IndexedDB |
 | `backupVersion`      |       1 | enveloppe de transport `.exam.json` |
 
-Ces compteurs sont indépendants. Le passage d'Exam v1 à v2 ajoute des champs au
-record Exam, mais ne change ni les tables/index Dexie ni l'enveloppe du backup :
-les versions Dexie 2 et backup 1 restent donc correctes.
+Ces compteurs sont indépendants. Exam V3 introduit `TimelineBlock` et
+`ChartBlock`. Exam V4 enrichit la Timeline avec `timelineStyle`, `spacingMode`,
+`chronologyDirection`, `scale`, `axisValue`, `periods` et `scaleCaption`. La
+migration V3 → V4 transforme les Timelines existantes en configuration
+`simple` + `sequence`, sans parser les dates ; chaque `axisValue` vaut `null`.
+Les tables/index Dexie et l’enveloppe du backup ne changent pas : les versions
+Dexie 2 et backup 1 restent correctes.
 
 ## Pipeline obligatoire
 
 ```text
 raw unknown
 → detectExamSchemaVersion()
-→ migration vN vers vN+1
-→ ...
+→ V1 → V2
+→ V2 → V3
+→ V3 → V4
 → ExamSchema courant
 → Exam courant
 ```
@@ -99,3 +104,9 @@ au pipeline de migration.
 
 Les versions antérieures sont des formats d'entrée documentés par leurs migrations
 et tests. Elles ne doivent jamais être recréées comme modèle métier parallèle.
+
+## Prochaine évolution persistante
+
+Le schéma courant est V4. La prochaine fonctionnalité persistante doit donc
+commencer par une migration V4 → V5. En particulier, `DiagramBlock` ne doit pas
+réutiliser le numéro V4.
