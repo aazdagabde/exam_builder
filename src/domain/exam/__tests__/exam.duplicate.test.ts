@@ -53,6 +53,7 @@ function collectInternalIds(exam: Exam): string[] {
           break;
         case "timeline":
           ids.push(...block.events.map((event) => event.id));
+          ids.push(...block.periods.map((period) => period.id));
           break;
         case "chart":
           ids.push(...block.labels.map((category) => category.id));
@@ -112,6 +113,32 @@ describe("duplicateExam", () => {
 
     expect(duplicateIds).toHaveLength(sourceIds.size);
     expect(duplicateIds.every((id) => !sourceIds.has(id))).toBe(true);
+  });
+
+  it("regenerates Timeline event and period IDs while preserving values", () => {
+    const sourceTimeline = allBlockExamples.find(
+      (block) => block.type === "timeline",
+    )!;
+    if (sourceTimeline.type !== "timeline") throw new Error("fixture mismatch");
+    const timeline = {
+      ...sourceTimeline,
+      periods: [
+        { id: "period", startValue: 1912, endValue: 1934, label: "Résistance" },
+      ],
+    };
+    const duplicate = duplicateSection(createTestSection([timeline]), {
+      id: "section-copy",
+      createInternalId: createCopiedId,
+    });
+    const copied = duplicate.blocks[0]!;
+    if (copied.type !== "timeline") throw new Error("fixture mismatch");
+    expect(copied.events[0]!.id).toBe(
+      `copy:timeline-event:${timeline.events[0]!.id}`,
+    );
+    expect(copied.periods[0]).toEqual({
+      ...timeline.periods[0],
+      id: "copy:timeline-period:period",
+    });
   });
 
   it("updates table cell references while preserving external imageId references", () => {

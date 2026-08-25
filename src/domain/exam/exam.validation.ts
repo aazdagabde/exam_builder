@@ -1,5 +1,11 @@
 import type { ExamBlock } from "@/domain/exam/blocks.types";
 import { calculateExamPoints } from "@/domain/exam/exam.points";
+import {
+  computeTimelineEventPositions,
+  getTimelineTickCount,
+  isValidTimelineScale,
+  MAX_TIMELINE_TICKS,
+} from "@/domain/exam/exam.timeline";
 import type { Exam, ExamSection } from "@/domain/exam/exam.types";
 
 export const MAX_ESSAY_BLOCKS_PER_EXAM = 1;
@@ -18,6 +24,12 @@ export const ExamValidationCode = {
   MATCHING_LEFT_EMPTY: "MATCHING_LEFT_EMPTY",
   MATCHING_RIGHT_EMPTY: "MATCHING_RIGHT_EMPTY",
   TIMELINE_EMPTY: "TIMELINE_EMPTY",
+  TIMELINE_SCALE_INVALID: "TIMELINE_SCALE_INVALID",
+  TIMELINE_EVENT_OUT_OF_RANGE: "TIMELINE_EVENT_OUT_OF_RANGE",
+  TIMELINE_EVENT_POSITION_MISSING: "TIMELINE_EVENT_POSITION_MISSING",
+  TIMELINE_TOO_MANY_TICKS: "TIMELINE_TOO_MANY_TICKS",
+  TIMELINE_HORIZONTAL_TOO_DENSE: "TIMELINE_HORIZONTAL_TOO_DENSE",
+  TIMELINE_PERIOD_OUT_OF_RANGE: "TIMELINE_PERIOD_OUT_OF_RANGE",
   CHART_EMPTY: "CHART_EMPTY",
   CHART_PIE_MULTIPLE_SERIES: "CHART_PIE_MULTIPLE_SERIES",
   CHART_PIE_NEGATIVE_VALUES: "CHART_PIE_NEGATIVE_VALUES",
@@ -51,6 +63,12 @@ const messageKeys: Record<ExamValidationCode, string> = {
   MATCHING_LEFT_EMPTY: "validation.matching.leftEmpty",
   MATCHING_RIGHT_EMPTY: "validation.matching.rightEmpty",
   TIMELINE_EMPTY: "validation.timeline.empty",
+  TIMELINE_SCALE_INVALID: "validation.timeline.scaleInvalid",
+  TIMELINE_EVENT_OUT_OF_RANGE: "validation.timeline.eventOutOfRange",
+  TIMELINE_EVENT_POSITION_MISSING: "validation.timeline.positionMissing",
+  TIMELINE_TOO_MANY_TICKS: "validation.timeline.tooManyTicks",
+  TIMELINE_HORIZONTAL_TOO_DENSE: "validation.timeline.tooDense",
+  TIMELINE_PERIOD_OUT_OF_RANGE: "validation.timeline.periodOutOfRange",
   CHART_EMPTY: "validation.chart.empty",
   CHART_PIE_MULTIPLE_SERIES: "validation.chart.pieMultipleSeries",
   CHART_PIE_NEGATIVE_VALUES: "validation.chart.pieNegativeValues",
@@ -193,6 +211,93 @@ function validateBlock(
             path: `${blockPath}.events`,
           }),
         );
+      }
+      if (block.spacingMode === "scaled") {
+        if (!isValidTimelineScale(block.scale)) {
+          issues.push(
+            createIssue(ExamValidationCode.TIMELINE_SCALE_INVALID, "warning", {
+              ...context,
+              path: `${blockPath}.scale`,
+            }),
+          );
+          break;
+        }
+        const scale = block.scale;
+        if (getTimelineTickCount(scale) > MAX_TIMELINE_TICKS) {
+          issues.push(
+            createIssue(ExamValidationCode.TIMELINE_TOO_MANY_TICKS, "warning", {
+              ...context,
+              path: `${blockPath}.scale.step`,
+            }),
+          );
+        }
+        block.events.forEach((event, eventIndex) => {
+          if (event.axisValue === null) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_EVENT_POSITION_MISSING,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.events.${eventIndex}.axisValue`,
+                },
+              ),
+            );
+          } else if (
+            event.axisValue < scale.start ||
+            event.axisValue > scale.end
+          ) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_EVENT_OUT_OF_RANGE,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.events.${eventIndex}.axisValue`,
+                },
+              ),
+            );
+          }
+        });
+        block.periods.forEach((period, periodIndex) => {
+          if (
+            period.startValue >= period.endValue ||
+            period.startValue < scale.start ||
+            period.endValue > scale.end
+          ) {
+            issues.push(
+              createIssue(
+                ExamValidationCode.TIMELINE_PERIOD_OUT_OF_RANGE,
+                "warning",
+                {
+                  ...context,
+                  path: `${blockPath}.periods.${periodIndex}`,
+                },
+              ),
+            );
+          }
+        });
+        const { tooDense } = computeTimelineEventPositions({
+          events: block.events,
+          scale,
+          direction: block.chronologyDirection,
+          left: 55,
+          right: 945,
+          scaled: true,
+        });
+        if (
+          tooDense &&
+          block.orientation === "horizontal" &&
+          block.timelineStyle === "historical"
+        ) {
+          issues.push(
+            createIssue(
+              ExamValidationCode.TIMELINE_HORIZONTAL_TOO_DENSE,
+              "warning",
+              { ...context, path: `${blockPath}.events` },
+            ),
+          );
+        }
       }
       break;
 

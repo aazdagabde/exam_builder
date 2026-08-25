@@ -8,6 +8,7 @@ export type TableRowId = string;
 export type MatchingItemId = string;
 export type EssayTopicId = string;
 export type TimelineEventId = string;
+export type TimelinePeriodId = string;
 export type ChartCategoryId = string;
 export type ChartSeriesId = string;
 
@@ -170,11 +171,29 @@ export interface MatchingBlock extends BaseBlock {
 export interface TimelineEvent {
   id: TimelineEventId;
   date: string;
+  axisValue: number | null;
   label: string;
-  description?: string;
+  description: string;
 }
 
 export type TimelineOrientation = "horizontal" | "vertical";
+export type TimelineStyle = "simple" | "historical";
+export type TimelineSpacingMode = "sequence" | "scaled";
+export type TimelineChronologyDirection = "ltr" | "rtl";
+
+export interface TimelineScale {
+  start: number;
+  end: number;
+  step: number;
+  unitLabel: string;
+}
+
+export interface TimelinePeriod {
+  id: TimelinePeriodId;
+  startValue: number;
+  endValue: number;
+  label: string;
+}
 
 export interface TimelineBlock extends BaseBlock {
   type: "timeline";
@@ -182,6 +201,12 @@ export interface TimelineBlock extends BaseBlock {
   events: TimelineEvent[];
   orientation: TimelineOrientation;
   showDates: boolean;
+  timelineStyle: TimelineStyle;
+  spacingMode: TimelineSpacingMode;
+  chronologyDirection: TimelineChronologyDirection;
+  scale: TimelineScale | null;
+  periods: TimelinePeriod[];
+  scaleCaption: string;
 }
 
 export type ChartType = "bar" | "line" | "pie";

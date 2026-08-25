@@ -86,6 +86,41 @@ describe("DOCX renderer", () => {
     expect(archive.file("word/styles.xml")).not.toBeNull();
   });
 
+  it("keeps advanced Timeline scale, events and periods as editable Word tables", async () => {
+    const source = allBlockExamples.find((block) => block.type === "timeline")!;
+    if (source.type !== "timeline") throw new Error("fixture mismatch");
+    const timeline: ExamBlock = {
+      ...source,
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "ltr",
+      scale: { start: 1912, end: 1956, step: 4, unitLabel: "années" },
+      scaleCaption: "Chaque graduation représente 4 ans",
+      events: source.events.map((event, index) => ({
+        ...event,
+        axisValue: index === 0 ? 1912 : 1956,
+      })),
+      periods: [
+        {
+          id: "period-resistance",
+          startValue: 1912,
+          endValue: 1934,
+          label: "Résistance",
+        },
+      ],
+    };
+    const exam = createTestExam([createTestSection([timeline])]);
+    exam.settings.documentLanguage = "fr";
+    const { xml } = await documentXml(exam);
+
+    expect(xml).toContain("Échelle");
+    expect(xml).toContain("1912–1956");
+    expect(xml).toContain("Position");
+    expect(xml).toContain("Résistance");
+    expect(xml).toContain("Chaque graduation représente 4 ans");
+    expect(xml.match(/<w:tbl>/g)?.length).toBeGreaterThanOrEqual(2);
+  });
+
   it("keeps French paragraphs LTR and does not derive direction from UI", async () => {
     document.documentElement.dir = "rtl";
     const exam = createTestExam([

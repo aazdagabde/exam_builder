@@ -19,6 +19,8 @@ Ce document décrit le format de transfert local d’Exam Builder. `PROJECT.md` 
 - `exportedAt` est une date ISO 8601 avec fuseau.
 - `exam` est un `Exam` complet. Un nouvel export contient toujours le schéma
   métier courant ; un import connu plus ancien est migré avant validation finale.
+- Pour Exam V4, les Timelines conservent intégralement style, mode d’espacement,
+  sens chronologique, échelle, positions d’événements, légende et périodes.
 - `assets` contient uniquement les images réellement référencées par les `ImageBlock` du devoir.
 
 Une version de sauvegarde inconnue est refusée explicitement. Une future migration devra être ajoutée sans réinterpréter silencieusement le format 1.

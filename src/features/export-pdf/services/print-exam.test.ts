@@ -193,4 +193,39 @@ describe("print exam service", () => {
     frame.mockRestore();
     print.mockRestore();
   });
+
+  it.each(["one-up", "two-up"] as const)(
+    "keeps an advanced Timeline as vector SVG in %s print imposition",
+    async (layoutMode) => {
+      const exam = createTestExam([], { title: "Timeline QA" });
+      const root = document.createElement("div");
+      root.innerHTML = `
+        <div class="exam-pages">
+          <article class="exam-page" data-page-number="1">
+            <svg class="exam-timeline__svg" viewBox="0 0 1000 300">
+              <line class="exam-timeline__axis" x1="55" x2="945" y1="58" y2="58" />
+              <g class="exam-timeline__tick"><text>1912</text></g>
+              <g class="exam-timeline__period"><rect width="200" height="26" /></g>
+            </svg>
+          </article>
+        </div>`;
+      const frame = vi
+        .spyOn(window, "requestAnimationFrame")
+        .mockImplementation((callback) => {
+          callback(0);
+          return 1;
+        });
+      const print = vi.spyOn(window, "print").mockImplementation(() => {
+        const imposed = root.querySelector("[data-print-imposition]");
+        expect(imposed?.querySelector("canvas")).toBeNull();
+        expect(imposed?.querySelector(".exam-timeline__svg")).toBeTruthy();
+        expect(imposed?.textContent).toContain("1912");
+      });
+
+      await printPreparedExam({ document, window, exam, root, layoutMode });
+      expect(print).toHaveBeenCalledOnce();
+      frame.mockRestore();
+      print.mockRestore();
+    },
+  );
 });

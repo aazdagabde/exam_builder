@@ -535,6 +535,166 @@ function renderTimeline(
       ),
     );
   }
+  if (block.timelineStyle === "historical" && block.spacingMode === "scaled") {
+    const timelineLabels =
+      context.language === "ar"
+        ? {
+            timeline: "الخط الزمني",
+            scale: "المقياس",
+            step: "الفاصل",
+            date: "التاريخ",
+            position: "الموضع",
+            event: "الحدث",
+            description: "الوصف",
+            periods: "الفترات",
+            start: "البداية",
+            end: "النهاية",
+            period: "الفترة",
+          }
+        : {
+            timeline: "Ligne du temps",
+            scale: "Échelle",
+            step: "pas",
+            date: "Date",
+            position: "Position",
+            event: "Événement",
+            description: "Description",
+            periods: "Périodes",
+            start: "Début",
+            end: "Fin",
+            period: "Période",
+          };
+    if (!block.title?.trim()) {
+      result.push(
+        paragraph(
+          context,
+          [
+            textRun(context, timelineLabels.timeline, {
+              bold: true,
+              boldComplexScript: true,
+            }),
+            ...pointsText(context, block.points, labels.points),
+          ],
+          { keepNext: true },
+        ),
+      );
+    }
+    if (block.scale) {
+      result.push(
+        textParagraph(
+          context,
+          `${timelineLabels.scale} : ${block.scale.start}–${block.scale.end}, ${timelineLabels.step} ${block.scale.step}${block.scale.unitLabel.trim() ? ` · ${block.scale.unitLabel}` : ""}`,
+          { keepNext: true, color: DOCX_COLORS.muted },
+        ),
+      );
+    }
+    if (block.scaleCaption.trim()) {
+      result.push(
+        textParagraph(context, block.scaleCaption, {
+          keepNext: true,
+          color: DOCX_COLORS.muted,
+        }),
+      );
+    }
+    const eventWidth = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / 4);
+    result.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            tableHeader: true,
+            cantSplit: true,
+            children: [
+              timelineLabels.date,
+              timelineLabels.position,
+              timelineLabels.event,
+              timelineLabels.description,
+            ].map((value) =>
+              tableCell(
+                [
+                  textParagraph(context, value, {
+                    bold: true,
+                    boldComplexScript: true,
+                    alignment: AlignmentType.CENTER,
+                  }),
+                ],
+                { width: eventWidth, header: true },
+              ),
+            ),
+          }),
+          ...block.events.map(
+            (event) =>
+              new TableRow({
+                cantSplit: true,
+                children: [
+                  event.date,
+                  event.axisValue === null ? "" : String(event.axisValue),
+                  event.label,
+                  event.description,
+                ].map((value) =>
+                  tableCell([textParagraph(context, value || "\u00a0")], {
+                    width: eventWidth,
+                  }),
+                ),
+              }),
+          ),
+        ],
+      }),
+    );
+    if (block.periods.length > 0) {
+      result.push(
+        textParagraph(context, timelineLabels.periods, {
+          bold: true,
+          boldComplexScript: true,
+          keepNext: true,
+        }),
+      );
+      const periodWidth = Math.floor(mmToTwips(DOCX_PAGE.contentWidthMm) / 3);
+      result.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: [
+            new TableRow({
+              tableHeader: true,
+              cantSplit: true,
+              children: [
+                timelineLabels.start,
+                timelineLabels.end,
+                timelineLabels.period,
+              ].map((value) =>
+                tableCell(
+                  [
+                    textParagraph(context, value, {
+                      bold: true,
+                      boldComplexScript: true,
+                      alignment: AlignmentType.CENTER,
+                    }),
+                  ],
+                  { width: periodWidth, header: true },
+                ),
+              ),
+            }),
+            ...block.periods.map(
+              (period) =>
+                new TableRow({
+                  cantSplit: true,
+                  children: [
+                    String(period.startValue),
+                    String(period.endValue),
+                    period.label,
+                  ].map((value) =>
+                    tableCell([textParagraph(context, value || "\u00a0")], {
+                      width: periodWidth,
+                    }),
+                  ),
+                }),
+            ),
+          ],
+        }),
+      );
+    }
+    return result;
+  }
   block.events.forEach((event, index) => {
     const date = block.showDates && event.date.trim() ? `${event.date} — ` : "";
     result.push(

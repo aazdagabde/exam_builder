@@ -28,6 +28,8 @@ import type {
   TextDocumentBlock,
   TimelineBlock,
   TimelineEvent,
+  TimelinePeriod,
+  TimelineScale,
   TrueFalseBlock,
   TrueFalseStatement,
 } from "@/domain/exam/blocks.types";
@@ -217,9 +219,24 @@ export const MatchingBlockSchema = z.strictObject({
 export const TimelineEventSchema = z.strictObject({
   id: identifierSchema,
   date: z.string(),
+  axisValue: z.number().finite().nullable(),
   label: z.string(),
-  description: z.string().optional(),
+  description: z.string(),
 }) satisfies z.ZodType<TimelineEvent>;
+
+export const TimelineScaleSchema = z.strictObject({
+  start: z.number().finite(),
+  end: z.number().finite(),
+  step: z.number().finite(),
+  unitLabel: z.string(),
+}) satisfies z.ZodType<TimelineScale>;
+
+export const TimelinePeriodSchema = z.strictObject({
+  id: identifierSchema,
+  startValue: z.number().finite(),
+  endValue: z.number().finite(),
+  label: z.string(),
+}) satisfies z.ZodType<TimelinePeriod>;
 
 export const TimelineBlockSchema = z
   .strictObject({
@@ -229,6 +246,12 @@ export const TimelineBlockSchema = z
     events: z.array(TimelineEventSchema).min(1),
     orientation: z.enum(["horizontal", "vertical"]),
     showDates: z.boolean(),
+    timelineStyle: z.enum(["simple", "historical"]),
+    spacingMode: z.enum(["sequence", "scaled"]),
+    chronologyDirection: z.enum(["ltr", "rtl"]),
+    scale: TimelineScaleSchema.nullable(),
+    periods: z.array(TimelinePeriodSchema),
+    scaleCaption: z.string(),
   })
   .superRefine((block, context) => {
     const ids = new Set<string>();
@@ -241,6 +264,18 @@ export const TimelineBlockSchema = z
         });
       }
       ids.add(event.id);
+    });
+
+    const periodIds = new Set<string>();
+    block.periods.forEach((period, index) => {
+      if (periodIds.has(period.id)) {
+        context.addIssue({
+          code: "custom",
+          path: ["periods", index, "id"],
+          message: "TIMELINE_PERIOD_IDS_UNIQUE",
+        });
+      }
+      periodIds.add(period.id);
     });
   }) satisfies z.ZodType<TimelineBlock>;
 

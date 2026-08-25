@@ -220,7 +220,13 @@ describe("BlockRenderer", () => {
         (block) => block.type === "timeline",
       )!;
       if (timeline.type !== "timeline") throw new Error("fixture mismatch");
-      const view = renderBlock({ ...timeline, orientation });
+      const view = renderBlock({
+        ...timeline,
+        orientation,
+        timelineStyle: "simple",
+        spacingMode: "sequence",
+        scale: null,
+      });
       const events = view.container.querySelectorAll(".exam-timeline__event");
       expect(events).toHaveLength(2);
       expect(events[0]).toHaveTextContent("1912");
@@ -232,6 +238,86 @@ describe("BlockRenderer", () => {
       ).toBeInTheDocument();
     },
   );
+
+  it("renders an Arabic historical Timeline LTR independently from text direction", () => {
+    const timeline = rendererBlocks.find((block) => block.type === "timeline")!;
+    if (timeline.type !== "timeline") throw new Error("fixture mismatch");
+    const view = renderBlock(timeline, "ar");
+    const svg = view.container.querySelector(".exam-timeline__svg")!;
+    const axis = svg.querySelector(".exam-timeline__axis")!;
+    expect(svg).toHaveAttribute("data-chronology-direction", "ltr");
+    expect(Number(axis.getAttribute("x1"))).toBeLessThan(
+      Number(axis.getAttribute("x2")),
+    );
+    expect(svg.querySelectorAll(".exam-timeline__tick")).toHaveLength(12);
+    expect(svg.querySelectorAll(".exam-timeline__period")).toHaveLength(3);
+    expect(svg.textContent).toContain("الحماية");
+  });
+
+  it("mirrors an Arabic historical Timeline when chronology is explicitly RTL", () => {
+    const timeline = rendererBlocks.find((block) => block.type === "timeline")!;
+    if (timeline.type !== "timeline") throw new Error("fixture mismatch");
+    const view = renderBlock({ ...timeline, chronologyDirection: "rtl" }, "ar");
+    const svg = view.container.querySelector(".exam-timeline__svg")!;
+    const axis = svg.querySelector(".exam-timeline__axis")!;
+    expect(svg).toHaveAttribute("data-chronology-direction", "rtl");
+    expect(Number(axis.getAttribute("x1"))).toBeGreaterThan(
+      Number(axis.getAttribute("x2")),
+    );
+  });
+
+  it("keeps French text LTR while supporting either chronology direction", () => {
+    const timeline = rendererBlocks.find((block) => block.type === "timeline")!;
+    if (timeline.type !== "timeline") throw new Error("fixture mismatch");
+    const french = {
+      ...timeline,
+      title: "Repères historiques",
+      chronologyDirection: "rtl" as const,
+      events: timeline.events.map((event) => ({
+        ...event,
+        label: event.axisValue === 1912 ? "Protectorat" : "Indépendance",
+      })),
+    };
+    const view = renderBlock(french, "fr");
+    expect(view.container.querySelector(".exam-timeline__svg")).toHaveAttribute(
+      "data-chronology-direction",
+      "rtl",
+    );
+    expect(view.container).toHaveTextContent("Indépendance");
+  });
+
+  it("renders a practical 20-event, 20-tick, 4-period fixture without rasterization", () => {
+    const source = rendererBlocks.find((block) => block.type === "timeline")!;
+    if (source.type !== "timeline") throw new Error("fixture mismatch");
+    const view = renderBlock({
+      ...source,
+      scale: { start: 0, end: 19, step: 1, unitLabel: "" },
+      events: Array.from({ length: 20 }, (_, axisValue) => ({
+        id: `event-${axisValue}`,
+        date: String(axisValue),
+        axisValue,
+        label: `E${axisValue}`,
+        description: "",
+      })),
+      periods: Array.from({ length: 4 }, (_, index) => ({
+        id: `period-${index}`,
+        startValue: index * 4,
+        endValue: index * 4 + 3,
+        label: `P${index}`,
+      })),
+    });
+
+    expect(view.container.querySelectorAll("canvas")).toHaveLength(0);
+    expect(
+      view.container.querySelectorAll(".exam-timeline__tick"),
+    ).toHaveLength(20);
+    expect(
+      view.container.querySelectorAll(".exam-timeline__historical-event"),
+    ).toHaveLength(20);
+    expect(
+      view.container.querySelectorAll(".exam-timeline__period"),
+    ).toHaveLength(4);
+  });
 
   it.each(["bar", "line", "pie"] as const)(
     "renders a vector %s chart with labels",

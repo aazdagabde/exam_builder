@@ -4,9 +4,10 @@ import type { ExamBlock } from "@/domain/exam/blocks.types";
 export const EXAM_SCHEMA_VERSION_1 = 1 as const;
 export const EXAM_SCHEMA_VERSION_2 = 2 as const;
 export const EXAM_SCHEMA_VERSION_3 = 3 as const;
+export const EXAM_SCHEMA_VERSION_4 = 4 as const;
 
 /** The only Exam schema version accepted by the runtime Domain. */
-export const CURRENT_EXAM_SCHEMA_VERSION = EXAM_SCHEMA_VERSION_3;
+export const CURRENT_EXAM_SCHEMA_VERSION = EXAM_SCHEMA_VERSION_4;
 
 export type ExamId = string;
 export type SectionId = string;

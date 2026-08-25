@@ -9,6 +9,7 @@ export * from "@/domain/exam/exam.schema";
 export * from "@/domain/exam/exam.serialization";
 export * from "@/domain/exam/exam.settings";
 export * from "@/domain/exam/exam.table";
+export * from "@/domain/exam/exam.timeline";
 export * from "@/domain/exam/exam.types";
 export * from "@/domain/exam/exam.validation";
 export * from "@/domain/exam/migrations/exam.migrations";

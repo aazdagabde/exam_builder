@@ -20,6 +20,7 @@ export type BlockSummary =
       chartType: "bar" | "line" | "pie";
       categories: number;
     }
+  | { kind: "timeline"; start: number; end: number; events: number }
   | { kind: "none" };
 
 function firstText(...values: Array<string | undefined>): BlockSummary {
@@ -70,7 +71,16 @@ export function getBlockSummary(block: ExamBlock): BlockSummary {
         item: "pairs",
       };
     case "timeline":
-      return { kind: "count", count: block.events.length, item: "events" };
+      return block.timelineStyle === "historical" &&
+        block.spacingMode === "scaled" &&
+        block.scale
+        ? {
+            kind: "timeline",
+            start: block.scale.start,
+            end: block.scale.end,
+            events: block.events.length,
+          }
+        : { kind: "count", count: block.events.length, item: "events" };
     case "chart":
       return {
         kind: "chart",

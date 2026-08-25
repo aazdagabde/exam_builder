@@ -108,6 +108,23 @@ describe("project backup export and validation", () => {
         ),
       ),
     ];
+    const timeline = exam.sections[0]!.blocks.find(
+      (block) => block.type === "timeline",
+    );
+    if (timeline?.type === "timeline") {
+      timeline.timelineStyle = "historical";
+      timeline.spacingMode = "scaled";
+      timeline.chronologyDirection = "ltr";
+      timeline.scale = { start: 1912, end: 1956, step: 4, unitLabel: "années" };
+      timeline.scaleCaption = "1 graduation = 4 ans";
+      timeline.events = timeline.events.map((event, index) => ({
+        ...event,
+        axisValue: index === 0 ? 1912 : 1956,
+      }));
+      timeline.periods = [
+        { id: "period", startValue: 1912, endValue: 1934, label: "Résistance" },
+      ];
+    }
     const backup = await createProjectBackup({
       exam,
       assetRepository: new FakeAssetRepository(),
@@ -125,6 +142,13 @@ describe("project backup export and validation", () => {
     expect(
       prepared.backup.exam.sections[0]!.blocks.map((block) => block.type),
     ).toEqual(["timeline", "chart"]);
+    expect(prepared.backup.exam.sections[0]!.blocks[0]).toMatchObject({
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "ltr",
+      scaleCaption: "1 graduation = 4 ans",
+      periods: [{ id: "period", startValue: 1912, endValue: 1934 }],
+    });
   });
 
   it("round-trips numbering intent and migrates schema v1 exams without it", async () => {

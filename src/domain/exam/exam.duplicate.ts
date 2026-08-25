@@ -18,6 +18,7 @@ export type DuplicateIdKind =
   | "matching-left-item"
   | "matching-right-item"
   | "timeline-event"
+  | "timeline-period"
   | "chart-category"
   | "chart-series"
   | "essay-topic";
@@ -173,6 +174,14 @@ export function duplicateBlock(
           id: createInternalId({
             kind: "timeline-event",
             sourceId: event.id,
+          }),
+        })),
+        scale: block.scale === null ? null : { ...block.scale },
+        periods: block.periods.map((period) => ({
+          ...period,
+          id: createInternalId({
+            kind: "timeline-period",
+            sourceId: period.id,
           }),
         })),
       };

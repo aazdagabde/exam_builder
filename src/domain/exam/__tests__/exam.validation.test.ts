@@ -1,10 +1,12 @@
 // @vitest-environment node
 
 import {
+  ExamBlockSchema,
   ExamValidationCode,
   validateExam,
   type ExamBlock,
   type QuestionBlock,
+  type TimelineBlock,
 } from "@/domain/exam";
 import {
   allBlockExamples,
@@ -188,5 +190,96 @@ describe("Exam business validation", () => {
     expect(
       validateExam(exam).filter((issue) => issue.severity === "error"),
     ).toHaveLength(0);
+  });
+
+  it("reports advanced Timeline editing problems as non-blocking warnings", () => {
+    const timeline: TimelineBlock = {
+      id: "timeline",
+      type: "timeline",
+      order: 0,
+      startsNewQuestion: true,
+      title: "Dense timeline",
+      orientation: "horizontal",
+      showDates: true,
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "ltr",
+      scale: { start: 0, end: 100, step: 1, unitLabel: "" },
+      scaleCaption: "",
+      periods: [
+        { id: "period", startValue: -1, endValue: 50, label: "Outside" },
+      ],
+      events: [
+        {
+          id: "missing",
+          date: "?",
+          axisValue: null,
+          label: "Missing",
+          description: "",
+        },
+        {
+          id: "outside",
+          date: "101",
+          axisValue: 101,
+          label: "Outside",
+          description: "",
+        },
+        ...[50, 50.1, 50.2, 50.3, 50.4].map((axisValue, index) => ({
+          id: `dense-${index}`,
+          date: String(axisValue),
+          axisValue,
+          label: `Dense ${index}`,
+          description: "",
+        })),
+      ],
+    };
+    const issues = validateExam(
+      createTestExam([createTestSection([timeline])]),
+    );
+    const codes = issues.map((issue) => issue.code);
+
+    expect(codes).toEqual(
+      expect.arrayContaining([
+        ExamValidationCode.TIMELINE_EVENT_POSITION_MISSING,
+        ExamValidationCode.TIMELINE_EVENT_OUT_OF_RANGE,
+        ExamValidationCode.TIMELINE_TOO_MANY_TICKS,
+        ExamValidationCode.TIMELINE_HORIZONTAL_TOO_DENSE,
+        ExamValidationCode.TIMELINE_PERIOD_OUT_OF_RANGE,
+      ]),
+    );
+    expect(
+      issues
+        .filter((issue) => String(issue.code).startsWith("TIMELINE_"))
+        .every((issue) => issue.severity === "warning"),
+    ).toBe(true);
+  });
+
+  it("warns when scaled mode temporarily has no scale", () => {
+    const source = allBlockExamples.find((block) => block.type === "timeline")!;
+    if (source.type !== "timeline") throw new Error("fixture mismatch");
+    const timeline: TimelineBlock = {
+      ...source,
+      spacingMode: "scaled",
+      scale: null,
+    };
+    expect(
+      issuesWithCode(
+        createTestExam([createTestSection([timeline])]),
+        ExamValidationCode.TIMELINE_SCALE_INVALID,
+      ),
+    ).toHaveLength(1);
+
+    const zeroStep: TimelineBlock = {
+      ...source,
+      spacingMode: "scaled",
+      scale: { start: 1912, end: 1956, step: 0, unitLabel: "" },
+    };
+    expect(ExamBlockSchema.safeParse(zeroStep).success).toBe(true);
+    expect(
+      issuesWithCode(
+        createTestExam([createTestSection([zeroStep])]),
+        ExamValidationCode.TIMELINE_SCALE_INVALID,
+      ),
+    ).toHaveLength(1);
   });
 });

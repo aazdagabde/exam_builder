@@ -489,14 +489,24 @@ type ExamBlock =
   | PageBreakBlock;
 ```
 
-Le schéma courant V3 prend en charge 16 types de blocs. Les deux blocs visuels
+Le schéma courant V4 prend en charge 16 types de blocs. Les deux blocs visuels
 structurés ont les responsabilités suivantes :
 
-- `TimelineBlock` conserve une suite ordonnée d’événements. La date est un texte
-  pédagogique libre et l’ordre de `events[]` n’est jamais trié automatiquement.
+- `TimelineBlock` propose les styles `simple` et `historical`, avec espacement
+  `sequence` ou `scaled`. En mode proportionnel, une échelle numérique abstraite
+  positionne précisément événements et périodes, sans `Date` JavaScript. La
+  date affichée reste un texte pédagogique libre et l’ordre de `events[]` n’est
+  jamais trié automatiquement. `chronologyDirection` contrôle uniquement la
+  géométrie de l’axe : il est indépendant de la direction FR/AR du contenu.
 - `ChartBlock` conserve catégories, séries et valeurs numériques pour les rendus
   en barres, courbe et secteurs. La géométrie SVG et les couleurs restent des
   responsabilités du renderer, pas du Domain persistant.
+
+La migration V3 → V4 conserve les anciennes Timelines avec `simple`,
+`sequence`, `scale: null`, `periods: []` et `axisValue: null`. Les nouvelles
+Timelines utilisent `historical`, `scaled`, une échelle 1900–1950 et une
+chronologie LTR, y compris dans un document arabe. La prochaine évolution
+persistante — notamment `DiagramBlock` — devra utiliser V4 → V5.
 
 Chaque bloc possède au minimum :
 

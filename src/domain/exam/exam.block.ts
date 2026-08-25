@@ -51,6 +51,7 @@ export type CreateBlockInternalIdKind =
   | "multiple-choice-option"
   | "table-column"
   | "timeline-event"
+  | "timeline-period"
   | "chart-category"
   | "chart-series";
 
@@ -155,12 +156,19 @@ export function createExamBlock({
           {
             id: createInternalId("timeline-event"),
             date: "",
+            axisValue: null,
             label: "",
             description: "",
           },
         ],
         orientation: "horizontal",
         showDates: true,
+        timelineStyle: "historical",
+        spacingMode: "scaled",
+        chronologyDirection: "ltr",
+        scale: { start: 1900, end: 1950, step: 10, unitLabel: "" },
+        periods: [],
+        scaleCaption: "",
         startsNewQuestion,
       };
       break;

@@ -535,7 +535,13 @@ describe("Exam Builder block actions", () => {
             ...block,
             events: [
               ...block.events,
-              { id: "event-new", date: "1975", label: "Green March" },
+              {
+                id: "event-new",
+                date: "1975",
+                axisValue: null,
+                label: "Green March",
+                description: "",
+              },
             ],
           }
         : block,

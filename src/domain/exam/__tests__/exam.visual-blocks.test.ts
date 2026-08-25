@@ -32,6 +32,11 @@ describe("visual block Domain", () => {
       startsNewQuestion: true,
       orientation: "horizontal",
       showDates: true,
+      timelineStyle: "historical",
+      spacingMode: "scaled",
+      chronologyDirection: "ltr",
+      scale: { start: 1900, end: 1950, step: 10, unitLabel: "" },
+      periods: [],
     });
     expect(chart).toMatchObject({
       type: "chart",
@@ -52,11 +57,29 @@ describe("visual block Domain", () => {
         order: 0,
         startsNewQuestion: true,
         events: [
-          { id: "same", date: "1912", label: "A" },
-          { id: "same", date: "1956", label: "B" },
+          {
+            id: "same",
+            date: "1912",
+            axisValue: null,
+            label: "A",
+            description: "",
+          },
+          {
+            id: "same",
+            date: "1956",
+            axisValue: null,
+            label: "B",
+            description: "",
+          },
         ],
         orientation: "vertical",
         showDates: true,
+        timelineStyle: "simple",
+        spacingMode: "sequence",
+        chronologyDirection: "ltr",
+        scale: null,
+        periods: [],
+        scaleCaption: "",
       }).success,
     ).toBe(false);
   });
