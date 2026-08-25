@@ -2313,7 +2313,7 @@ Le moteur doit rester générique et réutilisable pour les futurs professeurs.
 
 ---
 
-# 71. Politique de migration du schéma persistant
+# 71. Persistent Schema Migration Policy
 
 Le runtime utilise uniquement le schéma `Exam` courant. Les anciennes versions
 ne sont acceptées qu'aux frontières de lecture comme entrées de migration ; elles

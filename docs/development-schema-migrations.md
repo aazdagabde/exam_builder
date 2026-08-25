@@ -31,10 +31,22 @@ reçoivent que l'Exam courant. Ils ne contiennent aucun fallback d'ancien modèl
 
 ## Checklist d'une évolution persistante
 
+- [ ] Le Domain persistant change-t-il ?
+- [ ] Si oui, `Exam.schemaVersion` est-il augmenté d'une unité ?
+- [ ] La migration `N → N+1` est-elle ajoutée avec ses constantes de versions
+      historiques immuables ?
+- [ ] `CURRENT_EXAM_SCHEMA_VERSION` pointe-t-elle vers la nouvelle version ?
+- [ ] Le schéma Zod courant est-il mis à jour et strict ?
+- [ ] Toutes les factories produisent-elles le schéma courant complet ?
+- [ ] La migration previous → current est-elle testée ?
+- [ ] L'idempotence d'un Exam current est-elle testée ?
+- [ ] La migration et la réécriture IndexedDB sont-elles testées ?
+- [ ] L'import d'un backup contenant le schéma previous est-il testé ?
+- [ ] L'export backup garantit-il le schéma Exam current ?
+- [ ] Builder et Renderer sont-ils exempts de fallbacks d'ancienne version ?
 - [ ] Démontrer que la forme JSON persistée change réellement.
-- [ ] Augmenter `CURRENT_EXAM_SCHEMA_VERSION` d'une unité.
-- [ ] Garder la version précédente comme constante de migration, pas comme type
-      runtime concurrent.
+- [ ] Garder chaque version historique comme constante de migration immuable,
+      pas comme type runtime concurrent.
 - [ ] Écrire une migration pure `vN-to-vN+1.ts`, sans I/O ni mutation de l'entrée.
 - [ ] Enregistrer cette migration dans la chaîne séquentielle centrale.
 - [ ] Préserver les valeurs explicites valides, IDs, dates et références d'assets.

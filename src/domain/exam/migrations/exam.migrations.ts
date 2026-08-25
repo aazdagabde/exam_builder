@@ -1,7 +1,8 @@
 import { ExamSchema } from "@/domain/exam/exam.schema";
 import {
   CURRENT_EXAM_SCHEMA_VERSION,
-  PREVIOUS_EXAM_SCHEMA_VERSION,
+  EXAM_SCHEMA_VERSION_1,
+  EXAM_SCHEMA_VERSION_2,
   type Exam,
 } from "@/domain/exam/exam.types";
 import { migrateExamV1ToV2 } from "@/domain/exam/migrations/v1-to-v2";
@@ -27,10 +28,16 @@ export class ExamMigrationError extends Error {
   readonly sourceVersion?: number;
 }
 
-type Migration = (input: unknown) => unknown;
+interface MigrationStep {
+  readonly toVersion: number;
+  migrate(input: unknown): unknown;
+}
 
-const migrations: ReadonlyMap<number, Migration> = new Map([
-  [PREVIOUS_EXAM_SCHEMA_VERSION, migrateExamV1ToV2],
+const migrations: ReadonlyMap<number, MigrationStep> = new Map([
+  [
+    EXAM_SCHEMA_VERSION_1,
+    { toVersion: EXAM_SCHEMA_VERSION_2, migrate: migrateExamV1ToV2 },
+  ],
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -43,7 +50,7 @@ export function detectExamSchemaVersion(raw: unknown): number {
     throw new ExamMigrationError("UNSUPPORTED_EXAM_SCHEMA");
   }
 
-  if (!("schemaVersion" in raw)) return PREVIOUS_EXAM_SCHEMA_VERSION;
+  if (!("schemaVersion" in raw)) return EXAM_SCHEMA_VERSION_1;
 
   const version = raw.schemaVersion;
   if (
@@ -70,14 +77,19 @@ export function migrateExamToLatest(raw: unknown): Exam {
 
   try {
     while (version < CURRENT_EXAM_SCHEMA_VERSION) {
-      const migration = migrations.get(version);
-      if (!migration) {
+      const step = migrations.get(version);
+      if (!step || step.toVersion !== version + 1) {
         throw new ExamMigrationError("UNSUPPORTED_EXAM_SCHEMA", {
           sourceVersion: version,
         });
       }
-      migrated = migration(migrated);
-      version += 1;
+      migrated = step.migrate(migrated);
+      if (!isRecord(migrated) || migrated.schemaVersion !== step.toVersion) {
+        throw new Error(
+          `Exam migration ${version} to ${step.toVersion} returned an invalid version.`,
+        );
+      }
+      version = step.toVersion;
     }
 
     return ExamSchema.parse(migrated);

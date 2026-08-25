@@ -6,8 +6,8 @@ import {
   getDefaultStartsNewQuestion,
 } from "@/domain/exam/exam.question-numbering";
 import {
-  CURRENT_EXAM_SCHEMA_VERSION,
-  PREVIOUS_EXAM_SCHEMA_VERSION,
+  EXAM_SCHEMA_VERSION_1,
+  EXAM_SCHEMA_VERSION_2,
 } from "@/domain/exam/exam.types";
 
 const examBlockTypeSchema = z.enum([
@@ -36,7 +36,7 @@ const examV1BlockInputSchema = z
 
 const examV1InputSchema = z
   .object({
-    schemaVersion: z.literal(PREVIOUS_EXAM_SCHEMA_VERSION).optional(),
+    schemaVersion: z.literal(EXAM_SCHEMA_VERSION_1).optional(),
     id: z.string().min(1),
     settings: z.object({}).passthrough(),
     sections: z.array(
@@ -81,7 +81,7 @@ export function migrateExamV1ToV2(input: unknown): unknown {
 
   return {
     ...exam,
-    schemaVersion: CURRENT_EXAM_SCHEMA_VERSION,
+    schemaVersion: EXAM_SCHEMA_VERSION_2,
     settings,
     sections: exam.sections.map((section) => ({
       ...section,
